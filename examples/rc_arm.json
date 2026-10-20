@@ -1,0 +1,39 @@
+{
+  "name": "RC car lower suspension arm (1/10 scale buggy, rear)",
+  "design_space": {"width_mm": 90, "height_mm": 20},
+  "thickness_mm": 12,
+  "zones": [],
+  "pads": [
+    {"id": "hinge", "cx": 6, "cy": 10, "hole_r_mm": 1.6, "ring_r_mm": 3.6},
+    {"id": "shock", "cx": 55, "cy": 16, "hole_r_mm": 1.6, "ring_r_mm": 3.6},
+    {"id": "hub", "cx": 84, "cy": 10, "hole_r_mm": 1.6, "ring_r_mm": 3.6}
+  ],
+  "supports": [
+    {"pad_id": "hinge", "type": "pin"},
+    {"pad_id": "shock", "type": "slide_x"}
+  ],
+  "load_cases": [
+    {"id": "landing", "name": "Hard landing",
+     "reason": "about 0.5 kg per corner x 9.81 x ~15 g landing peak (impact factor to cite from an RC or vehicle dynamics source)",
+     "loads": [{"pad_id": "hub", "fx_N": 0, "fy_N": -80, "fz_N_out_of_plane": 0}],
+     "max_deflection_mm": 1.0},
+    {"id": "curb", "name": "Curb hit, sideways",
+     "reason": "lateral strike, ~3x the cornering force",
+     "loads": [{"pad_id": "hub", "fx_N": -40, "fy_N": 0, "fz_N_out_of_plane": 0}],
+     "max_deflection_mm": 1.0},
+    {"id": "front_impact", "name": "Front impact (out of plane)",
+     "reason": "fore-aft strike; hand checks only (bending through the thickness and interlayer shear)",
+     "loads": [{"pad_id": "hub", "fx_N": 0, "fy_N": 0, "fz_N_out_of_plane": 60}],
+     "max_deflection_mm": 1.0}
+  ],
+  "safety_factor": 2.0,
+  "printer": "desktop_fdm",
+  "materials": ["pla", "petg", "pa6cf", "pa12", "alsi10mg", "ti64"],
+  "warnings": [],
+  "provenance": {
+    "thickness_mm": {"source": "user", "original_text": "12 mm thick (fore-aft)"},
+    "safety_factor": {"source": "user", "original_text": "safety factor 2"}
+  },
+  "notes": ["Front view of the arm: the vertical landing load is in-plane. Printed flat, extruded 12 mm fore-aft."],
+  "references": ["Spec section 14.1 (approved 2026-10-20); impact factor citation still to add"]
+}

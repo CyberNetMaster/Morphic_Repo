@@ -1,0 +1,48 @@
+{
+  "name": "Aerospace mounting bracket (GE jet engine bracket challenge, 2D slice)",
+  "design_space": {"width_mm": 178, "height_mm": 65},
+  "thickness_mm": 25,
+  "zones": [],
+  "pads": [
+    {"id": "base_front", "cx": 40, "cy": 12, "hole_r_mm": 4.76, "ring_r_mm": 6.76},
+    {"id": "base_rear", "cx": 138, "cy": 12, "hole_r_mm": 4.76, "ring_r_mm": 6.76},
+    {"id": "clevis", "cx": 89, "cy": 52, "hole_r_mm": 9.525, "ring_r_mm": 11.525}
+  ],
+  "supports": [
+    {"pad_id": "base_front", "type": "pin"},
+    {"pad_id": "base_rear", "type": "pin"}
+  ],
+  "load_cases": [
+    {"id": "vertical", "name": "Vertical",
+     "reason": "GE / GrabCAD Jet Engine Bracket Challenge (2013) load condition 1: 8,000 lbf vertical = 35,600 N",
+     "loads": [{"pad_id": "clevis", "fx_N": 0, "fy_N": 35600, "fz_N_out_of_plane": 0}],
+     "max_deflection_mm": 0.32},
+    {"id": "horizontal", "name": "Horizontal",
+     "reason": "challenge load condition 2: 8,500 lbf horizontal = 37,800 N",
+     "loads": [{"pad_id": "clevis", "fx_N": 37800, "fy_N": 0, "fz_N_out_of_plane": 0}],
+     "max_deflection_mm": 0.32},
+    {"id": "angled", "name": "Angled 42 deg",
+     "reason": "challenge load condition 3: 9,500 lbf at 42 degrees from vertical = 42,300 N (fx = 28,300 N, fy = 31,400 N)",
+     "loads": [{"pad_id": "clevis", "fx_N": 28300, "fy_N": 31400, "fz_N_out_of_plane": 0}],
+     "max_deflection_mm": 0.32}
+  ],
+  "safety_factor": 1.5,
+  "printer": "any",
+  "materials": ["pla", "petg", "pa6cf", "pa12", "alsi10mg", "ti64"],
+  "warnings": ["Envelope 178 x 65 mm and pad positions are to confirm from the challenge STEP file.",
+               "The challenge's torsion load (load condition 4, 5,000 lbf-in) is out-of-plane: noted, not checked in 2D."],
+  "provenance": {
+    "safety_factor": {"source": "user", "original_text": "SF 1.5 (standard aerospace ultimate factor, FAR 25.303, to cite)"},
+    "load_cases[0].max_deflection_mm": {"source": "default", "original_text": "span / 200"},
+    "load_cases[1].max_deflection_mm": {"source": "default", "original_text": "span / 200"},
+    "load_cases[2].max_deflection_mm": {"source": "default", "original_text": "span / 200"}
+  },
+  "notes": ["2D slice of a known benchmark (original ~1.8 kg Ti-6Al-4V, winner ~80% lighter); not comparable to the 3D challenge results.",
+            "This is a 25 mm thick 2D slice that carries the full challenge load. The real bracket is wider at the base, so stresses here are several times those in the real part.",
+            "The four 0.375-24 base bolts (interfaces 2-5) are merged into two pad pairs in the side view; each pad stands for the two bolts behind each other along the viewing axis.",
+            "Original material: Ti-6Al-4V, yield 131 ksi (about 903 MPa) at 75 F; minimum wall 0.050 in (1.27 mm)."],
+  "references": [
+    "GE / GrabCAD Jet Engine Bracket Challenge page (2013): load cases, 0.75 in clevis pin, 0.375-24 bolts, Ti-6Al-4V, min wall 0.050 in, STEP file. https://grabcad.com/challenges/ge-jet-engine-bracket-challenge",
+    "Carter, W. T., et al. (2014), The GE Aircraft Engine Bracket Challenge: An Experiment in Crowdsourcing for Mechanical Design Concepts, Solid Freeform Fabrication Symposium: original mass about 1.8 kg, winner about 80% lighter."
+  ]
+}
