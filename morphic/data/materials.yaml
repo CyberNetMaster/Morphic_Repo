@@ -1,0 +1,190 @@
+# Materials library. Every number here was read from the cited page or PDF on 2026-10-20.
+# Rules used:
+#   - A value is only recorded if it was read directly from a fetched page or a downloaded PDF.
+#   - null + a flag means the value could not be sourced.
+#   - "third-party source" in a flag means the number did not come from the material maker.
+#   - Downloaded PDFs are kept under .plans/dl/materials/ (see .plans/materials-research.md).
+
+materials:
+  - id: pla
+    name: Prusament PLA
+    process: fdm
+    E_xy_MPa: 2300
+    nu: 0.35
+    strength_xy_MPa: 51
+    strength_kind: tensile
+    strength_z_MPa: null
+    interlayer_shear_MPa: null
+    density_g_cm3: 1.24
+    cost_usd_per_kg: 29.99
+    cost_note: "prusament.com PLA material page, standard 1 kg spool, 29.99 USD (VAT incl.), seen 2026-10-20"
+    condition_note: "TDS 'Horizontal' print direction. Specimens printed on Original Prusa i3 MK3, 0.20 mm layers, 2 perimeters, 100% rectilinear infill, 215 C nozzle, 60 C bed, Slic3r PE 1.40.0. No moisture conditioning stated. TDS lists E as 2.3 +/- 0.1 GPa and strength as 'Tensile Yield Strength' 51 +/- 3 MPa."
+    z_knockdown:
+      value: 0.73
+      source: "Ultimaker PLA TDS v2.00 (2022-04-20), p.2: tensile stress at break XY (flat) 45.5 +/- 1.1 MPa vs Z (upright) 33.1 +/- 2.8 MPa, ASTM D3039. Ratio 33.1/45.5 = 0.73. Different PLA brand; https://um-support-files.ultimaker.com/materials/2.85mm/tds/PLA/Ultimaker-PLA-TDS-v5.00.pdf"
+    citations:
+      E: {title: "Technical datasheet Prusament PLA by Prusa Polymers", version_or_date: "Version 1.1, last update 27-07-2022", page: "2 (Mechanical properties of 3D printed testing specimens, Tensile Modulus, Horizontal)", url: "https://storage.googleapis.com/prusa3d-content-prod-14e8-wordpress-prusament-prod/2024/05/7ca620c4-prusament-pla-plablend.zip"}
+      nu: {title: "Gawel, Kuciel, Liber-Knec, Mierzwinski: Examination of Low-Cyclic Fatigue Tests and Poisson's Ratio Depending on the Different Infill Density of Polylactide (PLA) Produced by the FDM Method, Polymers 15(7):1651", version_or_date: "2023", page: "Table 1, 100% infill: 0.35", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC10096656/"}
+      strength_xy: {title: "Technical datasheet Prusament PLA by Prusa Polymers", version_or_date: "Version 1.1, last update 27-07-2022", page: "2 (Tensile Yield Strength, Horizontal, ISO 527-1)", url: "https://storage.googleapis.com/prusa3d-content-prod-14e8-wordpress-prusament-prod/2024/05/7ca620c4-prusament-pla-plablend.zip"}
+      strength_z: null
+      interlayer_shear: null
+      density: {title: "Technical datasheet Prusament PLA by Prusa Polymers", version_or_date: "Version 1.1, last update 27-07-2022", page: "2 (Typical material properties, Density, ISO 1183)", url: "https://storage.googleapis.com/prusa3d-content-prod-14e8-wordpress-prusament-prod/2024/05/7ca620c4-prusament-pla-plablend.zip"}
+      cost: {title: "Prusament PLA material page", version_or_date: "seen 2026-10-20", page: "price list, 1 kg standard colours", url: "https://prusament.com/materials/pla/"}
+    flags:
+      - "nu: typical value, not from TDS (measured on FDM PLA at 100% infill by Gawel et al. 2023)"
+      - "strength_z: TDS has no Z-loaded value. Its 'Vertical xz' column (59 +/- 2 MPa) is an on-edge specimen loaded along the layers, so it was not used as Z strength. TDS also lists 'Interlayer Adhesion 17 +/- 3 MPa' by an in-house 'Prusa Polymers' method with no defined test; not used because the method is not stated."
+      - "interlayer_shear: TDS 'Interlayer Adhesion 17 +/- 3 MPa' is not labelled as a shear value, so it was not recorded here."
+      - "z_knockdown: ratio comes from a different maker's PLA (Ultimaker), not from Prusa."
+      - "TDS is distributed by Prusa as a zip of PDFs (file 'Prusament PLA/1_PLA_Prusament_TDS_2022_EN.pdf'); an identical copy is also hosted by MatterHackers at https://www.matterhackers.com/r/xFvGl8"
+
+  - id: petg
+    name: Prusament PETG
+    process: fdm
+    E_xy_MPa: 1500
+    nu: 0.4
+    strength_xy_MPa: 47
+    strength_kind: tensile
+    strength_z_MPa: null
+    interlayer_shear_MPa: null
+    density_g_cm3: 1.27
+    cost_usd_per_kg: 29.99
+    cost_note: "prusament.com PETG material page, standard 1 kg spool, 29.99 USD (VAT incl.), seen 2026-10-20"
+    condition_note: "TDS 'Horizontal' print direction. Specimens printed on Original Prusa i3 MK3, 0.20 mm layers, 2 perimeters, 100% rectilinear infill, 250 C nozzle, 80 C bed, Slic3r PE 1.40.0. No moisture conditioning stated. TDS lists E as 1.5 +/- 0.1 GPa and strength as 'Tensile Yield Strength' 47 +/- 2 MPa."
+    z_knockdown:
+      value: 0.49
+      source: "Ultimaker PETG TDS v1.00 (2022-04-29), p.2: tensile stress at break XY (flat) 38.5 +/- 1.4 MPa vs Z (upright) 19.0 +/- 6.4 MPa, ASTM D3039. Ratio 19.0/38.5 = 0.49. Different PETG brand; https://um-support-files.ultimaker.com/materials/2.85mm/tds/PETG/Ultimaker-PETG-TDS-v1.00.pdf"
+    citations:
+      E: {title: "Technical datasheet Prusament PETG by Prusa Polymers", version_or_date: "Version 1.1, last update 16-02-2022", page: "2 (Mechanical properties of 3D printed testing specimens, Tensile Modulus, Horizontal)", url: "https://storage.googleapis.com/prusa3d-content-prod-14e8-wordpress-prusament-prod/2023/10/9f8d2165-tds_prusament-petg_n_en.pdf"}
+      nu: {title: "Guessasma, Belhabib, Nouri: Printability and Tensile Performance of 3D Printed PETG Using FDM, Polymers 11(7):1220", version_or_date: "2019", page: "Modelling Technique section: 'Poisson's coefficient (0.4) of the as-received PETG filament'", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC6680790/"}
+      strength_xy: {title: "Technical datasheet Prusament PETG by Prusa Polymers", version_or_date: "Version 1.1, last update 16-02-2022", page: "2 (Tensile Yield Strength, Horizontal, ISO 527-1)", url: "https://storage.googleapis.com/prusa3d-content-prod-14e8-wordpress-prusament-prod/2023/10/9f8d2165-tds_prusament-petg_n_en.pdf"}
+      strength_z: null
+      interlayer_shear: null
+      density: {title: "Technical datasheet Prusament PETG by Prusa Polymers", version_or_date: "Version 1.1, last update 16-02-2022", page: "2 (Typical material properties, Density, ISO 1183)", url: "https://storage.googleapis.com/prusa3d-content-prod-14e8-wordpress-prusament-prod/2023/10/9f8d2165-tds_prusament-petg_n_en.pdf"}
+      cost: {title: "Prusament PETG material page", version_or_date: "seen 2026-10-20", page: "price list, 1 kg standard spools", url: "https://prusament.com/materials/prusament-petg/"}
+    flags:
+      - "nu: typical value, not from TDS. The cited paper used 0.4 as a model input and did not measure it; no measured PETG Poisson's ratio was found."
+      - "strength_z: TDS has no Z-loaded value. Its 'Vertical xz' column (50 +/- 1 MPa) is an on-edge specimen, so it was not used as Z strength. TDS also lists 'Interlayer Adhesion 18 +/- 4 MPa' (in-house 'Prusa Polymers' method, test not defined); not used."
+      - "interlayer_shear: TDS 'Interlayer Adhesion 18 +/- 4 MPa' is not labelled as a shear value, so it was not recorded here."
+      - "z_knockdown: ratio comes from a different maker's PETG (Ultimaker), not from Prusa."
+
+  - id: pa6cf
+    name: Polymaker Fiberon PA6-CF20
+    process: fdm
+    E_xy_MPa: 8636.5
+    nu: 0.40
+    strength_xy_MPa: 109.3
+    strength_kind: tensile
+    strength_z_MPa: 54.0
+    interlayer_shear_MPa: null
+    density_g_cm3: 1.17
+    cost_usd_per_kg: 52.99
+    cost_note: "shop.polymaker.com product JSON, variant 'Black / New Packaging / 1kg' (SKU FG03003) 52.99 USD, seen 2026-10-20"
+    condition_note: "TDS 'MECHANICAL PROPERTIES - DRY STATUS'. TDS also gives a 'WET STATUS' table: Young's modulus X-Y 2508.1 +/- 82.6 MPa, tensile strength X-Y 54.7 +/- 1.1 MPa, tensile strength Z 25.5 +/- 1.2 MPa, Young's modulus Z 1056.1 +/- 127.9 MPa. Specimens: 300 C nozzle, 50 C bed, 3 top/bottom layers, 2 shells, 100% infill, fan off. TDS recommends annealing 100 C/16 h but does not state whether the test specimens were annealed."
+    z_knockdown:
+      value: null
+      source: null
+    citations:
+      E: {title: "Polymaker Fiberon PA6-CF20 Technical Data Sheet", version_or_date: "V1.1", page: "1 (Mechanical properties - dry status, Young's modulus (X-Y) 8636.5 +/- 211.4 MPa, ISO 527)", url: "https://fiberon.polymaker.com/wp-content/uploads/TDS_FIBERON-PA6-CF20_V1.1_EN.pdf"}
+      nu: {title: "Fisher, Almeida Jr, Falzon, Kazanci: Tension and Compression Properties of 3D-Printed Composites: Print Orientation and Strain Rate Effects, Polymers 15(7):1708", version_or_date: "2023", page: "Table 2, Onyx (short-CF nylon), 'Parallel' orientation, 5 mm/min: 0.40 +/- 0.02", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC10096896/"}
+      strength_xy: {title: "Polymaker Fiberon PA6-CF20 Technical Data Sheet", version_or_date: "V1.1", page: "1 (Mechanical properties - dry status, Tensile strength (X-Y) 109.3 +/- 2.4 MPa, ISO 527)", url: "https://fiberon.polymaker.com/wp-content/uploads/TDS_FIBERON-PA6-CF20_V1.1_EN.pdf"}
+      strength_z: {title: "Polymaker Fiberon PA6-CF20 Technical Data Sheet", version_or_date: "V1.1", page: "1 (Mechanical properties - dry status, Tensile strength (Z) 54.0 +/- 5.2 MPa, ISO 527)", url: "https://fiberon.polymaker.com/wp-content/uploads/TDS_FIBERON-PA6-CF20_V1.1_EN.pdf"}
+      interlayer_shear: null
+      density: {title: "Polymaker Fiberon PA6-CF20 Technical Data Sheet", version_or_date: "V1.1", page: "1 (Physical properties, Density 1.17 g/cm3 at 23 C, ISO 1183)", url: "https://fiberon.polymaker.com/wp-content/uploads/TDS_FIBERON-PA6-CF20_V1.1_EN.pdf"}
+      cost: {title: "Polymaker shop, Fiberon PA6-CF20 product data (Shopify JSON)", version_or_date: "seen 2026-10-20", page: "variants: 0.5 kg 39.99 USD, 1 kg 52.99 USD, 3 kg 159.99 USD", url: "https://shop.polymaker.com/products/fiberon-pa6-cf20.json"}
+    flags:
+      - "nu: typical value, not from TDS. Measured on Markforged Onyx (short-CF nylon, 14 wt% CF), not on Fiberon PA6-CF20."
+      - "E_xy: TDS Young's modulus X-Y is 8636.5 MPa, higher than the ~7000 MPa expected. The TDS bending modulus X-Y is 7037.6 MPa; the expectation may have come from that."
+      - "interlayer_shear: not given in TDS."
+      - "TDS values are 'dry status'; wet-status values are much lower (see condition_note)."
+
+  - id: pa12
+    name: EOS PA 2200 (PA12, SLS)
+    process: sls
+    E_xy_MPa: 1650
+    nu: 0.3967
+    strength_xy_MPa: 48
+    strength_kind: tensile
+    strength_z_MPa: 42
+    interlayer_shear_MPa: null
+    density_g_cm3: 0.93
+    cost_usd_per_kg: 75
+    cost_note: "Additive Plus (US reseller) generic PA12 SLS powder, product KSPA12, '$75/kg, $750 per package (10 kg)', seen 2026-10-20. Not EOS-branded PA 2200."
+    condition_note: "EOS MDS web page, 'Mechanical properties dry / conditioned' table; only the 'dry' column has values (conditioned column is '-'). Tensile modulus 1650 MPa in X, Y and Z; tensile strength 48 MPa X and Y, 42 MPa Z (ISO 527-1/-2). Density 0.93 g/cm3 by 'EOS Method'."
+    z_knockdown:
+      value: null
+      source: null
+    citations:
+      E: {title: "EOS PA 2200 Material Data Sheet (web)", version_or_date: "page shows 'Status as of 20.10.2026 Last changed on 20.10.2026' (appears to be a dynamic date)", page: "Mechanical properties table, Tensile modulus X/Y/Z 1650 MPa, ISO 527-1/-2", url: "https://www.eos.info/polymer-solutions/polymer-materials/data-sheets/mds-pa-2200"}
+      nu: {title: "Faes, Wang, Lava, Moens: Variability in the mechanical properties of laser sintered PA-12 components, Solid Freeform Fabrication Symposium proceedings", version_or_date: "2015", page: "'Poisson's coefficient was measured to be 0.3967 with a COV of 1.9%' (PA2200 on EOS P395, DIC); per orientation 0.3937 (edge), 0.3871 (upright), 0.4093 (flat)", url: "https://utw10945.utweb.utexas.edu/sites/default/files/2015/2015-69-Faes.pdf"}
+      strength_xy: {title: "EOS PA 2200 Material Data Sheet (web)", version_or_date: "see E", page: "Mechanical properties table, Tensile strength X 48 MPa, Y 48 MPa, ISO 527-1/-2", url: "https://www.eos.info/polymer-solutions/polymer-materials/data-sheets/mds-pa-2200"}
+      strength_z: {title: "EOS PA 2200 Material Data Sheet (web)", version_or_date: "see E", page: "Mechanical properties table, Tensile strength Z 42 MPa, ISO 527-1/-2", url: "https://www.eos.info/polymer-solutions/polymer-materials/data-sheets/mds-pa-2200"}
+      interlayer_shear: null
+      density: {title: "EOS PA 2200 Material Data Sheet (web)", version_or_date: "see E", page: "Other properties, Density 0.93 g/cm3, EOS Method", url: "https://www.eos.info/polymer-solutions/polymer-materials/data-sheets/mds-pa-2200"}
+      cost: {title: "Additive Plus: PA12 Nylon Powder SLS Material (KSPA12)", version_or_date: "seen 2026-10-20", page: "price block '$75/kg, $750 per package'", url: "https://additiveplus.com/product/kspa12-nylon-powder/"}
+    flags:
+      - "nu: typical value, not from TDS (measured by Faes et al. 2015 on EOS PA2200 parts)."
+      - "cost: third-party source; generic PA12 SLS powder from a reseller, not EOS PA 2200. No public EOS price was found."
+      - "density: the EOS page lists 0.93 g/cm3 under 'Density, EOS Method' without saying 'laser-sintered part'; older EOS sheets call the same figure 'density of laser-sintered part'."
+      - "interlayer_shear: not given."
+      - "The EOS web MDS carries no fixed version number; the status line showed today's date."
+
+  - id: alsi10mg
+    name: EOS Aluminium AlSi10Mg (DMLS / LPBF)
+    process: metal
+    E_xy_MPa: 75000
+    nu: 0.33
+    strength_xy_MPa: 270
+    strength_kind: yield
+    strength_z_MPa: 230
+    interlayer_shear_MPa: null
+    density_g_cm3: 2.67
+    cost_usd_per_kg: 41
+    cost_note: "Additive Plus (US reseller) CNPC AlSi10Mg LPBF powder, 10 kg, '$41/kg, $410', seen 2026-10-20. Same reseller lists Carpenter Additive AlSi10Mg at 'From $815' per 10 kg (about 81.50 USD/kg). Not an EOS price."
+    condition_note: "Strength and density: EOS MDS, section 'EOS Aluminium AlSi10Mg for EOS M 290 | 30 um', 'Mechanical properties (as manufactured state)', i.e. no heat treatment, machined (turned) samples, ISO 6892-1 B10. Horizontal = XY, Vertical = Z. Rp0.2 vertical 230 MPa / horizontal 270 MPa; Rm 460 / 450 MPa. EOS T6 heat-treated values on the same sheet: Rp0.2 250 (V) / 260 (H), Rm 310 / 320. Modulus: from the older EOS sheet (05.2014, EOSINT M 280 / M 290), 'as built', horizontal (XY) 75 +/- 10 GPa, vertical (Z) 70 +/- 10 GPa; after stress relief (2 h 300 C) 70 / 60 GPa."
+    z_knockdown:
+      value: null
+      source: null
+    citations:
+      E: {title: "EOS Aluminium AlSi10Mg Material data sheet (older edition, EOSINT M 280 / EOS M 290 400W)", version_or_date: "AD, WEIL / 05.2014", page: "4/5, 'Modulus of elasticity, in horizontal direction (XY), As built: 75 +/- 10 GPa'", url: "https://web.archive.org/web/20181227164805id_/https://gpiprototype.com/pdf/EOS_Aluminium_AlSi10Mg_en.pdf"}
+      nu: {title: "nTop documentation, sample material 'AlSi10Mg' (values attributed to matweb.com)", version_or_date: "seen 2026-10-20", page: "'Poisson's ratio: 0.33', 'Elastic modulus: 70.0 GPa', 'Density: 2.68 g/cc', 'Reference: matweb.com'", url: "https://docs.ntop.com/Product-Documentation/ntop/block-documentation/blocks/design-analysis/sample-materials/al-si-10mg.md"}
+      strength_xy: {title: "EOS Aluminium AlSi10Mg Material Data Sheet (PDF, archived copy of the EOS file)", version_or_date: "archive snapshot 2025-07-09 of the EOS PDF (?v=6); live EOS web MDS shows 'Last changed on 13.10.2026'", page: "section EOS M 290 | 30 um, Mechanical properties (as manufactured state), Horizontal Rp0.2 270 MPa", url: "https://web.archive.org/web/20250709102926id_/https://www.eos.info/var/assets/05-datasheet-images/Assets_MDS_Metal/EOS_Aluminium_AlSi10Mg/Material_Datasheet_EOS_Aluminium_AlSi10Mg_EN.pdf?v=6"}
+      strength_z: {title: "EOS Aluminium AlSi10Mg Material Data Sheet (PDF, archived copy of the EOS file)", version_or_date: "see strength_xy", page: "section EOS M 290 | 30 um, Mechanical properties (as manufactured state), Vertical Rp0.2 230 MPa", url: "https://web.archive.org/web/20250709102926id_/https://www.eos.info/var/assets/05-datasheet-images/Assets_MDS_Metal/EOS_Aluminium_AlSi10Mg/Material_Datasheet_EOS_Aluminium_AlSi10Mg_EN.pdf?v=6"}
+      interlayer_shear: null
+      density: {title: "EOS Aluminium AlSi10Mg Material Data Sheet (PDF, archived copy of the EOS file)", version_or_date: "see strength_xy", page: "section EOS M 290 | 30 um, Density ISO 3369, 'Average density >= 2.67 g/cm3' (34 samples)", url: "https://web.archive.org/web/20250709102926id_/https://www.eos.info/var/assets/05-datasheet-images/Assets_MDS_Metal/EOS_Aluminium_AlSi10Mg/Material_Datasheet_EOS_Aluminium_AlSi10Mg_EN.pdf?v=6"}
+      cost: {title: "Additive Plus product search 'AlSi10Mg'", version_or_date: "seen 2026-10-20", page: "CNPC AlSi10Mg 10 kg: '$41/kg, $410'; product page https://additiveplus.com/product/aluminum-powder-alsi10mg-lpbf-compatible-10-kg-22-lbs/", url: "https://additiveplus.com/?s=AlSi10Mg&post_type=product"}
+    flags:
+      - "E_xy: the current EOS MDS (2025/2026 editions) lists no modulus at all. Value taken from the older EOS 05.2014 sheet ('as built', XY 75 +/- 10 GPa), read from an archived copy hosted by a reseller (gpiprototype.com) because the EOS original URL is gone. Expected ~70000; the 2014 sheet gives 70 GPa for Z as built and for XY after stress relief."
+      - "nu: typical value, not from TDS; third-party source (nTop docs quoting MatWeb)."
+      - "strength: 'as manufactured' (no heat treatment) condition from the EOS M 290 | 30 um process; EOS T6 values differ (see condition_note). Live EOS PDF link returned 404 on 2026-10-20, so the Wayback Machine copy of the EOS PDF was used; the EOS process-data web page for M 290 | 30 um (https://www.eos.info/metal-solutions/data-sheets/aluminium/pds-eos-aluminium-alsi10mg-eos-m-290-30um) shows the same as-manufactured values (233 / 270 MPa typical, 466 / 461 MPa Rm)."
+      - "cost: third-party source; reseller price for non-EOS AlSi10Mg powder."
+      - "density: EOS states '>= 2.67 g/cm3' (a lower bound), recorded as 2.67."
+
+  - id: ti64
+    name: EOS Titanium Ti64 (Ti-6Al-4V, DMLS)
+    process: metal
+    E_xy_MPa: 110000
+    nu: 0.342
+    strength_xy_MPa: 1000
+    strength_kind: yield
+    strength_z_MPa: 1000
+    interlayer_shear_MPa: null
+    density_g_cm3: 4.41
+    cost_usd_per_kg: 136
+    cost_note: "Additive Plus (US reseller) CNPC Ti-6Al-4V Grade 5 powder 15-53 um, 10 kg, '$1,360', '$136.00/kg', seen 2026-10-20. Not an EOS price."
+    condition_note: "EOS MDS 'EOS Titanium Ti64 400W' (07.2022, EOSINT M 280 / EOS M 290 400W, Ti64_Performance 30 um), 'Heat treated' column: specimens treated at 800 C for 4 h in argon. Yield strength Rp0.2 typ. 1000 +/- 50 MPa horizontal (XY), typ. 1000 +/- 60 MPa vertical (Z); min. 860 MPa. Tensile strength typ. 1100 +/- 40 MPa, min. 930 MPa. 'As built' column: Rp0.2 typ. 1140 +/- 50 (XY), 1120 +/- 80 (Z). Modulus typ. 110 +/- 15 GPa in both directions and both conditions. Density 4.41 g/cm3, relative density approx. 100 %. Yield (1000) is lower than tensile (1100), so yield is recorded."
+    z_knockdown:
+      value: null
+      source: null
+    citations:
+      E: {title: "EOS Titanium Ti64 Material data sheet, 'EOS Titanium Ti64 400W' edition (bundled in the EOS Ti64 MDS PDF)", version_or_date: "07.2022", page: "4/5, 'Modulus of elasticity, in horizontal direction (XY), typ. 110 +/- 15 GPa'", url: "https://www.eos.info/05-datasheet-images/Assets_MDS_Metal/EOS_Titanium_Ti64/Material_DataSheet_EOS_Titanium_Ti64_EOSM290_EOSM300-4_EOSM400_EOSM400-4_en.pdf"}
+      nu: {title: "nTop documentation, sample material 'Ti-6Al-4V' (values attributed to matweb.com)", version_or_date: "seen 2026-10-20", page: "'Poisson's ratio: 0.342', 'Elastic modulus: 113.8 GPa', 'Density: 4.43 g/cc', 'Reference: matweb.com'", url: "https://docs.ntop.com/Product-Documentation/ntop/block-documentation/blocks/design-analysis/sample-materials/ti-6al-4v.md"}
+      strength_xy: {title: "EOS Titanium Ti64 Material data sheet, 'EOS Titanium Ti64 400W' edition", version_or_date: "07.2022", page: "4/5, 'Yield strength (Rp0.2), in horizontal direction (XY), Heat treated: typ. 1000 +/- 50 MPa'", url: "https://www.eos.info/05-datasheet-images/Assets_MDS_Metal/EOS_Titanium_Ti64/Material_DataSheet_EOS_Titanium_Ti64_EOSM290_EOSM300-4_EOSM400_EOSM400-4_en.pdf"}
+      strength_z: {title: "EOS Titanium Ti64 Material data sheet, 'EOS Titanium Ti64 400W' edition", version_or_date: "07.2022", page: "4/5, 'Yield strength (Rp0.2), in vertical direction (Z), Heat treated: typ. 1000 +/- 60 MPa'", url: "https://www.eos.info/05-datasheet-images/Assets_MDS_Metal/EOS_Titanium_Ti64/Material_DataSheet_EOS_Titanium_Ti64_EOSM290_EOSM300-4_EOSM400_EOSM400-4_en.pdf"}
+      interlayer_shear: null
+      density: {title: "EOS Titanium Ti64 Material data sheet, 'EOS Titanium Ti64 400W' edition", version_or_date: "07.2022", page: "3/5, 'Density 4.41 g/cm3', 'Relative density approx. 100 %'", url: "https://www.eos.info/05-datasheet-images/Assets_MDS_Metal/EOS_Titanium_Ti64/Material_DataSheet_EOS_Titanium_Ti64_EOSM290_EOSM300-4_EOSM400_EOSM400-4_en.pdf"}
+      cost: {title: "Additive Plus: CNPC Ti-6Al-4V Grade 5 Powder 15-53 um LPBF, 10 kg", version_or_date: "seen 2026-10-20", page: "price block '$1,360', '$136.00/kg'", url: "https://additiveplus.com/product/cnpc-ti-6al-4v-grade-5-powder-for-metal-3d-printing-15-53-%c2%b5m-lpbf-10-kg-22-lbs/"}
+    flags:
+      - "nu: typical value, not from TDS; third-party source (nTop docs quoting MatWeb, wrought Ti-6Al-4V)."
+      - "cost: third-party source; reseller price for non-EOS Ti-6Al-4V Grade 5 powder (same reseller lists Amaero Grade 23 ELI at 240.50 USD/kg)."
+      - "The EOS PDF at this URL bundles several sheets. The 'EOS Titanium Ti64 M290' 06.2022 sheet in the same file gives heat-treated (800 C, 2 h) Rp0.2 945 MPa horizontal / 965 MPa vertical and no modulus; the 400W 07.2022 sheet was used because it gives modulus, yield, both orientations and both conditions."
+      - "interlayer_shear: not given."

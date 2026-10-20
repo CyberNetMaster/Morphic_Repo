@@ -1,0 +1,26 @@
+# Process limits. Every number was read from the cited page on 2026-10-20.
+
+processes:
+  - id: fdm
+    name: Desktop FDM, 0.4 mm nozzle
+    min_wall_mm: 0.8
+    printer_group: desktop_fdm
+    citation: {title: "Protolabs Network (Hubs) knowledge base: DFM tips for 3D printed parts with thin walls", version_or_date: "no article date; page footer 'Copyright 2026 Protolabs Europe B.V.'; seen 2026-10-20", page: "table 'Min wall (supported / free)': FDM 0.8 mm / 0.8 mm", url: "https://www.hubs.com/knowledge-base/dfm-tips-for-3d-printed-parts-with-thin-walls/"}
+    flags:
+      - "Expected ~1.2 mm, but no maker or bureau guide read gave 1.2 mm. Hubs gives 0.8 mm. The Prusa knowledge base article 'Layers and perimeters' (https://help.prusa3d.com/en/article/layers-and-perimeters_1748) gives no fixed minimum; it says PrusaSlicer computes a recommended thin-wall thickness per perimeter count. No nozzle size is stated in the Hubs article."
+
+  - id: sls
+    name: SLS PA12
+    min_wall_mm: 0.8
+    printer_group: sls_service
+    citation: {title: "Protolabs Network (Hubs) knowledge base: How to design parts for SLS 3D printing", version_or_date: "no article date; page footer 'Copyright 2026 Protolabs Europe B.V.'; seen 2026-10-20", page: "'minimum thickness should be between 0.8mm (for PA12) and 2.0mm (for carbon-filled polyamide)'; table 'Wall thickness 0.8mm-2.0mm, depending on material'", url: "https://www.hubs.com/knowledge-base/how-design-parts-sls-3d-printing/"}
+    flags:
+      - "Cross-check: Protolabs 'Design for 3D printing toolkit' (https://protolabs.com/resources/design-for-3d-printing-toolkit) lists SLS 'PA 12 White' minimum wall 0.03 in. (0.762 mm)."
+
+  - id: metal
+    name: DMLS / LPBF metal
+    min_wall_mm: 0.4
+    printer_group: metal_service
+    citation: {title: "Protolabs Network (Hubs) knowledge base: How to design parts for metal 3D printing", version_or_date: "no article date; page footer 'Copyright 2026 Protolabs Europe B.V.'; seen 2026-10-20", page: "'Minimum wall thickness, DMLS/SLM: 0.4 mm'", url: "https://www.hubs.com/knowledge-base/how-design-parts-metal-3d-printing/"}
+    flags:
+      - "Expected ~0.5 mm; Hubs gives 0.4 mm. Cross-checks: Protolabs toolkit lists DMLS AlSi10Mg 0.015 in. (0.381 mm) high resolution / 0.030 in. (0.762 mm) normal resolution, and Ti-6Al-4V 0.006 in. (0.152 mm) / 0.015 in. (0.381 mm). EOS MDS: AlSi10Mg M 290 30 um 'Minimum wall thickness 0.4 mm'; Ti64 'approx. 0.3 - 0.4 mm'."
