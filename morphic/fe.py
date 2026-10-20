@@ -226,19 +226,34 @@ class SingularSystem(RuntimeError):
     """The stiffness system is singular: the part can move freely."""
 
 
+_PARDISO_SHARED = None  # one PyPardiso instance per process (constructing one costs ~1 s)
+PARDISO_MTYPE = 2  # real symmetric positive definite: upper triangle only, ~4x faster factorization
+
+
+def _shared_pardiso():
+    global _PARDISO_SHARED
+    if _PARDISO_SHARED is None:
+        _PARDISO_SHARED = pypardiso.PyPardisoSolver(mtype=PARDISO_MTYPE)
+    return _PARDISO_SHARED
+
+
 class Solver:
-    """Factorize once, back-solve for several right-hand sides. Pardiso if available."""
+    """Factorize once, back-solve for several right-hand sides. Pardiso if available.
+
+    The stiffness matrix of a SIMP design with E_min > 0 and enough supports is
+    symmetric positive definite, so Pardiso runs in SPD mode on the upper triangle.
+    """
 
     def __init__(self, use_pardiso: bool | None = None):
         self.use_pardiso = HAVE_PARDISO if use_pardiso is None else (use_pardiso and HAVE_PARDISO)
-        self._pardiso = pypardiso.PyPardisoSolver() if self.use_pardiso else None
+        self._pardiso = _shared_pardiso() if self.use_pardiso else None
         self._lu = None
-        self.K_ff = None
+        self._A = None
 
     def factorize(self, K_ff: sp.csc_matrix) -> None:
-        self.K_ff = K_ff
         if self.use_pardiso:
-            self._pardiso.factorize(sp.csr_matrix(K_ff))
+            self._A = sp.triu(K_ff, format="csr") if PARDISO_MTYPE in (2, -2) else sp.csr_matrix(K_ff)
+            self._pardiso.factorize(self._A)
         else:
             from scipy.sparse.linalg import splu
 
@@ -247,7 +262,7 @@ class Solver:
     def solve(self, F_f: np.ndarray) -> np.ndarray:
         F_f = np.asarray(F_f, dtype=float)
         if self.use_pardiso:
-            out = self._pardiso.solve(sp.csr_matrix(self.K_ff), F_f)
+            out = self._pardiso.solve(self._A, F_f)
         else:
             out = self._lu.solve(F_f)
         out = np.asarray(out)
@@ -256,11 +271,14 @@ class Solver:
         return out
 
     def free(self) -> None:
+        """Release the factorization memory (the shared Pardiso instance stays alive)."""
         if self._pardiso is not None:
             try:
-                self._pardiso.free_memory(everything=True)
+                self._pardiso.free_memory(everything=False)
             except Exception:  # pragma: no cover
                 pass
+        self._A = None
+        self._lu = None
 
 
 def solve_system(K: sp.csc_matrix, F: np.ndarray, fixed: np.ndarray,
@@ -281,10 +299,11 @@ def solve_system(K: sp.csc_matrix, F: np.ndarray, fixed: np.ndarray,
     U[free] = solver.solve(F[free])
     if own:
         solver.free()
-    # crude singularity check: a rigid-body mode gives absurd displacements
+    # residual check (evaluation path only): catches a singular or badly solved system
+    resid = np.abs(K_ff @ U[free] - F[free]).max()
     scale = max(np.abs(F).max(), 1e-300)
-    if np.abs(U).max() > 1e12 * scale * max(1.0, 1.0 / max(K_ff.diagonal().min(), 1e-300)):
-        raise SingularSystem("displacements blow up: the part can move freely")
+    if not np.isfinite(resid) or resid > 1e-6 * scale:
+        raise SingularSystem(f"solve residual {resid:.3g} vs load scale {scale:.3g}: the part can move freely")
     return U[:, 0] if single else U
 
 
