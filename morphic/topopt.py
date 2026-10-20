@@ -168,7 +168,7 @@ class TopOptResult:
     objective: float  # weighted sum
     iterations: int
     converged: bool  # the spec's rule: change < tol at the last beta
-    stalled: bool  # diagnostic: objective moved < PLATEAU_RTOL over the last PLATEAU_WINDOW iterations
+    stalled: bool  # diagnostic: objective moved less than PLATEAU_RTOL over the last PLATEAU_WINDOW iterations
     beta_final: float
     volume: float  # mean xPhys over active elements
     history: list = field(default_factory=list)  # dicts per iteration
@@ -184,7 +184,7 @@ class TopOptResult:
 
 
 PLATEAU_WINDOW = 20
-PLATEAU_RTOL = 1e-4
+PLATEAU_RTOL = 1e-3
 
 
 def objective_stalled(history: list, window: int = PLATEAU_WINDOW, rtol: float = PLATEAU_RTOL) -> bool:
