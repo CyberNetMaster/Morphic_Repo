@@ -53,6 +53,7 @@ Stated limits (shown in every result's "Limits" expander and in the write-up):
 - Von Mises with one strength value is a simplification for plastics. PA6-CF is anisotropic within a layer: the XY datasheet value is along the bead direction, and strength across beads in the same layer is lower. The result assumes slicer perimeters follow the member direction.
 - Stresses are recovered to the nodes (Gauss-point extrapolation, averaged over solid elements), so edge values are not under-read the way element-center values are. A small error remains at the production mesh; the hole check (section 13.4) measures it and the Validation tab shows it. Stress peaks at sharp inner corners still depend on mesh size. Stress is reported at the stated mesh size, from the smoothed shape that is exported.
 - 2D plane stress. Out-of-plane loads get a hand check only.
+- Pin bearing at load pads is a hand check using the full strength (bearing allowables are often higher, so it errs on the safe side). Pin shear and edge tear-out are not checked.
 
 Stretch: 3D SIMP for one part (section 15).
 Long-term vision (write-up only): broader biologically inspired design.
@@ -347,7 +348,7 @@ If the cold re-run's final shape passes the limits, it replaces the sweep's shap
    - Extrapolate the components from the 4 Gauss points to the 4 corner nodes with the standard Q4 extrapolation: the bilinear fit through the Gauss-point values, evaluated at ξ, η = ±1. The weights are 1 + √3/2, −1/2, 1 − √3/2, −1/2 (nearest Gauss point, the two adjacent ones, the opposite one).
    - At each node, average each component over the **solid elements only** that share the node. "Solid" means density ≥ 0.5 after clean-up, or area fraction ≥ 0.5 in the smoothed re-check; passive ring elements count as solid. Void elements never enter the average, so a boundary node is not pulled toward zero. A node touched by no solid element is masked.
    - Compute von Mises from the averaged components at each node. These nodal values feed the safety factor, the stress maps, the 3D view, and the cinematic coloring.
-   - **Reported value:** the max nodal von Mises over solid nodes **outside an exclusion zone around each pad: the pad ring itself plus one ring width beyond it, measured in millimeters.** The zone is in mm, not elements, so it does not change with the element cap. (Pin bearing on the hole wall is not modeled: the load is spread evenly around the hole edge, so stress inside the ring is not physical.)
+   - **Reported value:** the max nodal von Mises over solid nodes **outside an exclusion zone around each pad: the pad ring itself plus one ring width beyond it, measured in millimeters.** The zone is in mm, not elements, so it does not change with the element cap. (Pin bearing on the hole wall is not modeled in the FE: the load is spread evenly around the hole edge, so stress inside the ring is not physical. Bearing gets its own hand check, step 9.)
    - **Raw peak:** the max nodal von Mises over all solid nodes, including the exclusion zones, shown in small text next to it, with the note: "Raw peak includes stress spikes at load and support points, which are an artifact of the model. The filtered value is used for the safety factor."
    - **Mesh note (shown in the Limits expander):** stress is reported at the mesh size used, which is printed on the card. Nodal recovery removes most of the edge under-read; the error that remains at the production mesh is measured by the hole check (section 13.4) and shown on the Validation tab. Sharp inner corners have peaks that grow with mesh refinement; the smoothing step (section 9) removes most inner corners, and the final numbers come from the smoothed shape. Stair-stepped boundaries on the grid add local noise, which the smoothed re-check (area fractions) reduces.
 6. **Safety factor** = strength / reported max stress (recovered nodal, outside the exclusion zones), worst case over all load cases.
@@ -356,7 +357,8 @@ If the cold re-run's final shape passes the limits, it replaces the sweep's shap
    - **Bending:** I = w·t³/12, M = F_z × distance to the load, σ = M·(t/2)/I. Compared with **XY strength** (the face stress runs along the layers). Report the worst SF.
    - **Interlayer shear:** τ = 1.5 · F_z / (w · t) at mid-thickness, which is a layer interface. Compared with **Z strength / √3** (or a cited interlayer shear strength if the datasheet has one). Report the worst SF.
    - Both are labeled "approximate hand check". The card shows pass or fail for each.
-9. **Smoothed re-check:** done after geometry export (section 9). Its numbers replace these if they differ.
+9. **Bearing hand check** (every load pad with a hole, every load case). The pin presses on the hole wall. σ_bearing = F / (d × t), where F is the in-plane resultant √(fx² + fy²) on that pad, d = 2 × `hole_r_mm`, and t = `thickness_mm`. Out-of-plane `fz` does not count (it runs along the pin). SF_bearing = strength / σ_bearing, worst case over load cases, compared with the target safety factor. It uses the **full XY strength as an approximation; bearing allowables are often higher, so this errs on the safe side**, and the card says so. Solid pads (`hole_r_mm = 0`) show "n/a (solid mount)". Pin shear and edge tear-out are not checked, and the limits say so. Because this check does not depend on the optimized shape, a fail applies to every design in that material at that hole size and thickness; the suggested fix is scaled from the numbers: required d × t = current d × t × (SF_target / SF_bearing), offered as a larger pin, a thicker part, or a bushing.
+10. **Smoothed re-check:** done after geometry export (section 9). Its numbers replace these if they differ.
 
 ### 6.9 Baselines (`baseline.py`)
 
@@ -403,6 +405,7 @@ If S9 shows the live estimate is too slow for the demo, the live default drops t
 | Smoothed re-check fails a design that passed on the grid | Move to the next passing fill level, re-export, and add a note. |
 | Cold re-run shape fails where the sweep shape passed | Keep the sweep shape; animation shows the cold run with a note (section 6.7). |
 | Out-of-plane hand check fails | The card shows a red "Out-of-plane: FAIL" line naming the check (bending or interlayer shear). The design is not ranked, but it is still shown. |
+| Bearing hand check fails | The card shows a red "Bearing: FAIL" line naming the pad, with the suggested fix (larger pin, thicker part, or a bushing, with the computed number). The design is not ranked, but it is still shown. Since bearing does not depend on the shape, the same fail appears on every design of that material at that hole size and thickness. |
 | Some materials filtered out by printer | Greyed with reason, not ranked. |
 | All allowed materials fail, but a filtered one passes | Say so: "Only Ti64 (metal service) meets the limits." |
 | FE solve singular | Caught as "part can move freely" (section 4.5). |
@@ -459,7 +462,7 @@ Top bar: "Morphic" + step indicator. Tabs: **Design** (the 4 steps) and **Valida
   - mass, weight saved (vs. strut, vs. block), fill level
   - SF (filtered) with the raw peak in small text and the one-line note
   - deflection per load case vs. limit
-  - out-of-plane checks (if any): bending and interlayer shear, each pass/fail
+  - out-of-plane checks (if any): bending and interlayer shear, each pass/fail; next to them, the bearing check per load pad (pass/fail, σ_bearing vs. strength, with the note that full strength is used as an approximation and bearing allowables are often higher)
   - effective min wall enforced, and the mesh size used
   - material cost per part (labeled "material cost only")
   - badges; highlight on the winner; grey + reason if failed or filtered
@@ -524,7 +527,7 @@ All run as `pytest` tests and from the Validation tab. The write-up names the me
    - **Stair-step noise:** the max recovered nodal stress anywhere on the hole boundary vs. the value at θ = 90°, which shows how much the grid representation adds.
    Pass: the recovered error is smaller than the element-center error at every mesh; the recovered error is < 5% at 16 elements per radius; the element check is < 5% at 8 elements per radius. The recovered error at 8 elements per radius is reported on the Validation tab and in the Limits note as "the remaining stress error at a smooth edge at the live mesh."
 5. **Scaling laws:** for a fixed shape, check that doubling E halves deflection and leaves stress unchanged (to 1e-6). This proves the catalog method in section 6.4.
-6. **Other tests:** schema and sanity checks, watertight STL and volume, connectivity check, explanation grounding (a planted wrong number must be caught), and bundle rerun (both modes).
+6. **Other tests:** schema and sanity checks, watertight STL and volume, connectivity check, bearing and out-of-plane hand checks against hand-computed values, explanation grounding (a planted wrong number must be caught), and bundle rerun (both modes).
 
 ---
 
@@ -555,7 +558,7 @@ All values are proposals. Sources marked "to cite" must be confirmed and cited i
 - Source: GE / GrabCAD Jet Engine Bracket Challenge (2013). Copy the exact envelope, bolt positions, and load values from the challenge page; the values below are from memory and must be checked.
 - View: side view of the clevis bracket.
 - Design space: about 178 mm × 65 mm (to confirm against the challenge drawing). Thickness: 25 mm.
-- Pads: two base bolt pads (3/8-inch bolts, hole r ≈ 4.8 mm), **pin**. One clevis pin pad at the top, load pad.
+- Pads: two base bolt pads (3/8-inch bolts, hole r ≈ 4.8 mm), **pin**. One clevis pin pad at the top, load pad; its hole diameter comes from the challenge drawing (about 0.75 in, to confirm), and the bearing check uses it.
 - Load cases (as in the challenge, each separate):
   - "Vertical": 8,000 lbf ≈ 35,600 N upward.
   - "Horizontal": 8,500 lbf ≈ 37,800 N.
@@ -592,7 +595,7 @@ Steps are numbered S1–S17 so they do not collide with the review item numbers 
 | S3 | `topopt.py` + paper mode + MBB benchmark | Check 3 passes |
 | S4 | Pads (incl. solid pads), passive zones, multiple load cases with fixed normalization, uint8 snapshots | A test problem with 2 load cases converges |
 | S5 | `materials.yaml` / `processes.yaml` with every citation filled | Loader rejects any value without a citation |
-| S6 | `catalog.py` (downward sweep, cold/warm modes, early stop), level choice rule, refinement with memoization, cold re-run, `evaluate.py` (connectivity, nodal stress recovery, mm exclusion zone, out-of-plane bending + interlayer shear) | Results for a test problem across 3 processes |
+| S6 | `catalog.py` (downward sweep, cold/warm modes, early stop), level choice rule, refinement with memoization, cold re-run, `evaluate.py` (connectivity, nodal stress recovery, mm exclusion zone, out-of-plane bending + interlayer shear, bearing check) | Results for a test problem across 3 processes |
 | S7 | `baseline.py`, `rank.py` (mass ranking, badges, final-pick Pareto), edge results | Unit tests for each edge case in section 8 |
 | S8 | `geometry.py` export + smoothed re-check (linear scaling) | Watertight STL; re-check numbers shown |
 | **S9** | **Timing benchmark** (`morphic bench`): one full 10-level catalog run at the **40k cap** with the warm downward sweep, and one at the **150k cap** with cold runs per level, both on this laptop. Records seconds per iteration, iterations per level, and total time per catalog. Then **chooses the cached cap**: 150k if the three demo parts can be precomputed in the time available before the video; else measure at 80k and use it. Also decides whether live mode keeps 10 levels or drops to 7. Updates the table in section 6.10 and the README. **Must finish before S14.** | Section 6.10 table holds measured numbers; the cached cap is written in `config.py` |
@@ -645,6 +648,7 @@ Steps are numbered S1–S17 so they do not collide with the review item numbers 
 | Printed parts are weaker than datasheets. | We use printed-specimen values, print flat so in-plane stress runs along the layers, and show every value with its source. Z strength is in the library; it governs interlayer shear under out-of-plane loads, and we check that with a conservative stand-in. If the part were printed standing up, the numbers would not apply, and we say so. |
 | PA6-CF is anisotropic. | Yes, even within a layer. The datasheet value is along the bead direction. We state the assumption that perimeters follow the member direction, and list it as a limit. |
 | Isn't the stress at corners unreliable? | Yes, so loads are spread over pads, the ring and one ring width around each pad are excluded (a distance in mm, not in elements), the raw peak is shown next to it, and the mesh size is printed on the card. Stresses are recovered to the nodes by Gauss-point extrapolation and averaging, so edge values are not under-read the way element-center values are; the hole check shows the error with and without recovery at a known peak. Numbers come from the smoothed shape that is actually exported. |
+| What about the bolt holes? | The FE spreads the pin load evenly around the hole, so hole-wall stress is not physical and is excluded. Each load pad gets a bearing hand check, F / (d × t) against the full strength, which is on the safe side because bearing allowables are often higher. Pin shear and tear-out are not checked, and we say so. |
 | Is the weight saving inflated? | The headline compares with a constant-width strut design sized to the same limits by the same solver, not with a solid block. Both numbers are shown. |
 | Why does titanium look cheap? | The card shows material cost only, labeled as such, and it never ranks. Ranking is by mass. Print cost for metal is far higher and is out of scope. |
 | Could the LLM invent numbers? | It only explains. Every number it writes is checked against computed results; otherwise a template is used. Parsing is always checked by the user on a drawing. |
