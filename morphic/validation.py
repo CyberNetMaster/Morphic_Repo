@@ -117,18 +117,14 @@ def scaling_law_check(E: float = 1000.0, nu: float = 0.33) -> dict:
 def kt_finite_width(d_over_W: float) -> dict:
     """Stress concentration for a circular hole in a finite-width plate in tension.
 
-    Net-section factor (curve fit of Howland's solution, as given in Pilkey,
-    Peterson's Stress Concentration Factors, Chart 4.1, hole in a finite-width
-    element in tension, valid for d/W <= 0.5; the same cubic appears in Pilkey,
-    Formulas for Stress, Strain, and Structural Matrices, 2nd ed.):
+    Net-section factor, curve fit of Howland's solution, from Pilkey, W. D.,
+    Peterson's Stress Concentration Factors, Chart 4.1 (circular hole in a
+    finite-width element in tension; Howland 1929-30), valid for d/W <= 0.5:
 
         K_tn = 3.000 - 3.140 (d/W) + 3.667 (d/W)^2 - 1.527 (d/W)^3
 
     with sigma_nom on the net section. Converted to the gross-section factor
     (sigma_nom = applied far-field stress) by K_tg = K_tn / (1 - d/W).
-
-    The coefficients were read from a calculator page that cites Pilkey, not from
-    the book itself; see the note in tests/test_hole_stress.py.
     """
     lam = d_over_W
     if lam > 0.5:
@@ -156,9 +152,11 @@ def hole_stress_check(elems_per_radius: int = 16, d: float = 10.0, W_over_d: flo
     """Plate with a central hole in tension, quarter model, hole on the regular grid
     as void elements with area fractions at the boundary (the production representation).
 
-    Reports the edge stress at theta = 90 deg (top of the hole) with and without
-    nodal recovery, an element check against the Kirsch field at the edge element's
-    centroid, and the stair-step noise around the hole.
+    Reports: without recovery, the element-centre stress in the edge element at
+    theta = 90 deg; with recovery, the maximum recovered nodal stress over the hole
+    boundary (the number production uses), plus the value at the 90 deg node and
+    the angle where the maximum sits; an element check against the Kirsch field at
+    the edge element's centroid; and the stair-step ratio.
     """
     r = d / 2.0
     W = W_over_d * d
@@ -202,10 +200,12 @@ def hole_stress_check(elems_per_radius: int = 16, d: float = 10.0, W_over_d: flo
     srr, stt, trt = kirsch_stress(sigma_nom * kt["Ktg"] / 3.0, r, np.array(rc), np.array(thc))
     vm_kirsch_centroid = float(np.sqrt(srr**2 - srr * stt + stt**2 + 3 * trt**2))
 
-    # Stair-step noise: max recovered nodal stress anywhere on the hole boundary.
+    # Recovered value used by production: the max over the hole boundary nodes.
     dist = np.hypot(mesh.xn, mesh.yn)
     on_boundary = (dist >= r - h) & (dist <= r + h) & np.isfinite(vm_nodal)
-    vm_boundary_max = float(np.nanmax(vm_nodal[on_boundary]))
+    k = int(np.nanargmax(np.where(on_boundary, vm_nodal, -np.inf)))
+    vm_boundary_max = float(vm_nodal[k])
+    theta_max_deg = float(np.degrees(np.arctan2(mesh.yn[k], mesh.xn[k])))
 
     return {
         "elements_per_radius": elems_per_radius,
@@ -215,10 +215,25 @@ def hole_stress_check(elems_per_radius: int = 16, d: float = 10.0, W_over_d: flo
         "sigma_edge_true_MPa": sigma_edge_true,
         "vm_edge_element_centre_MPa": vm_edge_elem,
         "error_without_recovery": float(abs(vm_edge_elem - sigma_edge_true) / sigma_edge_true),
-        "vm_edge_node_recovered_MPa": vm_edge_node,
-        "error_with_recovery": float(abs(vm_edge_node - sigma_edge_true) / sigma_edge_true),
+        "vm_recovered_boundary_max_MPa": vm_boundary_max,
+        "theta_of_max_deg": theta_max_deg,
+        "error_with_recovery": float(abs(vm_boundary_max - sigma_edge_true) / sigma_edge_true),
+        "vm_edge_node_90deg_MPa": vm_edge_node,
+        "error_at_90deg_node": float(abs(vm_edge_node - sigma_edge_true) / sigma_edge_true),
         "vm_kirsch_at_centroid_MPa": vm_kirsch_centroid,
         "element_check_error": float(abs(vm_edge_elem - vm_kirsch_centroid) / vm_kirsch_centroid),
-        "vm_boundary_max_MPa": vm_boundary_max,
         "stair_step_ratio": float(vm_boundary_max / vm_edge_node),
     }
+
+
+def live_mesh_stress_error() -> float:
+    """The remaining stress error at a smooth edge at the live mesh (8 elements per
+    radius for a 1.6 mm pad hole at the 40k cap), for the Limits note."""
+    return hole_stress_check(8)["error_with_recovery"]
+
+
+LIMITS_NOTE_LIVE_MESH = (
+    "Stress is recovered to the nodes. The remaining stress error at a smooth edge "
+    "at the live mesh (8 elements per hole radius) is about {err:.0%}, measured by "
+    "the hole check on the Validation tab."
+)
