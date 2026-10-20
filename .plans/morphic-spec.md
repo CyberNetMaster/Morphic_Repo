@@ -395,7 +395,7 @@ The cost is close to linear in the element count (about 2.2e-5 s per element per
 **Decisions recorded by S9:**
 - Cached cap = **80,000** with cold runs per level (`config.ELEMENT_CAP_CACHED`, `ELEMENT_CAP_CACHED_SWEEP`). 150k would take about 11.5 h for the three parts, which does not leave a margin for a re-run before the video; 80k fits one overnight window. The two arms get the same meshes at either cap.
 - Live mode drops to **7 levels** (`config.FILL_LEVELS_LIVE`), because the 10-level sweep measured 16.4 min per catalog (about 60 min per part).
-- The per-iteration cost has optimization headroom (profiling at 4k elements showed the solver at about 40% of the iteration; the rest is sparse indexing, assembly and the OC bisection filter calls). A 2x speed-up is plausible and would be a separate step.
+- The per-iteration cost has optimization headroom (profiling at 4k elements showed the solver at about 40% of the iteration; the rest is sparse indexing, assembly and the OC bisection filter calls). This is step **S9b** (section 16): a live-mode speed-up with a 2x per-iteration target, verified against the benchmark, with results unchanged beyond 1e-6.
 
 ---
 
@@ -620,6 +620,7 @@ Steps are numbered S1–S17 so they do not collide with the review item numbers 
 | S7 | `baseline.py`, `rank.py` (mass ranking, badges, final-pick Pareto), edge results | Unit tests for each edge case in section 8 |
 | S8 | `geometry.py` export + smoothed re-check (linear scaling) | Watertight STL; re-check numbers shown |
 | **S9** | **Timing benchmark** (`morphic bench`): one full 10-level catalog run at the **40k cap** with the warm downward sweep, and one at the **150k cap** with cold runs per level, both on this laptop. Records seconds per iteration, iterations per level, and total time per catalog. Then **chooses the cached cap**: 150k if the three demo parts can be precomputed in the time available before the video; else measure at 80k and use it. Also decides whether live mode keeps 10 levels or drops to 7. Updates the table in section 6.10 and the README. **Must finish before S14.** | Section 6.10 table holds measured numbers; the cached cap is written in `config.py` |
+| S9b | **Live-mode speed-up**: target 2x per iteration by optimizing sparse indexing, assembly and filter calls, verified against the benchmark (`morphic bench`, same part, process and cap as S9). Results must not change beyond 1e-6 (compliance, densities and evaluation numbers of a reference run before and after). | Benchmark shows the per-iteration time at 40k; section 6.10 updated; the 1e-6 comparison passes |
 | S10 | `problem.py`, `parse.py` (45 s limit, spinner, retry, fallback), `sanity.py`, manual form | 3 demo texts parse to the approved JSON |
 | S11 | Streamlit 4-step flow + Validation tab (nodal utilization stress maps, Sources and Limits expanders, hole check with/without recovery) | Full run from text to export in the app |
 | S12 | `explain.py` with grounding check | Grounding test passes |
