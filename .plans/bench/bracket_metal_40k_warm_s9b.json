@@ -1,0 +1,114 @@
+{
+  "part": "Aerospace mounting bracket (GE jet engine bracket challenge, 2D slice)",
+  "part_file": "examples/aero_bracket.json",
+  "process": "metal",
+  "cap": 40000,
+  "mode": "warm",
+  "elements": 40051,
+  "mesh": [
+    331,
+    121
+  ],
+  "h_mm": 0.5377643504531722,
+  "effective_min_wall_mm": 1.3444108761329305,
+  "levels": [
+    {
+      "fill": 0.6,
+      "mode": "cold",
+      "iterations": 170,
+      "converged": true,
+      "converged_by": "plateau",
+      "seconds": 64.6289895000009,
+      "seconds_per_iter": 0.3801705264705935
+    },
+    {
+      "fill": 0.55,
+      "mode": "warm",
+      "iterations": 91,
+      "converged": true,
+      "converged_by": "plateau",
+      "seconds": 34.43659440000192,
+      "seconds_per_iter": 0.3784241142857354
+    },
+    {
+      "fill": 0.5,
+      "mode": "warm",
+      "iterations": 92,
+      "converged": true,
+      "converged_by": "plateau",
+      "seconds": 34.788270599998214,
+      "seconds_per_iter": 0.3781333760869371
+    },
+    {
+      "fill": 0.45,
+      "mode": "warm",
+      "iterations": 93,
+      "converged": true,
+      "converged_by": "plateau",
+      "seconds": 35.42103700000007,
+      "seconds_per_iter": 0.3808713655913986
+    },
+    {
+      "fill": 0.4,
+      "mode": "warm",
+      "iterations": 92,
+      "converged": true,
+      "converged_by": "plateau",
+      "seconds": 34.121795300001395,
+      "seconds_per_iter": 0.37088907934784127
+    },
+    {
+      "fill": 0.35,
+      "mode": "warm",
+      "iterations": 92,
+      "converged": true,
+      "converged_by": "plateau",
+      "seconds": 34.182049999999435,
+      "seconds_per_iter": 0.3715440217391243
+    },
+    {
+      "fill": 0.3,
+      "mode": "warm",
+      "iterations": 92,
+      "converged": true,
+      "converged_by": "plateau",
+      "seconds": 34.247949900000094,
+      "seconds_per_iter": 0.372260325000001
+    },
+    {
+      "fill": 0.25,
+      "mode": "warm",
+      "iterations": 94,
+      "converged": true,
+      "converged_by": "plateau",
+      "seconds": 34.67144890000054,
+      "seconds_per_iter": 0.36884520106383556
+    },
+    {
+      "fill": 0.2,
+      "mode": "warm",
+      "iterations": 95,
+      "converged": true,
+      "converged_by": "plateau",
+      "seconds": 34.780450800000835,
+      "seconds_per_iter": 0.36611000842106145
+    },
+    {
+      "fill": 0.15,
+      "mode": "warm",
+      "iterations": 96,
+      "converged": true,
+      "converged_by": "plateau",
+      "seconds": 35.245338900000206,
+      "seconds_per_iter": 0.36713894687500215
+    }
+  ],
+  "total_iterations": 1007,
+  "total_seconds": 397.8449968999994,
+  "mean_seconds_per_iter": 0.3950794408142993,
+  "pardiso": true,
+  "machine": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.15",
+  "threads": 12,
+  "numpy": "2.5.4"
+}

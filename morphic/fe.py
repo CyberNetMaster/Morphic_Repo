@@ -281,6 +281,106 @@ class Solver:
         self._lu = None
 
 
+class ReducedSystem:
+    """Upper triangle of the free-dof stiffness K_ff, assembled straight into a fixed CSR pattern.
+
+    Used by the optimizer, which assembles and solves the same pattern every iteration. It
+    skips the full assembly, the free-dof slicing and `triu`. Entries are summed in the same
+    order as `Assembler`, so the matrix values are identical to triu(K[free][:, free]).
+    """
+
+    def __init__(self, mesh: Mesh, KE_unit: np.ndarray, free_dofs: np.ndarray):
+        self.mesh = mesh
+        self.free = np.asarray(free_dofs, dtype=np.int64)
+        nf = self.free.size
+        self.n = nf
+        local = -np.ones(mesh.ndof, dtype=np.int64)
+        local[self.free] = np.arange(nf)
+        er = local[mesh.edof]  # (nel, 8), -1 at fixed dofs
+        iK = np.repeat(er, 8, axis=1).ravel()
+        jK = np.tile(er, (1, 8)).ravel()
+        keep = np.nonzero((iK >= 0) & (jK >= 0) & (iK <= jK))[0]
+        keys = iK[keep] * nf + jK[keep]
+        ukeys, self.slot = np.unique(keys, return_inverse=True)  # row-major order = CSR order
+        self.nnz = ukeys.size
+        rows = ukeys // nf
+        self.indices = (ukeys % nf).astype(np.int32)
+        self.indptr = np.zeros(nf + 1, dtype=np.int32)
+        np.cumsum(np.bincount(rows, minlength=nf), out=self.indptr[1:])
+        self.elem = (keep // 64).astype(np.int64)  # element of each kept entry
+        self.kval = np.asarray(KE_unit, dtype=float).ravel()[keep % 64]  # KE value of each kept entry
+        self.edof_full = mesh.edof
+
+    def data(self, Ee: np.ndarray) -> np.ndarray:
+        return np.bincount(self.slot, weights=self.kval * np.asarray(Ee, dtype=float)[self.elem],
+                           minlength=self.nnz)
+
+    def matrix(self, Ee: np.ndarray) -> sp.csr_matrix:
+        return sp.csr_matrix((self.data(Ee), self.indices, self.indptr), shape=(self.n, self.n))
+
+
+_OPT_PARDISO = None  # a second Pardiso handle, used only by the optimizer's fixed pattern
+
+
+class PardisoSPD:
+    """Thin direct MKL Pardiso driver for one fixed SPD pattern (mtype 2, upper triangle).
+
+    The symbolic analysis (fill-reducing reordering, phase 11) runs once per pattern; each
+    iteration only runs the numeric factorization (phase 22) and the solve (phase 33).
+    MKL parameters stay at their defaults, as in PyPardiso.
+    """
+
+    def __init__(self, system: ReducedSystem):
+        global _OPT_PARDISO
+        if not HAVE_PARDISO:
+            raise RuntimeError("PyPardiso not available")
+        if _OPT_PARDISO is None:
+            _OPT_PARDISO = pypardiso.PyPardisoSolver(mtype=2)
+        self.ps = _OPT_PARDISO
+        self.system = system
+        self.ia = system.indptr.astype(np.int32) + 1  # 1-based, kept alive between phases
+        self.ja = system.indices.astype(np.int32) + 1
+        self._data = None
+
+    def _call(self, phase: int, b: np.ndarray) -> np.ndarray:
+        import ctypes
+
+        ps = self.ps
+        x = np.zeros_like(b)
+        err = ctypes.c_int32(0)
+        i32 = ctypes.POINTER(ctypes.c_int32)
+        f64 = ctypes.POINTER(ctypes.c_double)
+        ps.iparm[11] = 0  # CSR input
+        ps._mkl_pardiso(ps.pt.ctypes.data_as(ctypes.POINTER(ps._pt_type[0])), ctypes.byref(ctypes.c_int32(1)),
+                        ctypes.byref(ctypes.c_int32(1)), ctypes.byref(ctypes.c_int32(2)),
+                        ctypes.byref(ctypes.c_int32(phase)), ctypes.byref(ctypes.c_int32(self.system.n)),
+                        self._data.ctypes.data_as(f64), self.ia.ctypes.data_as(i32), self.ja.ctypes.data_as(i32),
+                        ps.perm.ctypes.data_as(i32), ctypes.byref(ctypes.c_int32(1 if b.ndim == 1 else b.shape[1])),
+                        ps.iparm.ctypes.data_as(i32), ctypes.byref(ctypes.c_int32(ps.msglvl)),
+                        b.ctypes.data_as(f64), x.ctypes.data_as(f64), ctypes.byref(err))
+        if err.value != 0:
+            raise SingularSystem(f"Pardiso error {err.value} (phase {phase})")
+        return x
+
+    def factorize(self, data: np.ndarray) -> None:
+        global _PATTERN_ANALYZED
+        self._data = np.ascontiguousarray(data, dtype=np.float64)
+        dummy = np.zeros((self.system.n, 1), order="F")
+        if _PATTERN_ANALYZED is not self.system:
+            self._call(11, dummy)
+            _PATTERN_ANALYZED = self.system
+        self._call(22, dummy)
+
+    def solve(self, F: np.ndarray) -> np.ndarray:
+        out = np.ascontiguousarray(self._call(33, np.asfortranarray(F, dtype=np.float64)))
+        if not np.all(np.isfinite(out)):
+            raise SingularSystem("non-finite displacements: the part can move freely")
+        return out
+
+
+_PATTERN_ANALYZED = None  # the ReducedSystem whose analysis the optimizer handle holds
+
+
 def solve_system(K: sp.csc_matrix, F: np.ndarray, fixed: np.ndarray,
                  solver: Solver | None = None) -> np.ndarray:
     """Solve K U = F with the given fixed dofs (set to zero). F may be (ndof,) or (ndof, ncases)."""

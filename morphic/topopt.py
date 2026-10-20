@@ -95,6 +95,11 @@ class TopOptProblem:
         self.fixed_dofs = np.unique(np.asarray(self.fixed_dofs, dtype=np.int64))
         self.free_dofs = np.setdiff1d(np.arange(self.mesh.ndof), self.fixed_dofs, assume_unique=True)
         self.assembler = fe.Assembler(self.mesh, self.KE_unit)
+        # S9b: upper triangle of K_ff assembled straight into a fixed pattern, with the
+        # Pardiso analysis done once per pattern (see fe.ReducedSystem, fe.PardisoSPD)
+        self.reduced = fe.ReducedSystem(self.mesh, self.KE_unit, self.free_dofs)
+        self._pardiso = fe.PardisoSPD(self.reduced) if fe.HAVE_PARDISO else None
+        self._loads_free = np.asfortranarray(self.loads[self.free_dofs])
 
     @property
     def ncases(self) -> int:
@@ -104,19 +109,28 @@ class TopOptProblem:
         return self.Emin + xPhys**self.penal * (self.E0 - self.Emin)
 
     def analyze(self, xPhys: np.ndarray, solver: fe.Solver | None = None):
-        """Solve all load cases. Returns (U (ndof, ncases), ce (nel, ncases), K)."""
-        K = self.assembler.assemble(self.modulus(xPhys))
-        K_ff = K[self.free_dofs][:, self.free_dofs]
-        own = solver is None
-        solver = solver or fe.Solver()
-        solver.factorize(K_ff)
+        """Solve all load cases. Returns (U (ndof, ncases), ce (nel, ncases), None).
+
+        `solver` is accepted for compatibility and ignored: the optimizer always uses the
+        fixed-pattern Pardiso driver (or SciPy if PyPardiso is missing).
+        """
+        data = self.reduced.data(self.modulus(xPhys))
         U = np.zeros((self.mesh.ndof, self.ncases))
-        U[self.free_dofs] = solver.solve(self.loads[self.free_dofs])
-        if own:
-            solver.free()
-        ue = U[self.mesh.edof]  # (nel, 8, ncases)
-        ce = np.einsum("eac,ab,ebc->ec", ue, self.KE_unit, ue)
-        return U, ce, K
+        if self._pardiso is not None:
+            self._pardiso.factorize(data)
+            U[self.free_dofs] = self._pardiso.solve(self._loads_free)
+        else:  # pragma: no cover - SciPy fallback
+            import scipy.sparse as sp
+            from scipy.sparse.linalg import splu
+
+            Ku = self.reduced.matrix(self.modulus(xPhys))
+            K_ff = (Ku + Ku.T - sp.diags(Ku.diagonal())).tocsc()
+            U[self.free_dofs] = splu(K_ff).solve(np.ascontiguousarray(self._loads_free))
+        ce = np.empty((self.mesh.nel, self.ncases))
+        for c in range(self.ncases):  # element energy u_e^T KE u_e, one case at a time
+            ue = U[:, c][self.mesh.edof]  # (nel, 8)
+            ce[:, c] = ((ue @ self.KE_unit) * ue).sum(axis=1)
+        return U, ce, None
 
     def compliance(self, xPhys: np.ndarray) -> np.ndarray:
         """Raw compliance per load case (no weights)."""
@@ -233,8 +247,20 @@ def run(problem: TopOptProblem, settings: TopOptSettings, callback=None) -> TopO
         xP[problem.passive_void] = 0.0
         return xP, dxP
 
+    exp_neg_beta = None if paper else np.exp(-beta)
+
+    def physical_sum_active(xv: np.ndarray) -> float:
+        """Sum of the physical densities over active elements, for the OC bisection only.
+        Same arithmetic as physical(), without the derivative, the copy or the passive overwrite
+        (passive elements do not enter the sum)."""
+        xT = filt.apply(xv)
+        if paper:
+            return float(xT[active].sum())
+        xP = 1.0 - np.exp(-beta * xT) + xT * exp_neg_beta
+        return float(xP[active].sum())
+
     xPhys, dxP = physical(x)
-    solver = fe.Solver()
+    solver = None
     history = []
     snapshots = []
     t0 = time.perf_counter()
@@ -265,22 +291,21 @@ def run(problem: TopOptProblem, settings: TopOptSettings, callback=None) -> TopO
         move = settings.move
         target = settings.volfrac * n_active
         xa = x[active]
-        dca = dc[active]
-        dva = dv[active]
+        q = -dc[active] / dv[active]  # same as the original -dca / dva, computed once
+        lo = np.maximum(0.0, xa - move)  # max/min are exact, so the bounds can be hoisted
+        hi = np.minimum(1.0, xa + move)
         xnew = x.copy()
         while (l2 - l1) / (l1 + l2) > 1e-3:
             lmid = 0.5 * (l2 + l1)
-            cand = xa * np.sqrt(np.maximum(-dca / dva / lmid, 0.0))
-            xna = np.maximum(0.0, np.maximum(xa - move, np.minimum(1.0, np.minimum(xa + move, cand))))
-            xnew[active] = xna
-            xPhys_new, dxP_new = physical(xnew)
-            if xPhys_new[active].sum() > target:
+            cand = xa * np.sqrt(np.maximum(q / lmid, 0.0))
+            xnew[active] = np.maximum(lo, np.minimum(hi, cand))
+            if physical_sum_active(xnew) > target:
                 l1 = lmid
             else:
                 l2 = lmid
         change = float(np.abs(xnew[active] - xa).max()) if n_active else 0.0
         x = xnew
-        xPhys, dxP = xPhys_new, dxP_new
+        xPhys, dxP = physical(x)  # once per iteration, for the final design of the bisection
 
         vol = float(xPhys[active].mean()) if n_active else 0.0
         info = {"iter": loop, "beta": beta, "objective": obj, "compliance": c_raw.tolist(),
@@ -311,12 +336,12 @@ def run(problem: TopOptProblem, settings: TopOptSettings, callback=None) -> TopO
             else:
                 beta_idx += 1
                 beta = betas[beta_idx]
+                exp_neg_beta = np.exp(-beta)
                 iters_at_beta = 0
                 xPhys, dxP = physical(x)
         if loop >= settings.max_iters:
             break
 
-    solver.free()
     seconds = time.perf_counter() - t0
     # final compliance of the final physical design
     c_final = problem.compliance(xPhys)

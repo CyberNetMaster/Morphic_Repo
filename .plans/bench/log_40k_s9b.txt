@@ -1,0 +1,56 @@
+part 'Aerospace mounting bracket (GE jet engine bracket challenge, 2D slice)', process metal, cap 40000: mesh 331 x 121 = 40051 elements, h = 0.538 mm, metal: 1.34 mm enforced (process allows 0.40 mm)
+  catalog fill 0.60 it    1 beta 1 obj 2.1912 change 0.200 0s
+  catalog fill 0.60 it   25 beta 1 obj 0.8081 change 0.101 9s
+  catalog fill 0.60 it   50 beta 2 obj 0.8080 change 0.081 19s
+  catalog fill 0.60 it   75 beta 2 obj 0.8080 change 0.041 28s
+  catalog fill 0.60 it  100 beta 4 obj 0.8079 change 0.056 38s
+  catalog fill 0.60 it  125 beta 8 obj 0.8077 change 0.198 47s
+  catalog fill 0.60 it  150 beta 8 obj 0.8077 change 0.021 57s
+  catalog fill 0.55 it    1 beta 4 obj 0.8088 change 0.200 0s
+  catalog fill 0.55 it   25 beta 4 obj 0.8233 change 0.064 10s
+  catalog fill 0.55 it   50 beta 8 obj 0.8229 change 0.086 19s
+  catalog fill 0.55 it   75 beta 8 obj 0.8228 change 0.023 28s
+  catalog fill 0.50 it    1 beta 4 obj 0.8256 change 0.200 0s
+  catalog fill 0.50 it   25 beta 4 obj 0.8510 change 0.141 10s
+  catalog fill 0.50 it   50 beta 8 obj 0.8492 change 0.125 19s
+  catalog fill 0.50 it   75 beta 8 obj 0.8490 change 0.092 28s
+  catalog fill 0.45 it    1 beta 4 obj 0.8550 change 0.200 0s
+  catalog fill 0.45 it   25 beta 4 obj 0.8894 change 0.173 10s
+  catalog fill 0.45 it   50 beta 8 obj 0.8864 change 0.117 19s
+  catalog fill 0.45 it   75 beta 8 obj 0.8861 change 0.084 29s
+  catalog fill 0.40 it    1 beta 4 obj 0.8982 change 0.200 1s
+  catalog fill 0.40 it   25 beta 4 obj 0.9303 change 0.139 10s
+  catalog fill 0.40 it   50 beta 8 obj 0.9288 change 0.133 19s
+  catalog fill 0.40 it   75 beta 8 obj 0.9287 change 0.065 28s
+  catalog fill 0.35 it    1 beta 4 obj 0.9374 change 0.200 0s
+  catalog fill 0.35 it   25 beta 4 obj 0.9943 change 0.133 9s
+  catalog fill 0.35 it   50 beta 8 obj 0.9926 change 0.091 19s
+  catalog fill 0.35 it   75 beta 8 obj 0.9923 change 0.032 28s
+  catalog fill 0.30 it    1 beta 4 obj 1.0051 change 0.200 0s
+  catalog fill 0.30 it   25 beta 4 obj 1.0956 change 0.079 9s
+  catalog fill 0.30 it   50 beta 8 obj 1.0929 change 0.117 19s
+  catalog fill 0.30 it   75 beta 8 obj 1.0924 change 0.029 28s
+  catalog fill 0.25 it    1 beta 4 obj 1.1129 change 0.200 0s
+  catalog fill 0.25 it   25 beta 4 obj 1.2629 change 0.180 9s
+  catalog fill 0.25 it   50 beta 8 obj 1.2556 change 0.122 19s
+  catalog fill 0.25 it   75 beta 8 obj 1.2543 change 0.035 28s
+  catalog fill 0.20 it    1 beta 4 obj 1.2946 change 0.200 0s
+  catalog fill 0.20 it   25 beta 4 obj 1.5372 change 0.135 9s
+  catalog fill 0.20 it   50 beta 8 obj 1.5231 change 0.135 18s
+  catalog fill 0.20 it   75 beta 8 obj 1.5206 change 0.028 28s
+  catalog fill 0.15 it    1 beta 4 obj 1.6053 change 0.200 0s
+  catalog fill 0.15 it   25 beta 4 obj 2.0417 change 0.153 9s
+  catalog fill 0.15 it   50 beta 8 obj 2.0163 change 0.118 18s
+  catalog fill 0.15 it   75 beta 8 obj 2.0103 change 0.076 28s
+  level 0.60 cold   170 it     64.6 s  0.380 s/it  conv=True by=plateau
+  level 0.55 warm    91 it     34.4 s  0.378 s/it  conv=True by=plateau
+  level 0.50 warm    92 it     34.8 s  0.378 s/it  conv=True by=plateau
+  level 0.45 warm    93 it     35.4 s  0.381 s/it  conv=True by=plateau
+  level 0.40 warm    92 it     34.1 s  0.371 s/it  conv=True by=plateau
+  level 0.35 warm    92 it     34.2 s  0.372 s/it  conv=True by=plateau
+  level 0.30 warm    92 it     34.2 s  0.372 s/it  conv=True by=plateau
+  level 0.25 warm    94 it     34.7 s  0.369 s/it  conv=True by=plateau
+  level 0.20 warm    95 it     34.8 s  0.366 s/it  conv=True by=plateau
+  level 0.15 warm    96 it     35.2 s  0.367 s/it  conv=True by=plateau
+TOTAL 1007 iterations in 398 s (6.6 min), 0.395 s/it
+written .plans/bench/bracket_metal_40k_warm_s9b.json

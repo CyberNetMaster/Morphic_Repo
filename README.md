@@ -43,6 +43,9 @@ A 10-level warm sweep at the 40k live cap took 16.4 min per catalog, so live mod
 precomputed at an 80k element cap with a cold run per fill level (about 7.5 h for all three; 150k would
 take about 11.5 h). See spec section 6.10.
 
+Step S9b (same benchmark) made each iteration 2.3x faster with identical results (within 4.6e-11):
+0.37 s per iteration at 40k elements, and 6.6 min for the 10-level warm catalog instead of 16.4 min.
+
 ## Demo parts
 
 `examples/rc_arm.json`, `examples/drone_arm.json`, `examples/aero_bracket.json` (spec section 14).
