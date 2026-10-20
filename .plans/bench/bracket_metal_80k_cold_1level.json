@@ -1,0 +1,33 @@
+{
+  "part": "Aerospace mounting bracket (GE jet engine bracket challenge, 2D slice)",
+  "part_file": "examples/aero_bracket.json",
+  "process": "metal",
+  "cap": 80000,
+  "mode": "cold",
+  "elements": 80199,
+  "mesh": [
+    469,
+    171
+  ],
+  "h_mm": 0.3795309168443497,
+  "effective_min_wall_mm": 0.9488272921108742,
+  "levels": [
+    {
+      "fill": 0.6,
+      "mode": "cold",
+      "iterations": 230,
+      "converged": true,
+      "stalled": true,
+      "seconds": 372.51808119999987,
+      "seconds_per_iter": 1.6196438313043473
+    }
+  ],
+  "total_iterations": 230,
+  "total_seconds": 377.6558383999982,
+  "mean_seconds_per_iter": 1.6419819060869485,
+  "pardiso": true,
+  "machine": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.15",
+  "threads": 12,
+  "numpy": "2.5.4"
+}

@@ -372,18 +372,30 @@ If the cold re-run's final shape passes the limits, it replaces the sweep's shap
 - Weight saved = 1 − mass_optimized / mass_baseline. Show both: "vs. simple strut design: X%" (headline) and "vs. solid block: Y%".
 - If no strut width up to the design-space size passes, show "the simple design cannot meet the limits", and only the full-block number.
 
-### 6.10 Compute estimates (to replace with measured numbers from step S9)
+### 6.10 Compute: measured on this laptop (S9, 2026-10-20)
 
-These are planning estimates. **Step S9 (timing benchmark) measures the real values on this laptop and updates this table and the README before the cached cap is chosen.** Per-iteration cost guesses: ~0.3 s at 40k elements, ~1.5 s at 150k, ~0.7 s at 80k.
+Measured with `morphic bench` on the aerospace bracket, metal catalog (the largest demo mesh), 12 logical cores, PyPardiso in symmetric positive-definite mode. Raw logs and JSON are in `.plans/bench/`. The planning guesses were ~0.3 s at 40k, ~0.7 s at 80k, ~1.5 s at 150k; the measured cost is about 2.5x higher.
 
-| Run | Elements per catalog | Iterations per catalog | Est. time per catalog | Est. time per part (3 catalogs) |
+| Elements | Seconds per iteration | Cold level (60%, beta 1 -> 16) | Warm level (100 iterations) |
+|---|---|---|---|
+| 40,051 (40k cap) | 0.85 | 237 iterations, 3.4 min | 1.4 min |
+| 80,199 (80k cap) | 1.62 | 230 iterations, 6.3 min | ~2.7 min (not run) |
+| 149,994 (150k cap) | 3.9 | 250 iterations, 16 min | ~6.5 min (not run) |
+
+The cost is close to linear in the element count (about 2.2e-5 s per element per iteration). Note that the cited FDM and SLS min wall of 0.8 mm sets the element size (h = 0.32 mm) for the two arms at every cap, so those catalogs have about 17.7k elements regardless of the cap; only the metal catalogs and the bracket reach the caps.
+
+| Run | Elements per catalog | Iterations per catalog | Measured / estimated time per catalog | Time per part (3 catalogs) |
 |---|---|---|---|---|
-| Live (warm downward sweep) | ≤ 40,000 | ~200 cold + 9 × ~50 warm ≈ 650; refinement ~8 memoized runs × 50 ≈ 400; cold re-run (winner only) ~200 | ~4–6 min | ~15–20 min |
-| Quick mode (1 process, ≤ 10,000 elements, no refinement, no re-run) | ≤ 10,000 | ~650 | < 1 min | < 1 min (one process only) |
-| Precomputed demo parts (cold per level) | ≤ 150,000 | 10 × ~200 = 2,000; refinement ~400; 1 cold re-run ~200 | ~60–70 min | ~3–3.5 h; ~10 h for all 3 parts |
-| Precomputed fallback (cold per level) | ≤ 80,000 | same | ~30 min | ~1.5 h; ~4.5 h for all 3 parts |
+| Live, 10-level warm sweep, 40k cap | 40,051 | 237 cold + 9 x 100 warm = 1,137 | **16.4 min (measured)**; + refinement ~8 x 60 its (~7 min) + cold re-run (~3.5 min) | ~60 min |
+| **Live, 7-level warm sweep, 40k cap (chosen default)** | 40,051 | 237 + 6 x 100 = 837 | ~12 min; ~22 min with refinement and the re-run | **~46 min** (arms: fdm/sls catalogs are 17.7k elements, so ~30 min) |
+| Quick mode (1 process, <= 10k elements, no refinement, no re-run) | <= 10,000 | ~837 | ~3 min | ~3 min (one process) |
+| Precomputed, cold per level, 150k cap | up to 149,994 | 10 x ~240 = 2,400 + refinement ~480 + re-run ~240 | bracket metal ~2.7 h, bracket fdm/sls (113k) ~2 h each, arm metal (70k) ~1 h, arm fdm/sls ~15 min | bracket ~7 h, each arm ~1.5 h: **~11.5 h for all 3 parts** |
+| **Precomputed, cold per level, 80k cap (chosen)** | up to 80,199 | same | bracket (3 x 80k) ~65 min each; arms unchanged | bracket ~3.9 h, each arm ~1.5 h: **~7.5 h for all 3 parts** |
 
-If S9 shows the live estimate is too slow for the demo, the live default drops to 7 levels (60, 50, 40, 30, 25, 20, 15) and S9 records that choice.
+**Decisions recorded by S9:**
+- Cached cap = **80,000** with cold runs per level (`config.ELEMENT_CAP_CACHED`, `ELEMENT_CAP_CACHED_SWEEP`). 150k would take about 11.5 h for the three parts, which does not leave a margin for a re-run before the video; 80k fits one overnight window. The two arms get the same meshes at either cap.
+- Live mode drops to **7 levels** (`config.FILL_LEVELS_LIVE`), because the 10-level sweep measured 16.4 min per catalog (about 60 min per part).
+- The per-iteration cost has optimization headroom (profiling at 4k elements showed the solver at about 40% of the iteration; the rest is sparse indexing, assembly and the OC bisection filter calls). A 2x speed-up is plausible and would be a separate step.
 
 ---
 

@@ -1,0 +1,114 @@
+{
+  "part": "Aerospace mounting bracket (GE jet engine bracket challenge, 2D slice)",
+  "part_file": "examples/aero_bracket.json",
+  "process": "metal",
+  "cap": 40000,
+  "mode": "warm",
+  "elements": 40051,
+  "mesh": [
+    331,
+    121
+  ],
+  "h_mm": 0.5377643504531722,
+  "effective_min_wall_mm": 1.3444108761329305,
+  "levels": [
+    {
+      "fill": 0.6,
+      "mode": "cold",
+      "iterations": 237,
+      "converged": true,
+      "stalled": true,
+      "seconds": 201.87375479999992,
+      "seconds_per_iter": 0.8517879949367085
+    },
+    {
+      "fill": 0.55,
+      "mode": "warm",
+      "iterations": 100,
+      "converged": false,
+      "stalled": false,
+      "seconds": 84.45325200000025,
+      "seconds_per_iter": 0.8445325200000025
+    },
+    {
+      "fill": 0.5,
+      "mode": "warm",
+      "iterations": 100,
+      "converged": false,
+      "stalled": false,
+      "seconds": 84.0278516999997,
+      "seconds_per_iter": 0.840278516999997
+    },
+    {
+      "fill": 0.45,
+      "mode": "warm",
+      "iterations": 100,
+      "converged": false,
+      "stalled": false,
+      "seconds": 84.95043970000006,
+      "seconds_per_iter": 0.8495043970000006
+    },
+    {
+      "fill": 0.4,
+      "mode": "warm",
+      "iterations": 100,
+      "converged": false,
+      "stalled": false,
+      "seconds": 84.62718820000009,
+      "seconds_per_iter": 0.8462718820000009
+    },
+    {
+      "fill": 0.35,
+      "mode": "warm",
+      "iterations": 100,
+      "converged": false,
+      "stalled": false,
+      "seconds": 84.26670049999939,
+      "seconds_per_iter": 0.8426670049999939
+    },
+    {
+      "fill": 0.3,
+      "mode": "warm",
+      "iterations": 100,
+      "converged": false,
+      "stalled": false,
+      "seconds": 83.99110500000006,
+      "seconds_per_iter": 0.8399110500000007
+    },
+    {
+      "fill": 0.25,
+      "mode": "warm",
+      "iterations": 100,
+      "converged": false,
+      "stalled": false,
+      "seconds": 83.97836340000049,
+      "seconds_per_iter": 0.8397836340000049
+    },
+    {
+      "fill": 0.2,
+      "mode": "warm",
+      "iterations": 100,
+      "converged": false,
+      "stalled": false,
+      "seconds": 83.47040190000007,
+      "seconds_per_iter": 0.8347040190000007
+    },
+    {
+      "fill": 0.15,
+      "mode": "warm",
+      "iterations": 100,
+      "converged": false,
+      "stalled": false,
+      "seconds": 83.85344260000056,
+      "seconds_per_iter": 0.8385344260000056
+    }
+  ],
+  "total_iterations": 1137,
+  "total_seconds": 982.6313811999999,
+  "mean_seconds_per_iter": 0.8642316457343886,
+  "pardiso": true,
+  "machine": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.15",
+  "threads": 12,
+  "numpy": "2.5.4"
+}

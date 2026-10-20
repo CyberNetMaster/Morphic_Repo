@@ -1,0 +1,19 @@
+part 'Aerospace mounting bracket (GE jet engine bracket challenge, 2D slice)', process metal, cap 150000: mesh 641 x 234 = 149994 elements, h = 0.278 mm, metal: 0.69 mm enforced (process allows 0.40 mm)
+  catalog fill 0.60 it    1 beta 1 obj 2.2005 change 0.200 4s
+  catalog fill 0.60 it   25 beta 1 obj 0.8093 change 0.133 98s
+  catalog fill 0.60 it   50 beta 2 obj 0.8092 change 0.082 196s
+  catalog fill 0.60 it   75 beta 2 obj 0.8092 change 0.073 293s
+  catalog fill 0.60 it  100 beta 4 obj 0.8091 change 0.067 390s
+  catalog fill 0.60 it  125 beta 8 obj 0.8090 change 0.200 488s
+  catalog fill 0.60 it  150 beta 8 obj 0.8090 change 0.060 586s
+  catalog fill 0.60 it  175 beta 16 obj 0.8089 change 0.055 681s
+  catalog fill 0.60 it  200 beta 16 obj 0.8089 change 0.027 779s
+  catalog fill 0.60 it  225 beta 16 obj 0.8089 change 0.014 876s
+  catalog fill 0.60 it  250 beta 16 obj 0.8089 change 0.018 973s
+  catalog fill 0.55 it    1 beta 1 obj 2.6662 change 0.200 4s
+  catalog fill 0.55 it   25 beta 1 obj 0.8248 change 0.198 97s
+  catalog fill 0.55 it   50 beta 2 obj 0.8246 change 0.149 18672s
+  catalog fill 0.55 it   75 beta 2 obj 0.8246 change 0.172 18773s
+  catalog fill 0.55 it  100 beta 4 obj 0.8243 change 0.107 18869s
+  catalog fill 0.55 it  125 beta 8 obj 0.8241 change 0.198 18962s
+  catalog fill 0.55 it  150 beta 8 obj 0.8240 change 0.033 19060s

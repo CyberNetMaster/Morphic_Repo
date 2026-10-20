@@ -19,8 +19,11 @@ LLM_RETRIES = 1
 # ---------------------------------------------------------------- element caps
 ELEMENT_CAP_LIVE = 40_000
 ELEMENT_CAP_QUICK = 10_000
-ELEMENT_CAP_CACHED = 150_000  # set by the timing benchmark (S9); 80_000 is the fallback
-ELEMENT_CAP_CACHED_FALLBACK = 80_000
+# Chosen by the timing benchmark (S9, 2026-10-20, .plans/bench/): measured 0.85 s/it at 40k,
+# 1.62 s/it at 80k, 3.9 s/it at 150k elements on this laptop. Cold 10-level catalogs for the
+# three demo parts take about 7.5 h at 80k and about 11.5 h at 150k, so the cached cap is 80k.
+ELEMENT_CAP_CACHED = 80_000
+ELEMENT_CAP_CACHED_SWEEP = "cold"  # cold run per level for the precomputed demo parts (spec 6.3)
 MIN_WALL_TO_ELEMENT_RATIO = 2.5  # h = min_wall / 2.5; effective min wall = 2.5 * h
 
 # ---------------------------------------------------------------- SIMP
@@ -43,6 +46,9 @@ SNAPSHOT_EVERY_COLD_RERUN = 1
 # ---------------------------------------------------------------- catalog
 FILL_LEVELS = (0.60, 0.55, 0.50, 0.45, 0.40, 0.35, 0.30, 0.25, 0.20, 0.15)
 FILL_LEVELS_LIVE_SHORT = (0.60, 0.50, 0.40, 0.30, 0.25, 0.20, 0.15)
+# S9: a 10-level warm sweep at 40k took 16.4 min per catalog (about 60 min per part with
+# refinement and the cold re-run), so live mode uses the 7-level sweep (about 46 min per part).
+FILL_LEVELS_LIVE = FILL_LEVELS_LIVE_SHORT
 FILL_LEVELS_EXTRA_LOW = (0.12, 0.10, 0.08)
 NORMALIZATION_FILL = 0.60
 REFINE_BISECTION_STEPS = 3

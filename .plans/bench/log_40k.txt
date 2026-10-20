@@ -1,0 +1,68 @@
+part 'Aerospace mounting bracket (GE jet engine bracket challenge, 2D slice)', process metal, cap 40000: mesh 331 x 121 = 40051 elements, h = 0.538 mm, metal: 1.34 mm enforced (process allows 0.40 mm)
+  catalog fill 0.60 it    1 beta 1 obj 2.1912 change 0.200 0s
+  catalog fill 0.60 it   25 beta 1 obj 0.8081 change 0.101 21s
+  catalog fill 0.60 it   50 beta 2 obj 0.8080 change 0.081 43s
+  catalog fill 0.60 it   75 beta 2 obj 0.8080 change 0.041 64s
+  catalog fill 0.60 it  100 beta 4 obj 0.8079 change 0.056 85s
+  catalog fill 0.60 it  125 beta 8 obj 0.8077 change 0.198 106s
+  catalog fill 0.60 it  150 beta 8 obj 0.8077 change 0.021 128s
+  catalog fill 0.60 it  175 beta 16 obj 0.8075 change 0.038 149s
+  catalog fill 0.60 it  200 beta 16 obj 0.8075 change 0.030 171s
+  catalog fill 0.60 it  225 beta 16 obj 0.8075 change 0.021 192s
+  catalog fill 0.55 it    1 beta 4 obj 0.8088 change 0.200 1s
+  catalog fill 0.55 it   25 beta 4 obj 0.8233 change 0.071 21s
+  catalog fill 0.55 it   50 beta 8 obj 0.8229 change 0.082 42s
+  catalog fill 0.55 it   75 beta 8 obj 0.8228 change 0.022 63s
+  catalog fill 0.55 it  100 beta 16 obj 0.8224 change 0.037 84s
+  catalog fill 0.50 it    1 beta 4 obj 0.8255 change 0.200 1s
+  catalog fill 0.50 it   25 beta 4 obj 0.8510 change 0.144 21s
+  catalog fill 0.50 it   50 beta 8 obj 0.8492 change 0.112 42s
+  catalog fill 0.50 it   75 beta 8 obj 0.8490 change 0.116 63s
+  catalog fill 0.50 it  100 beta 16 obj 0.8483 change 0.056 84s
+  catalog fill 0.45 it    1 beta 4 obj 0.8546 change 0.200 1s
+  catalog fill 0.45 it   25 beta 4 obj 0.8896 change 0.165 21s
+  catalog fill 0.45 it   50 beta 8 obj 0.8863 change 0.191 42s
+  catalog fill 0.45 it   75 beta 8 obj 0.8861 change 0.060 64s
+  catalog fill 0.45 it  100 beta 16 obj 0.8847 change 0.067 85s
+  catalog fill 0.40 it    1 beta 4 obj 0.8980 change 0.200 1s
+  catalog fill 0.40 it   25 beta 4 obj 0.9304 change 0.065 21s
+  catalog fill 0.40 it   50 beta 8 obj 0.9289 change 0.104 42s
+  catalog fill 0.40 it   75 beta 8 obj 0.9287 change 0.075 64s
+  catalog fill 0.40 it  100 beta 16 obj 0.9276 change 0.034 85s
+  catalog fill 0.35 it    1 beta 4 obj 0.9373 change 0.200 1s
+  catalog fill 0.35 it   25 beta 4 obj 0.9943 change 0.106 21s
+  catalog fill 0.35 it   50 beta 8 obj 0.9926 change 0.095 42s
+  catalog fill 0.35 it   75 beta 8 obj 0.9923 change 0.033 63s
+  catalog fill 0.35 it  100 beta 16 obj 0.9910 change 0.022 84s
+  catalog fill 0.30 it    1 beta 4 obj 1.0050 change 0.200 1s
+  catalog fill 0.30 it   25 beta 4 obj 1.0956 change 0.076 21s
+  catalog fill 0.30 it   50 beta 8 obj 1.0929 change 0.117 42s
+  catalog fill 0.30 it   75 beta 8 obj 1.0924 change 0.029 63s
+  catalog fill 0.30 it  100 beta 16 obj 1.0910 change 0.042 84s
+  catalog fill 0.25 it    1 beta 4 obj 1.1126 change 0.200 1s
+  catalog fill 0.25 it   25 beta 4 obj 1.2628 change 0.166 21s
+  catalog fill 0.25 it   50 beta 8 obj 1.2555 change 0.122 42s
+  catalog fill 0.25 it   75 beta 8 obj 1.2543 change 0.035 63s
+  catalog fill 0.25 it  100 beta 16 obj 1.2525 change 0.043 84s
+  catalog fill 0.20 it    1 beta 4 obj 1.2941 change 0.200 1s
+  catalog fill 0.20 it   25 beta 4 obj 1.5371 change 0.134 21s
+  catalog fill 0.20 it   50 beta 8 obj 1.5231 change 0.137 42s
+  catalog fill 0.20 it   75 beta 8 obj 1.5206 change 0.025 63s
+  catalog fill 0.20 it  100 beta 16 obj 1.5171 change 0.093 83s
+  catalog fill 0.15 it    1 beta 4 obj 1.6044 change 0.200 1s
+  catalog fill 0.15 it   25 beta 4 obj 2.0412 change 0.183 21s
+  catalog fill 0.15 it   50 beta 8 obj 2.0160 change 0.118 42s
+  catalog fill 0.15 it   75 beta 8 obj 2.0104 change 0.081 63s
+  catalog fill 0.15 it  100 beta 16 obj 2.0032 change 0.068 84s
+  level 0.60 cold   237 it    201.9 s  0.852 s/it  conv=True stalled=True
+  level 0.55 warm   100 it     84.5 s  0.845 s/it  conv=False stalled=False
+  level 0.50 warm   100 it     84.0 s  0.840 s/it  conv=False stalled=False
+  level 0.45 warm   100 it     85.0 s  0.850 s/it  conv=False stalled=False
+  level 0.40 warm   100 it     84.6 s  0.846 s/it  conv=False stalled=False
+  level 0.35 warm   100 it     84.3 s  0.843 s/it  conv=False stalled=False
+  level 0.30 warm   100 it     84.0 s  0.840 s/it  conv=False stalled=False
+  level 0.25 warm   100 it     84.0 s  0.840 s/it  conv=False stalled=False
+  level 0.20 warm   100 it     83.5 s  0.835 s/it  conv=False stalled=False
+  level 0.15 warm   100 it     83.9 s  0.839 s/it  conv=False stalled=False
+TOTAL 1137 iterations in 983 s (16.4 min), 0.864 s/it
+written .plans/bench/bracket_metal_40k_warm.json
