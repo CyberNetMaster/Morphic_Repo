@@ -1,0 +1,10 @@
+Aerospace engine mounting bracket, a 2D side-view slice of the GE jet engine bracket challenge. The design area is 178 mm wide and 65 mm tall, origin at the bottom-left, and the slice is 25 mm thick.
+
+It bolts down with 3/8 inch bolts at two base positions, (40, 12) mm and (138, 12) mm; both are fixed pins. The load comes in through a 0.75 inch clevis pin at (89, 52) mm.
+
+There are three separate load cases at the clevis pin:
+1. Vertical: 8,000 lbf straight up.
+2. Horizontal: 8,500 lbf in the plus x direction.
+3. Angled: 9,500 lbf at 42 degrees from vertical, pointing up and toward plus x.
+
+Use a safety factor of 1.5 (the aerospace ultimate factor). Limit deflection to span / 200. Any printing process is allowed.

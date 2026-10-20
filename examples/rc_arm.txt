@@ -1,0 +1,10 @@
+Rear lower suspension arm for a 1/10 scale RC buggy, drawn in front view. The design area is 90 mm long and 20 mm tall, and the part is 12 mm thick (fore-aft). Put the origin at the bottom-left corner.
+
+The inner hinge pin is at (6, 10) mm and is a fixed pin. The shock mount is at (55, 16) mm; the shock only pushes vertically, so it holds the arm up and down but lets it slide sideways. The outer hub pin is at (84, 10) mm and that is where the loads go in.
+
+Load cases:
+1. Hard landing: 80 N downward at the hub (about 0.5 kg per corner at a 15 g landing peak). Deflection must stay under 1 mm.
+2. Curb hit, sideways: 40 N pushing the hub toward the hinge (in the minus x direction). Deflection under 1 mm.
+3. Front impact: 60 N at the hub along the thickness direction, out of the drawing plane.
+
+Use a safety factor of 2. I print on a desktop FDM printer.

@@ -1,0 +1,10 @@
+Arm for a 5-inch FPV drone, drawn in side view along the arm. The design area is 120 mm long and 15 mm tall, origin at the bottom-left, and the arm is 10 mm wide (that is the thickness).
+
+It is clamped between the frame plates by two M3 bolts at (5, 7.5) and (25, 7.5) mm; treat both as fixed pins. The motor mount is at (112, 7.5) mm: a solid round pad with an 8 mm radius, no hole.
+
+Load cases at the motor mount:
+1. Full thrust: 32 N straight up (about 1.6 kgf static thrust for a 2306 motor on 6S, doubled for dynamic loads).
+2. Hard landing: 50 N straight down.
+3. Side crash: 30 N sideways, out of the drawing plane.
+
+Deflection must stay below 0.5 mm in every case, because arm flex shows up as motor vibration. Safety factor 2. Printed on a desktop FDM printer.

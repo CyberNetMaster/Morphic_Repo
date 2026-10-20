@@ -101,6 +101,45 @@ def cmd_meshes(args) -> int:
     return 0
 
 
+def cmd_parse(args) -> int:
+    """Parse a description with the configured LLM; optionally compare with an approved JSON."""
+    from . import parse, sanity
+    from .materials import load_materials, load_processes
+    from .problem import problem_to_dict
+
+    text = Path(args.text).read_text(encoding="utf-8")
+    procs, mats = load_processes(), load_materials()
+    print(f"provider {config.LLM_PROVIDER}, model {config.LLM_MODELS[config.LLM_PROVIDER]}", flush=True)
+    try:
+        r = parse.parse_text(text, min_walls=[p.min_wall_mm for p in procs.values()],
+                             status=lambda s: print(s, flush=True))
+    except parse.ParseFailed as exc:
+        print(f"PARSE FAILED: {exc}")
+        for a in exc.attempts:
+            print(f"  attempt {a['attempt']}: {a.get('error', 'ok')}  ({a.get('seconds', 0):.1f} s)")
+        return 2
+    print(f"parsed in {r.seconds:.1f} s, {len(r.attempts)} attempt(s)")
+    for a in r.attempts:
+        if a.get("error"):
+            print(f"  attempt {a['attempt']} error: {a['error'][:300]}")
+    if args.raw_out:
+        Path(args.raw_out).parent.mkdir(parents=True, exist_ok=True)
+        Path(args.raw_out).write_text(json.dumps({
+            "provider": r.provider, "model": r.model, "seconds": r.seconds,
+            "attempts": [{k: v for k, v in a.items()} for a in r.attempts],
+            "problem": problem_to_dict(r.problem)}, indent=2), encoding="utf-8")
+        print(f"written {args.raw_out}")
+    for m in sanity.check(r.problem, procs, mats):
+        print(f"  sanity {m}")
+    if args.compare:
+        want = _load_problem(args.compare)
+        diffs = parse.compare_problems(r.problem, want)
+        print("MATCHES the approved JSON" if not diffs else f"{len(diffs)} difference(s) from the approved JSON:")
+        for d in diffs:
+            print(f"  - {d}")
+    return 0
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(prog="morphic")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -119,6 +158,11 @@ def main(argv=None) -> int:
     m.add_argument("--cap", type=int, default=config.ELEMENT_CAP_LIVE)
     m.add_argument("parts", nargs="+")
     m.set_defaults(fn=cmd_meshes)
+    pp = sub.add_parser("parse", help="parse a plain-English description with the configured LLM")
+    pp.add_argument("text")
+    pp.add_argument("--compare", default="")
+    pp.add_argument("--raw-out", default="")
+    pp.set_defaults(fn=cmd_parse)
     for name in ("precompute", "rerun", "render"):
         s = sub.add_parser(name, help=f"{name} (built in a later step)")
         s.set_defaults(fn=lambda a, n=name: print(f"{n}: not built yet") or 1)
