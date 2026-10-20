@@ -536,9 +536,9 @@ All run as `pytest` tests and from the Validation tab. The write-up names the me
 
 ---
 
-## 14. Demo parts (proposed values — user to approve before building)
+## 14. Demo parts (approved 2026-10-20)
 
-All values are proposals. Sources marked "to cite" must be confirmed and cited in `examples/*.json` (`reason` field) and the README before use. Ranking is by mass for all three.
+The values below are approved. Sources marked "to cite" must still be confirmed and cited in `examples/*.json` (`reason` field) and the README before use. Ranking is by mass for all three.
 
 ### 14.1 RC car lower suspension arm (1/10 scale buggy, rear)
 - View: front view of the arm (vertical plane through the arm), so the main vertical load is in-plane.
@@ -560,18 +560,22 @@ All values are proposals. Sources marked "to cite" must be confirmed and cited i
 - SF 2.0. Printer: desktop FDM.
 
 ### 14.3 Aerospace mounting bracket (inspired by the GE jet engine bracket challenge, simplified to 2D)
-- Source: GE / GrabCAD Jet Engine Bracket Challenge (2013). Copy the exact envelope, bolt positions, and load values from the challenge page; the values below are from memory and must be checked.
+- Sources (cite both in `examples/aero_bracket.json`, `reason` field, and in the README):
+  1. GE / GrabCAD Jet Engine Bracket Challenge page (2013): load cases, pin size, bolt spec, material, min wall, STEP file.
+  2. Carter, W. T., et al. (2014), "The GE Aircraft Engine Bracket Challenge: An Experiment in Crowdsourcing for Mechanical Design Concepts": original mass and winner result.
+- Verified from both sources: the four load cases, the 0.75 in clevis pin, the four 0.375-24 base bolts (interfaces 2–5), Ti-6Al-4V, min wall 0.050 in (1.27 mm).
 - View: side view of the clevis bracket.
-- Design space: about 178 mm × 65 mm (to confirm against the challenge drawing). Thickness: 25 mm.
-- Pads: two base bolt pads (3/8-inch bolts, hole r ≈ 4.8 mm), **pin**. One clevis pin pad at the top, load pad; its hole diameter comes from the challenge drawing (about 0.75 in, to confirm), and the bearing check uses it.
+- Design space: about 178 mm × 65 mm (**to confirm from the challenge STEP file** during the build). Thickness: 25 mm.
+- Pads: the original has four base bolts (interfaces 2–5, 0.375-24 UNF, hole r ≈ 4.8 mm). The 2D side view merges them into **two pad pairs**: each pad in the side view stands for the two bolts that lie behind each other along the viewing axis. Both merged base pads are **pin**. One clevis pin pad at the top (interface 1), load pad; hole diameter 0.75 in (19.05 mm), and the bearing check uses it.
 - Load cases (as in the challenge, each separate):
   - "Vertical": 8,000 lbf ≈ 35,600 N upward.
   - "Horizontal": 8,500 lbf ≈ 37,800 N.
   - "Angled 42°": 9,500 lbf ≈ 42,300 N at 42° from vertical.
   - The challenge's torsion load (5,000 lbf·in) is out-of-plane: noted, not checked in 2D.
+- Material of the original: Ti-6Al-4V, yield 131 ksi (about 903 MPa) at 75 °F. Minimum wall 0.050 in (1.27 mm). Use these as the reference values on the card; the metal entry in the library (section 5.1) must match or cite its own datasheet.
 - SF 1.5 (standard aerospace ultimate factor, FAR 25.303, to cite). Deflection limit: to set from the challenge if given, else span / 200.
 - Printer: any.
-- **Slice simplification, stated on the card and in the write-up:** this is a 25 mm thick 2D slice that carries the full challenge load. The real bracket is about 110 mm wide at the base, so stresses here are roughly 4× those in the real part. Results are **not comparable to the 3D challenge results**, and no mass comparison with the challenge winner is made. The card carries one line: "2D slice of a known benchmark; not comparable to the 3D challenge results."
+- **Slice simplification, stated on the card and in the write-up:** this is a 25 mm thick 2D slice that carries the full challenge load. The real bracket is wider at the base (width to confirm from the STEP file), so stresses here are several times those in the real part. The original Ti-6Al-4V bracket weighed about 1.8 kg; the challenge winner was about 80% lighter. Results are **not comparable to the 3D challenge results**, and no mass comparison with the original or the winner is made. The card carries one line: "2D slice of a known benchmark (original ≈ 1.8 kg Ti-6Al-4V, winner ≈ 80% lighter); not comparable to the 3D challenge results."
 - Expected use: to show the printer filter, the fail-with-numbers logic, and the metal comparison. **Do not pre-assert which materials pass.** Run it and report what happens. (Quick estimate: PA6-CF at SF 1.5 needs about 21 mm of the 65 mm section in pure tension to carry 35 kN, so a plastic may pass some load cases; that is fine, and plastic failure here would be partly an artifact of the slice.)
 
 ---
@@ -679,7 +683,7 @@ Steps are numbered S1–S17 so they do not collide with the review item numbers 
 1. **Ask in the event Slack** whether the submission form needs a public code link. If yes, the user publishes the repo themselves.
 2. **Check the hackathon rules** on code written before the event (deferred by the user until the plan is final).
 3. **Verify every material value** against its datasheet and fill in all citations (S5). Record the moisture condition for PA6-CF and the heat treatment for the metals.
-4. **Approve the demo part values** in section 14 (now with the 12 mm RC arm, the `slide_x` shock mount, the solid motor pad, and the bracket slice note), and confirm the GE bracket numbers from the challenge page.
+4. ~~**Approve the demo part values** in section 14 (now with the 12 mm RC arm, the `slide_x` shock mount, the solid motor pad, and the bracket slice note), and confirm the GE bracket numbers from the challenge page.~~ **Done 2026-10-20:** approved; GE bracket loads, pin, bolts, material, min wall, and masses verified from the challenge page and Carter et al. (2014). Envelope dimensions still to confirm from the STEP file during the build (section 14.3).
 5. Confirm the Claude API key and credits work; save the demo parse outputs as fallback JSON.
 6. Install PrusaSlicer and confirm the STLs open and slice; set the slicer's filament density to the datasheet value before comparing weights.
 7. **Run the timing benchmark (S9) before choosing the cached cap.** If the three demo parts cannot be precomputed at 150k in the time available before the video, fall back to 80k (section 6.3 gives the full fallback order). The precompute (S14) depends on this and takes hours, so it must be the first long job once S9 has run.
