@@ -167,7 +167,8 @@ class TopOptResult:
     compliance: np.ndarray  # raw compliance per case, final design
     objective: float  # weighted sum
     iterations: int
-    converged: bool
+    converged: bool  # the spec's rule: change < tol at the last beta
+    stalled: bool  # diagnostic: objective moved < PLATEAU_RTOL over the last PLATEAU_WINDOW iterations
     beta_final: float
     volume: float  # mean xPhys over active elements
     history: list = field(default_factory=list)  # dicts per iteration
@@ -180,6 +181,22 @@ class TopOptResult:
         iters = np.array([i for i, _ in self.snapshots], dtype=np.int32)
         arrs = {f"d{k}": a for k, (_, a) in enumerate(self.snapshots)}
         np.savez_compressed(path, iterations=iters, **arrs)
+
+
+PLATEAU_WINDOW = 20
+PLATEAU_RTOL = 1e-4
+
+
+def objective_stalled(history: list, window: int = PLATEAU_WINDOW, rtol: float = PLATEAU_RTOL) -> bool:
+    """True when the weighted objective moved less than rtol (relative) over the last `window`
+    iterations at the final beta. Reported next to `converged`; it is not a stop rule."""
+    if len(history) < window + 1:
+        return False
+    tail = history[-window - 1:]
+    if any(h["beta"] != tail[-1]["beta"] for h in tail):
+        return False
+    objs = np.array([h["objective"] for h in tail])
+    return bool((objs.max() - objs.min()) / max(abs(objs[-1]), 1e-300) < rtol)
 
 
 def to_uint8(xPhys: np.ndarray) -> np.ndarray:
@@ -307,7 +324,8 @@ def run(problem: TopOptProblem, settings: TopOptSettings, callback=None) -> TopO
         snapshots.append((loop, to_uint8(xPhys)))
     return TopOptResult(
         x=x, xPhys=xPhys, compliance=c_final, objective=float((c_final * problem.case_weights).sum()),
-        iterations=loop, converged=converged, beta_final=(beta if beta is not None else 0.0),
+        iterations=loop, converged=converged, stalled=objective_stalled(history),
+        beta_final=(beta if beta is not None else 0.0),
         volume=float(xPhys[active].mean()) if n_active else 0.0, history=history,
         snapshots=snapshots, seconds=seconds, seconds_per_iter=seconds / max(loop, 1),
     )
