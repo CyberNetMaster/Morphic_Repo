@@ -1,0 +1,42 @@
+[project]
+name = "morphic"
+version = "0.1.0"
+description = "Material-aware 2D topology optimization for printed load-bearing parts, with cited data and reproducible runs."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "numpy>=2.0",
+    "scipy>=1.14",
+    "pypardiso>=0.4.6",
+    "pydantic>=2.8",
+    "pyyaml>=6.0",
+    "scikit-image>=0.24",
+    "shapely>=2.0",
+    "trimesh>=4.4",
+    "ezdxf>=1.3",
+    "streamlit>=1.38",
+    "plotly>=5.24",
+    "fpdf2>=2.7",
+    "matplotlib>=3.9",
+    "python-dotenv>=1.0",
+    "google-genai>=1.0",
+    "anthropic>=0.40",
+]
+
+[project.scripts]
+morphic = "morphic.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8.3"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["morphic"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
