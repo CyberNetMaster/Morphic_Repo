@@ -237,3 +237,35 @@ LIMITS_NOTE_LIVE_MESH = (
     "at the live mesh (8 elements per hole radius) is about {err:.0%}, measured by "
     "the hole check on the Validation tab."
 )
+
+
+# --------------------------------------------------------------------- 13.3 MBB benchmark
+
+# Andreassen et al. (2011), "Efficient topology optimization in MATLAB using 88 lines
+# of code", Struct Multidisc Optim 43:1-16, section 3.4 and Fig. 3 (bottom left):
+# top88(60, 20, 0.5, 3, 2.4, 2), density filtering, published compliance c = 233.71.
+MBB_PUBLISHED = {"nelx": 60, "nely": 20, "volfrac": 0.5, "penal": 3.0, "rmin": 2.4, "ft": 2,
+                 "compliance": 233.71,
+                 "source": "Andreassen et al. 2011, Fig. 3 bottom-left, density filter, 60 x 20"}
+
+
+def mbb_check() -> dict:
+    """Run the published MBB case in paper mode and compare the compliance."""
+    from . import topopt
+
+    p = MBB_PUBLISHED
+    r = topopt.run_mbb_paper(p["nelx"], p["nely"], p["volfrac"], p["penal"], p["rmin"])
+    c = float(r.compliance[0])
+    return {
+        "call": f"top88({p['nelx']},{p['nely']},{p['volfrac']},{p['penal']},{p['rmin']},{p['ft']})",
+        "compliance": c,
+        "compliance_last_iteration": float(r.history[-1]["objective"]),
+        "published_compliance": p["compliance"],
+        "error": abs(c - p["compliance"]) / p["compliance"],
+        "iterations": r.iterations,
+        "converged": r.converged,
+        "volume": r.volume,
+        "tolerance": config.VALIDATION_TOL_MBB,
+        "density_grid": r.xPhys.reshape(p["nelx"], p["nely"]),  # x along axis 0, y up along axis 1
+        "source": p["source"],
+    }
