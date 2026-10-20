@@ -13,14 +13,18 @@ from morphic.problem import Problem
 CIT = Citation(title="test", url="http://example.invalid")
 
 
+COSTS = {"pla": 29.99, "petg": 29.99, "pa6cf": 52.99, "pa12": 75.0, "alsi10mg": 41.0}
+
+
 def fake_material(mid, process, E, strength, density, nu=0.33, sz=None):
     return Material(id=mid, name=mid, process=process, E=E, nu=nu, strength_xy=strength, strength_kind="tensile",
                     density=density, strength_z=sz, z_knockdown_value=0.5 if sz is None else None,
-                    z_knockdown_source="test", citations={}, flags=[])
+                    z_knockdown_source="test", cost_per_kg=COSTS.get(mid), citations={}, flags=[])
 
 
 MATERIALS = {
     "pla": fake_material("pla", "fdm", 2200.0, 55.0, 1.24),
+    "petg": fake_material("petg", "fdm", 1500.0, 47.0, 1.27),
     "pa6cf": fake_material("pa6cf", "fdm", 7000.0, 100.0, 1.17),
     "pa12": fake_material("pa12", "sls", 1650.0, 48.0, 0.93),
     "alsi10mg": fake_material("alsi10mg", "metal", 70000.0, 230.0, 2.67, sz=230.0),
@@ -50,7 +54,7 @@ def bracket(fz: float = 0.0) -> Problem:
         ],
         "safety_factor": 2.0,
         "printer": "desktop_fdm",
-        "materials": ["pla", "pa6cf", "pa12", "alsi10mg"],
+        "materials": ["pla", "pa6cf", "pa12", "alsi10mg"],  # petg left out on purpose
     })
 
 
