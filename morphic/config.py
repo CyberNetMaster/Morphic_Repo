@@ -34,6 +34,10 @@ BETA_SCHEDULE_COLD = (1, 2, 4, 8, 16)
 BETA_SCHEDULE_WARM = (4, 8, 16)
 BETA_STEP_ITERS = 40
 CHANGE_TOL = 0.01
+# Second stop rule (decided 2026-10-20): at the last beta, stop when the objective has changed
+# less than PLATEAU_RTOL over PLATEAU_WINDOW consecutive iterations.
+PLATEAU_WINDOW = 10
+PLATEAU_RTOL = 1e-3
 MAX_ITERS_COLD = 300
 MAX_ITERS_WARM = 100
 MAX_ITERS_REFINE = 60

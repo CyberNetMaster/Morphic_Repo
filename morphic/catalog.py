@@ -27,7 +27,7 @@ class LevelRun:
     mech: evaluate.Mechanics  # at the reference material
     iterations: int
     converged: bool
-    stalled: bool
+    converged_by: str | None
     seconds: float
     seconds_per_iter: float
     mode: str
@@ -189,7 +189,7 @@ def _run_level(cat: Catalog, fill: float, mode: str, x0, snapshot_every: int, ki
     res = topopt.run(prob, settings, cb)
     mech = evaluate.analyze_design(cat.domain, res.xPhys, config.CATALOG_REFERENCE_E, config.CATALOG_REFERENCE_NU)
     return LevelRun(fill=fill, xPhys=res.xPhys, x=res.x, mech=mech, iterations=res.iterations,
-                    converged=res.converged, stalled=res.stalled, seconds=res.seconds,
+                    converged=res.converged, converged_by=res.converged_by, seconds=res.seconds,
                     seconds_per_iter=res.seconds_per_iter, mode=mode, snapshots=res.snapshots, kind=kind)
 
 
@@ -322,7 +322,7 @@ def pick_material(cat: Catalog, material: Material, quick: bool = False, callbac
         return Design(material=material, process=cat.process, domain=cat.domain, fill=top, density=run.xPhys,
                       mech=mech, checks=checks, pick=pick, status="fail",
                       reasons=checks.fail_reasons or [pick.reason], notes=notes, printer_allowed=allowed,
-                      converged=run.converged or run.stalled)
+                      converged=run.converged)
     if window is None:
         pick.notes.append("passes at the lowest level computed; limits are loose")
         pick.status = "loose"
@@ -336,13 +336,13 @@ def pick_material(cat: Catalog, material: Material, quick: bool = False, callbac
         return Design(material=material, process=cat.process, domain=cat.domain, fill=top, density=run.xPhys,
                       mech=mech, checks=checks, pick=pick, status="fail",
                       reasons=checks.fail_reasons + ["re-check with real material failed at every level"],
-                      notes=pick.notes, printer_allowed=allowed, converged=run.converged or run.stalled)
+                      notes=pick.notes, printer_allowed=allowed, converged=run.converged)
     if pick.status != "loose":
         pick.status = "pass" if checks.passed else "fail"
     status = "pass" if checks.passed else "fail"
     d = Design(material=material, process=cat.process, domain=cat.domain, fill=pick.v_final, density=run.xPhys,
                mech=mech, checks=checks, pick=pick, status=status, reasons=checks.fail_reasons,
-               notes=pick.notes + checks.notes, printer_allowed=allowed, converged=run.converged or run.stalled)
+               notes=pick.notes + checks.notes, printer_allowed=allowed, converged=run.converged)
     if not d.converged:
         d.notes.append("not fully converged")
     return d
@@ -356,7 +356,7 @@ def cold_rerun(design: Design, cat: Catalog, callback=None) -> Design:
     sf = cat.domain.problem.safety_factor
     run = _run_level(cat, design.fill, "cold", None, config.SNAPSHOT_EVERY_COLD_RERUN, "rerun", callback)
     mech, checks = evaluate.evaluate(cat.domain, run.xPhys, design.material, sf)
-    info = {"fill": design.fill, "iterations": run.iterations, "converged": run.converged or run.stalled,
+    info = {"fill": design.fill, "iterations": run.iterations, "converged": run.converged,
             "seconds": run.seconds, "snapshots": run.snapshots, "replaced": False, "note": ""}
     if checks.passed:
         design.density, design.mech, design.checks = run.xPhys, mech, checks

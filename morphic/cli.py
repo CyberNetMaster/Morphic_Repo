@@ -65,9 +65,9 @@ def cmd_bench(args) -> int:
     rows = []
     for fill, run in sorted(cat.levels.items(), reverse=True):
         rows.append({"fill": fill, "mode": run.mode, "iterations": run.iterations, "converged": run.converged,
-                     "stalled": run.stalled, "seconds": run.seconds, "seconds_per_iter": run.seconds_per_iter})
+                     "converged_by": run.converged_by, "seconds": run.seconds, "seconds_per_iter": run.seconds_per_iter})
         print(f"  level {fill:.2f} {run.mode:5s} {run.iterations:4d} it  {run.seconds:7.1f} s  "
-              f"{run.seconds_per_iter:.3f} s/it  conv={run.converged} stalled={run.stalled}", flush=True)
+              f"{run.seconds_per_iter:.3f} s/it  conv={run.converged} by={run.converged_by}", flush=True)
     iters = sum(r["iterations"] for r in rows)
     result = {
         "part": problem.name, "part_file": args.part, "process": proc.id, "cap": args.cap, "mode": args.mode,

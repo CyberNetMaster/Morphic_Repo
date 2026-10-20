@@ -229,7 +229,7 @@ Each failed check gives a plain message on the check screen. Red stops the solve
 
 ### 5.1 Library (6 materials, one cited datasheet each)
 
-The values below are **starting values to check**. During the build, open each datasheet, copy the exact value, and record the document title, version or date, page, and URL in `materials.yaml`. Do not use a value without a citation. If a datasheet has no Z-direction value, use a cited literature ratio and say so.
+The values below were **starting values**; the cited values now live in `materials.yaml` (research log in `.plans/materials-research.md`). Substitutions accepted 2026-10-20, all flagged in the YAML: Poisson's ratios from cited literature (no maker sheet lists one); PLA and PETG Z strength from Ultimaker datasheet knockdown ratios (Prusa sheets have no Z-loaded value); AlSi10Mg modulus from the archived EOS 05.2014 sheet (current sheets list none); powder costs from third-party reseller prices. Do not use a value without a citation.
 
 | id | Material | Process | Source to cite | E (MPa) approx | Strength used (MPa) approx | Density (g/cm³) approx | Cost $/kg (to source) |
 |---|---|---|---|---|---|---|---|
@@ -264,9 +264,9 @@ Rules:
 
 | id | Process | Min wall (to cite) | Printer filter group |
 |---|---|---|---|
-| fdm | Desktop FDM, 0.4 mm nozzle | ~1.2 mm (cite a slicer or maker design guide) | desktop_fdm |
-| sls | SLS PA12 | ~0.8 mm (cite a service bureau design guide) | sls_service |
-| metal | DMLS / LPBF | ~0.5 mm (cite a service bureau design guide) | metal_service |
+| fdm | Desktop FDM, 0.4 mm nozzle | **0.8 mm** (Protolabs Network / Hubs knowledge base, "DFM tips for 3D printed parts with thin walls"; accepted 2026-10-20, no guide stating ~1.2 mm was found) | desktop_fdm |
+| sls | SLS PA12 | **0.8 mm** (Hubs, "How to design parts for SLS 3D printing") | sls_service |
+| metal | DMLS / LPBF | **0.4 mm** (Hubs, "How to design parts for metal 3D printing") | metal_service |
 
 ---
 
@@ -293,7 +293,7 @@ Rules:
 - Update: optimality criteria (OC), as in the 88-line code, with the volume constraint on the projected (physical) densities.
 - Objective with several load cases: sum of compliances, each divided by a fixed normalization value. **The normalization is computed once per process catalog**, at uniform density equal to the first sweep level (60%), and held fixed for every run in that catalog: the sweep, the refinement runs, and the cold re-runs. Each case then counts equally and the weights never drift between runs.
 - Constraint: volume fraction = fill level (over the non-passive elements).
-- Stop: change < 0.01 at β = 16, or 300 iterations total (cold) / 100 iterations (warm).
+- Stop (two rules, either one ends the run; decided 2026-10-20 after S9): at β = 16, (a) max design-variable change < 0.01, or (b) the objective has changed less than 0.1% over 10 consecutive iterations. Limit 300 iterations total (cold) / 100 iterations (warm). A result is marked "not fully converged" only if neither rule is met at the iteration limit. Rule (b) exists because under the Heaviside projection a few boundary elements keep flipping after the objective has settled, so rule (a) alone almost never fires.
 - Material inside the catalog uses reference E = 1 and ν = 0.33. Results are scaled per material afterward (section 6.4).
 - **Snapshots:** save the physical density field as **uint8 (density × 255), zlib-compressed** (`.npz`). Near-binary fields compress about 10×. Catalog and refinement runs save every 2 iterations. The cold re-run for the animation (section 6.7) saves every iteration. Rough size: about 20–30 kB per snapshot at 150k elements, so tens of MB per demo part.
 - **Paper mode** (tests only): density filter, no Heaviside projection, node-level point load and supports, and the exact mesh, volume fraction, penalty, filter radius, move limit, and stop rule of the published MBB run. Used by the MBB benchmark (section 13.3) and nowhere else.
@@ -426,7 +426,7 @@ The cost is close to linear in the element count (about 2.2e-5 s per element per
 | Some materials filtered out by printer | Greyed with reason, not ranked. |
 | All allowed materials fail, but a filtered one passes | Say so: "Only Ti64 (metal service) meets the limits." |
 | FE solve singular | Caught as "part can move freely" (section 4.5). |
-| Optimization not converged at the iteration limit | Use the result, mark "not fully converged" on the card. |
+| Optimization not converged at the iteration limit (neither stop rule met, section 6.2) | Use the result, mark "not fully converged" on the card. |
 
 ---
 

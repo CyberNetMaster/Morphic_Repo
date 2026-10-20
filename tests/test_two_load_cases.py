@@ -6,7 +6,7 @@ and uint8 snapshot round-trip.
 
 import numpy as np
 
-from morphic import topopt
+from morphic import config, topopt
 from morphic.domain import build_domain
 from morphic.problem import Problem
 
@@ -59,10 +59,11 @@ def test_domain_build_and_two_case_convergence():
 
     res = topopt.run(prob, topopt.TopOptSettings(volfrac=0.4, rmin=dom.rmin_elements, mode="cold",
                                                  snapshot_every=2))
-    # The spec's stop rule (max design change < 0.01 at beta = 16) is rarely met under the
-    # Heaviside projection because a few boundary elements keep flipping; the objective itself
-    # settles to 1e-4. Either counts as converged here; the card marks "not fully converged".
-    assert res.converged or res.stalled, (res.iterations, res.history[-1])
+    # Two stop rules (spec 6.2): max design change < 0.01 at beta 16, or the objective changed
+    # less than 0.1% over 10 consecutive iterations at beta 16.
+    assert res.converged, (res.iterations, res.history[-1])
+    assert res.converged_by in ("change", "plateau")
+    assert res.iterations < config.MAX_ITERS_COLD
     assert abs(res.volume - 0.4) < 1e-3
     assert res.xPhys[dom.passive_solid].min() == 1.0
     assert res.xPhys[dom.passive_void].max() == 0.0

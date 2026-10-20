@@ -167,8 +167,8 @@ class TopOptResult:
     compliance: np.ndarray  # raw compliance per case, final design
     objective: float  # weighted sum
     iterations: int
-    converged: bool  # the spec's rule: change < tol at the last beta
-    stalled: bool  # diagnostic: objective moved less than PLATEAU_RTOL over the last PLATEAU_WINDOW iterations
+    converged: bool  # either stop rule met at the last beta
+    converged_by: str | None  # "change" (max design change < tol) | "plateau" (objective) | None
     beta_final: float
     volume: float  # mean xPhys over active elements
     history: list = field(default_factory=list)  # dicts per iteration
@@ -183,16 +183,12 @@ class TopOptResult:
         np.savez_compressed(path, iterations=iters, **arrs)
 
 
-PLATEAU_WINDOW = 20
-PLATEAU_RTOL = 1e-3
-
-
-def objective_stalled(history: list, window: int = PLATEAU_WINDOW, rtol: float = PLATEAU_RTOL) -> bool:
-    """True when the weighted objective moved less than rtol (relative) over the last `window`
-    iterations at the final beta. Reported next to `converged`; it is not a stop rule."""
-    if len(history) < window + 1:
+def objective_plateau(history: list, window: int = config.PLATEAU_WINDOW, rtol: float = config.PLATEAU_RTOL) -> bool:
+    """Second stop rule: the weighted objective changed less than rtol (relative) over the last
+    `window` consecutive iterations, all at the same (final) beta."""
+    if len(history) < window:
         return False
-    tail = history[-window - 1:]
+    tail = history[-window:]
     if any(h["beta"] != tail[-1]["beta"] for h in tail):
         return False
     objs = np.array([h["objective"] for h in tail])
@@ -244,6 +240,7 @@ def run(problem: TopOptProblem, settings: TopOptSettings, callback=None) -> TopO
     t0 = time.perf_counter()
     loop = 0
     converged = False
+    converged_by = None
     change = 1.0
     c_raw = np.zeros(problem.ncases)
     while True:
@@ -297,16 +294,19 @@ def run(problem: TopOptProblem, settings: TopOptSettings, callback=None) -> TopO
         # stop / continuation rules
         if paper:
             if change < settings.change_tol:
-                converged = True
+                converged, converged_by = True, "change"
                 break
             if loop >= settings.max_iters:
                 break
             continue
         last_beta = beta_idx == len(betas) - 1
+        if last_beta and objective_plateau(history):
+            converged, converged_by = True, "plateau"
+            break
         if change < settings.change_tol or iters_at_beta >= settings.beta_step_iters:
             if last_beta:
                 if change < settings.change_tol:
-                    converged = True
+                    converged, converged_by = True, "change"
                     break
             else:
                 beta_idx += 1
@@ -324,7 +324,7 @@ def run(problem: TopOptProblem, settings: TopOptSettings, callback=None) -> TopO
         snapshots.append((loop, to_uint8(xPhys)))
     return TopOptResult(
         x=x, xPhys=xPhys, compliance=c_final, objective=float((c_final * problem.case_weights).sum()),
-        iterations=loop, converged=converged, stalled=objective_stalled(history),
+        iterations=loop, converged=converged, converged_by=converged_by,
         beta_final=(beta if beta is not None else 0.0),
         volume=float(xPhys[active].mean()) if n_active else 0.0, history=history,
         snapshots=snapshots, seconds=seconds, seconds_per_iter=seconds / max(loop, 1),
