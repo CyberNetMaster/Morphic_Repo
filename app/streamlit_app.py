@@ -22,6 +22,7 @@ import pandas as pd  # noqa: E402
 import streamlit as st  # noqa: E402
 
 from app import data, integration, maps, theme, ui  # noqa: E402
+from app import sketch_upload  # noqa: E402
 from morphic import config, explain, form as formmod, parse, sanity, validation  # noqa: E402
 from morphic.materials import load_materials, load_processes  # noqa: E402
 from morphic.problem import MATERIAL_IDS, PRINTERS, Problem, Provenance, problem_from_dict  # noqa: E402
@@ -164,6 +165,7 @@ def page_describe() -> None:
                                   placeholder="A bracket 120 mm long and 40 mm tall, 8 mm thick. Two M4 bolts hold "
                                               "the left end at (10, 10) and (10, 30). A 200 N downward load at (110, 20). "
                                               "Safety factor 2, deflection under 0.5 mm. Desktop FDM printer.")
+            sketch_upload.control(S.text, None if S.printer_choice == FROM_TEXT else S.printer_choice)
             c1, c2 = st.columns([2, 1])
             with c1:
                 S.printer_choice = st.selectbox("Printer", [FROM_TEXT] + list(PRINTERS),

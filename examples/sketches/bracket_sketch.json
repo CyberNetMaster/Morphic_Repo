@@ -1,0 +1,85 @@
+{
+  "name": "Bracket",
+  "design_space": {
+    "width_mm": 120,
+    "height_mm": 40
+  },
+  "thickness_mm": 6,
+  "zones": [
+    {
+      "id": "keep_out_1",
+      "kind": "keep_out",
+      "shape": "circle",
+      "circle": {
+        "cx": 60,
+        "cy": 20,
+        "r": 8
+      }
+    }
+  ],
+  "pads": [
+    {
+      "id": "A",
+      "cx": 10,
+      "cy": 10,
+      "hole_r_mm": 3.0,
+      "ring_r_mm": 5.0
+    },
+    {
+      "id": "B",
+      "cx": 10,
+      "cy": 30,
+      "hole_r_mm": 3.0,
+      "ring_r_mm": 5.0
+    },
+    {
+      "id": "L",
+      "cx": 110,
+      "cy": 20,
+      "hole_r_mm": 3.0,
+      "ring_r_mm": 5.0
+    }
+  ],
+  "supports": [
+    {
+      "pad_id": "A",
+      "type": "pin"
+    },
+    {
+      "pad_id": "B",
+      "type": "pin"
+    }
+  ],
+  "load_cases": [
+    {
+      "id": "c1",
+      "name": "Load",
+      "reason": "",
+      "loads": [
+        {
+          "pad_id": "L",
+          "fx_N": 0,
+          "fy_N": -250,
+          "fz_N_out_of_plane": 0
+        }
+      ],
+      "max_deflection_mm": 0.5
+    }
+  ],
+  "safety_factor": 2.0,
+  "printer": "any",
+  "materials": [
+    "pla",
+    "petg",
+    "pa6cf",
+    "pa12",
+    "alsi10mg",
+    "ti64"
+  ],
+  "warnings": [],
+  "provenance": {},
+  "notes": [
+    "Approved reading of examples/sketches/bracket_sketch.png, drawn by tests/sketch_sample.py. The heights of pad L and of the keep-out circle (y = 20 mm) have no dimension on the sketch. Safety factor, printer, materials and pad rings are defaults: the sketch does not give them."
+  ],
+  "references": []
+}
