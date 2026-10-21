@@ -69,6 +69,30 @@ def test_agent_job_failure_is_finished_and_does_not_expose_request(monkeypatch, 
     assert "private request details" not in job.error and not job.path.exists()
 
 
+def test_isolated_worker_receives_only_problem_paths_and_returns_log(monkeypatch, tmp_path):
+    job = integration.AgentJob(bracket(), path=tmp_path / "worker.json")
+    log = trial_log(job.problem)
+    commands = []
+    class Process:
+        def __init__(self, command, **kwargs):
+            commands.append(command)
+            assert command[:4] == [integration.sys.executable, "-u", "-m", "app.integration"]
+            assert kwargs["stderr"] == integration.subprocess.DEVNULL
+            assert json.loads(Path(command[5]).read_text()) == problem_to_dict(job.problem)
+            Path(command[6]).write_text(log.to_json())
+            self.stdout = ['{"message": "round completed"}\n']
+        def __enter__(self):
+            return self
+        def __exit__(self, *args):
+            pass
+        def wait(self):
+            return 0
+    monkeypatch.setattr(integration.subprocess, "Popen", Process)
+    job.run_isolated()
+    assert job.done.is_set() and not job.error and job.log.recommendation == log.recommendation
+    assert job.snapshot()["messages"] == ["round completed"] and len(commands) == 1
+
+
 def test_recommendation_replays_pad_translation_and_preserves_limits():
     p = bracket()
     log = trial_log(p)

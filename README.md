@@ -132,7 +132,9 @@ Offline templates and deterministic proposals remain fallbacks for failed API ca
 
 Compare generates an explanation from the saved, smoothed results, checks its numbers, and
 caches it for an hour. Its Design agent panel runs up to five changes in the background,
-shows progress and trial results, and provides a downloadable log. `Review recommended design`
+shows progress and trial results, and provides a downloadable log. Each exploration has its
+own local worker process so numerical solver handles are never shared with the UI.
+`Review recommended design`
 restores the chosen round, including translated pads/zones, on Check with full mode selected.
 Quick exploration results do not replace the current checked result or its exports.
 

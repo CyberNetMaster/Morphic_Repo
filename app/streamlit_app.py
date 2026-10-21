@@ -465,7 +465,6 @@ def live_progress() -> None:
         st.markdown('<div class="mx-note">' + "<br>".join(ui.esc(x) for x in pr.log[-4:]) + "</div>", unsafe_allow_html=True)
 
 
-@st.fragment(run_every=0.12)
 def growth_player(folder: str, pid: str, nelx: int, nely: int, n: int, its: np.ndarray) -> None:
     if S.growth_play:
         S.growth_i = (S.growth_i + 1) % n
@@ -757,7 +756,7 @@ def page_compare() -> None:
                     S.growth_play = st.toggle("Play", value=S.growth_play, key="growth_toggle")
                 rerun_mat = str(z.get("material", win))
                 note = designs[rerun_mat]["rerun"].get("note") if rerun_mat in designs else ""
-                growth_player(folder, pid, nelx, nely, len(its), its)
+                st.fragment(run_every=0.12 if S.growth_play else None)(growth_player)(folder, pid, nelx, nely, len(its), its)
                 if note or rerun_mat != win:
                     st.markdown(f'<div class="mx-note">{ui.esc(note or "")}' +
                                 (f' Animation: {ui.esc(rerun_mat)} at {float(z["fill"]):.1%} fill (the top design of this process).' if rerun_mat != win else "")

@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import io
 import json
+import subprocess
+import sys
 import tempfile
 import threading
 import time
@@ -13,8 +15,8 @@ from pathlib import Path
 from morphic import agent
 from morphic.bundle import create_bundle
 from morphic.cache import artifact_names, code_version, load_results
-from morphic.materials import library_hash
-from morphic.problem import Problem
+from morphic.materials import library_hash, load_materials, load_processes
+from morphic.problem import Problem, problem_from_dict
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / ".plans" / "live_runs"
@@ -68,8 +70,14 @@ class AgentJob:
 
     def run(self) -> None:
         try:
+            materials, processes = load_materials(), load_processes()
+            def progress(info, density):
+                if info["iter"] == 1 or info["iter"] % 50 == 0:
+                    self.status(f"{info['process']} · {info['fill']:.0%} fill · iteration {info['iter']}")
+            def engine(problem):
+                return agent.run_quick(problem, materials, processes, callback=progress)
             log = agent.explore(self.problem.model_copy(deep=True), max_rounds=self.max_rounds,
-                                source="Streamlit Compare", use_llm=True, status=self.status)
+                                source="Streamlit Compare", use_llm=True, status=self.status, engine=engine)
             # Preserve the complete start so the recommendation can be reviewed later.
             saved = log.to_dict() | {"starting_problem": self.problem.model_dump(mode="json")}
             self.path.parent.mkdir(parents=True, exist_ok=True)
@@ -83,10 +91,38 @@ class AgentJob:
         finally:
             self.done.set()
 
+    def run_isolated(self) -> None:
+        """Keep global Pardiso handles isolated from UI validation and other sessions."""
+        try:
+            self.path.parent.mkdir(parents=True, exist_ok=True)
+            with tempfile.TemporaryDirectory(prefix="agent-input-", dir=self.path.parent) as tmp:
+                source = Path(tmp) / "problem.json"
+                source.write_text(self.problem.model_dump_json(), encoding="utf-8")
+                with subprocess.Popen(
+                    [sys.executable, "-u", "-m", "app.integration", "--worker", str(source),
+                     str(self.path), str(self.max_rounds)], cwd=ROOT, stdout=subprocess.PIPE,
+                    stderr=subprocess.DEVNULL, text=True, encoding="utf-8",
+                    creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
+                ) as process:
+                    for line in process.stdout:
+                        if not line.startswith('{"message":'):
+                            continue
+                        self.status(json.loads(line)["message"])
+                    if process.wait() != 0:
+                        raise RuntimeError("agent worker failed")
+                saved = json.loads(self.path.read_text(encoding="utf-8"))
+                with self.lock:
+                    self.log = agent.log_from_dict(saved)
+        except Exception as exc:
+            with self.lock:
+                self.error = f"Exploration failed ({type(exc).__name__}). You can retry."
+        finally:
+            self.done.set()
+
 
 def start_agent(problem: Problem, max_rounds: int = 5) -> AgentJob:
     job = AgentJob(problem, max_rounds)
-    threading.Thread(target=job.run, name="morphic-agent", daemon=True).start()
+    threading.Thread(target=job.run_isolated, name="morphic-agent", daemon=True).start()
     return job
 
 
@@ -104,3 +140,13 @@ def recommended_problem(start: Problem, log: agent.ExploreLog) -> Problem:
         if row.index == target:
             return current
     raise ValueError("The recommended round is missing")
+
+
+if __name__ == "__main__":
+    if len(sys.argv) != 5 or sys.argv[1] != "--worker":
+        raise SystemExit("Usage: python -m app.integration --worker INPUT OUTPUT ROUNDS")
+    job = AgentJob(problem_from_dict(json.loads(Path(sys.argv[2]).read_text(encoding="utf-8"))),
+                   int(sys.argv[4]), Path(sys.argv[3]))
+    job.status = lambda text: print(json.dumps({"message": text}), flush=True)
+    job.run()
+    raise SystemExit(1 if job.error else 0)
