@@ -1,0 +1,1341 @@
+{
+  "part": "5-inch FPV drone arm",
+  "source": "examples/drone_arm.json",
+  "settings": {
+    "cap": 10000,
+    "levels": [
+      0.6,
+      0.5,
+      0.4,
+      0.3,
+      0.25,
+      0.2,
+      0.15
+    ],
+    "max_rounds": 5,
+    "quick": true,
+    "sweep_mode": "warm",
+    "refinement": false,
+    "cold_rerun": false
+  },
+  "llm": {
+    "provider": "gemini",
+    "model": "gemini-3.8-flash"
+  },
+  "rounds": [
+    {
+      "index": 0,
+      "change": "starting problem as given",
+      "knobs": {
+        "thickness_mm": 10.0,
+        "design_space": {
+          "width_mm": 120.0,
+          "height_mm": 18.0
+        },
+        "printer": "desktop_fdm",
+        "materials": [
+          "pla",
+          "petg",
+          "pa6cf",
+          "pa12",
+          "alsi10mg",
+          "ti64"
+        ]
+      },
+      "proposal": null,
+      "results": {
+        "problem": {
+          "thickness_mm": 10.0,
+          "design_space": {
+            "width_mm": 120.0,
+            "height_mm": 18.0
+          },
+          "printer": "desktop_fdm",
+          "materials": [
+            "pla",
+            "petg",
+            "pa6cf"
+          ]
+        },
+        "safety_factor_target": 2.0,
+        "n_designs": 3,
+        "n_pass": 1,
+        "n_ranked": 1,
+        "n_allowed_by_printer": 3,
+        "best": {
+          "material": "pa6cf",
+          "process": "fdm",
+          "status": "pass",
+          "printer_allowed": true,
+          "ranked": true,
+          "fill_pct": 50.0,
+          "reasons": [],
+          "notes": [
+            "quick mode: catalog level reported without refinement"
+          ],
+          "mass_g": 14.23,
+          "sf": 11.5,
+          "sf_target": 2.0,
+          "stress_MPa": 9.5,
+          "deflection_mm": [
+            0.293,
+            0.458,
+            0.0
+          ],
+          "deflection_limit_mm": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "load_cases": [
+            "Full thrust",
+            "Hard landing",
+            "Side crash (out of plane)"
+          ],
+          "worst_deflection_mm": 0.458,
+          "worst_deflection_limit_mm": 0.5,
+          "worst_case": "Hard landing",
+          "hand_checks_failed": [],
+          "material_cost_usd": 0.75
+        },
+        "designs": [
+          {
+            "material": "pla",
+            "process": "fdm",
+            "status": "fail",
+            "printer_allowed": true,
+            "ranked": false,
+            "fill_pct": 60.0,
+            "reasons": [
+              "deflection 1.524 mm > 0.5 mm (Hard landing)"
+            ],
+            "notes": [
+              "no fill level passes with the level above it also passing"
+            ],
+            "mass_g": 17.36,
+            "sf": 5.8,
+            "sf_target": 2.0,
+            "stress_MPa": 8.8,
+            "deflection_mm": [
+              0.976,
+              1.524,
+              0.0
+            ],
+            "deflection_limit_mm": [
+              0.5,
+              0.5,
+              0.5
+            ],
+            "load_cases": [
+              "Full thrust",
+              "Hard landing",
+              "Side crash (out of plane)"
+            ],
+            "worst_deflection_mm": 1.524,
+            "worst_deflection_limit_mm": 0.5,
+            "worst_case": "Hard landing",
+            "hand_checks_failed": [],
+            "material_cost_usd": 0.52
+          },
+          {
+            "material": "petg",
+            "process": "fdm",
+            "status": "fail",
+            "printer_allowed": true,
+            "ranked": false,
+            "fill_pct": 60.0,
+            "reasons": [
+              "deflection 2.349 mm > 0.5 mm (Hard landing)"
+            ],
+            "notes": [
+              "no fill level passes with the level above it also passing"
+            ],
+            "mass_g": 17.78,
+            "sf": 5.34,
+            "sf_target": 2.0,
+            "stress_MPa": 8.8,
+            "deflection_mm": [
+              1.504,
+              2.349,
+              0.0
+            ],
+            "deflection_limit_mm": [
+              0.5,
+              0.5,
+              0.5
+            ],
+            "load_cases": [
+              "Full thrust",
+              "Hard landing",
+              "Side crash (out of plane)"
+            ],
+            "worst_deflection_mm": 2.349,
+            "worst_deflection_limit_mm": 0.5,
+            "worst_case": "Hard landing",
+            "hand_checks_failed": [],
+            "material_cost_usd": 0.53
+          },
+          {
+            "material": "pa6cf",
+            "process": "fdm",
+            "status": "pass",
+            "printer_allowed": true,
+            "ranked": true,
+            "fill_pct": 50.0,
+            "reasons": [],
+            "notes": [
+              "quick mode: catalog level reported without refinement"
+            ],
+            "mass_g": 14.23,
+            "sf": 11.5,
+            "sf_target": 2.0,
+            "stress_MPa": 9.5,
+            "deflection_mm": [
+              0.293,
+              0.458,
+              0.0
+            ],
+            "deflection_limit_mm": [
+              0.5,
+              0.5,
+              0.5
+            ],
+            "load_cases": [
+              "Full thrust",
+              "Hard landing",
+              "Side crash (out of plane)"
+            ],
+            "worst_deflection_mm": 0.458,
+            "worst_deflection_limit_mm": 0.5,
+            "worst_case": "Hard landing",
+            "hand_checks_failed": [],
+            "material_cost_usd": 0.75
+          }
+        ],
+        "shortfall": 1.0
+      },
+      "seconds": 112.42162240001198,
+      "notes": []
+    },
+    {
+      "index": 1,
+      "change": "design space 120 x 18 mm -> 120 x 22.5 mm",
+      "knobs": {
+        "thickness_mm": 10.0,
+        "design_space": {
+          "width_mm": 120.0,
+          "height_mm": 22.5
+        },
+        "printer": "desktop_fdm",
+        "materials": [
+          "pla",
+          "petg",
+          "pa6cf",
+          "pa12",
+          "alsi10mg",
+          "ti64"
+        ]
+      },
+      "proposal": {
+        "action": "design_space",
+        "value": {
+          "width_mm": 120.0,
+          "height_mm": 22.5
+        },
+        "reason": "a taller design space gives a stiffer part per gram",
+        "source": "fallback",
+        "reason_grounded": true,
+        "reason_rejected": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "error": "ServerError: 504 DEADLINE_EXCEEDED. {'error': {'code': 504, 'message': 'Deadline expired before operation could complete.', 'status': 'DEADLINE_EXCEEDED'}}",
+            "seconds": 53.69943510000303
+          }
+        ]
+      },
+      "results": {
+        "problem": {
+          "thickness_mm": 10.0,
+          "design_space": {
+            "width_mm": 120.0,
+            "height_mm": 22.5
+          },
+          "printer": "desktop_fdm",
+          "materials": [
+            "pla",
+            "petg",
+            "pa6cf"
+          ]
+        },
+        "safety_factor_target": 2.0,
+        "n_designs": 3,
+        "n_pass": 1,
+        "n_ranked": 1,
+        "n_allowed_by_printer": 3,
+        "best": {
+          "material": "pa6cf",
+          "process": "fdm",
+          "status": "pass",
+          "printer_allowed": true,
+          "ranked": true,
+          "fill_pct": 30.0,
+          "reasons": [],
+          "notes": [
+            "quick mode: catalog level reported without refinement",
+            "removed 2 elements in islands not connected to any pad",
+            "not fully converged"
+          ],
+          "mass_g": 11.77,
+          "sf": 11.21,
+          "sf_target": 2.0,
+          "stress_MPa": 9.8,
+          "deflection_mm": [
+            0.275,
+            0.43,
+            0.0
+          ],
+          "deflection_limit_mm": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "load_cases": [
+            "Full thrust",
+            "Hard landing",
+            "Side crash (out of plane)"
+          ],
+          "worst_deflection_mm": 0.43,
+          "worst_deflection_limit_mm": 0.5,
+          "worst_case": "Hard landing",
+          "hand_checks_failed": [],
+          "material_cost_usd": 0.62
+        },
+        "designs": [
+          {
+            "material": "pla",
+            "process": "fdm",
+            "status": "fail",
+            "printer_allowed": true,
+            "ranked": false,
+            "fill_pct": 60.0,
+            "reasons": [
+              "deflection 0.897 mm > 0.5 mm (Hard landing)"
+            ],
+            "notes": [
+              "no fill level passes with the level above it also passing"
+            ],
+            "mass_g": 21.2,
+            "sf": 8.35,
+            "sf_target": 2.0,
+            "stress_MPa": 6.1,
+            "deflection_mm": [
+              0.574,
+              0.897,
+              0.0
+            ],
+            "deflection_limit_mm": [
+              0.5,
+              0.5,
+              0.5
+            ],
+            "load_cases": [
+              "Full thrust",
+              "Hard landing",
+              "Side crash (out of plane)"
+            ],
+            "worst_deflection_mm": 0.897,
+            "worst_deflection_limit_mm": 0.5,
+            "worst_case": "Hard landing",
+            "hand_checks_failed": [],
+            "material_cost_usd": 0.64
+          },
+          {
+            "material": "petg",
+            "process": "fdm",
+            "status": "fail",
+            "printer_allowed": true,
+            "ranked": false,
+            "fill_pct": 60.0,
+            "reasons": [
+              "deflection 1.383 mm > 0.5 mm (Hard landing)"
+            ],
+            "notes": [
+              "no fill level passes with the level above it also passing"
+            ],
+            "mass_g": 21.71,
+            "sf": 7.68,
+            "sf_target": 2.0,
+            "stress_MPa": 6.1,
+            "deflection_mm": [
+              0.885,
+              1.383,
+              0.0
+            ],
+            "deflection_limit_mm": [
+              0.5,
+              0.5,
+              0.5
+            ],
+            "load_cases": [
+              "Full thrust",
+              "Hard landing",
+              "Side crash (out of plane)"
+            ],
+            "worst_deflection_mm": 1.383,
+            "worst_deflection_limit_mm": 0.5,
+            "worst_case": "Hard landing",
+            "hand_checks_failed": [],
+            "material_cost_usd": 0.65
+          },
+          {
+            "material": "pa6cf",
+            "process": "fdm",
+            "status": "pass",
+            "printer_allowed": true,
+            "ranked": true,
+            "fill_pct": 30.0,
+            "reasons": [],
+            "notes": [
+              "quick mode: catalog level reported without refinement",
+              "removed 2 elements in islands not connected to any pad",
+              "not fully converged"
+            ],
+            "mass_g": 11.77,
+            "sf": 11.21,
+            "sf_target": 2.0,
+            "stress_MPa": 9.8,
+            "deflection_mm": [
+              0.275,
+              0.43,
+              0.0
+            ],
+            "deflection_limit_mm": [
+              0.5,
+              0.5,
+              0.5
+            ],
+            "load_cases": [
+              "Full thrust",
+              "Hard landing",
+              "Side crash (out of plane)"
+            ],
+            "worst_deflection_mm": 0.43,
+            "worst_deflection_limit_mm": 0.5,
+            "worst_case": "Hard landing",
+            "hand_checks_failed": [],
+            "material_cost_usd": 0.62
+          }
+        ],
+        "shortfall": 1.0
+      },
+      "seconds": 79.4254374000011,
+      "notes": []
+    },
+    {
+      "index": 2,
+      "change": "design space 120 x 22.5 mm -> 120 x 28.12 mm",
+      "knobs": {
+        "thickness_mm": 10.0,
+        "design_space": {
+          "width_mm": 120.0,
+          "height_mm": 28.12
+        },
+        "printer": "desktop_fdm",
+        "materials": [
+          "pla",
+          "petg",
+          "pa6cf",
+          "pa12",
+          "alsi10mg",
+          "ti64"
+        ]
+      },
+      "proposal": {
+        "action": "design_space",
+        "value": {
+          "width_mm": 120.0,
+          "height_mm": 28.12
+        },
+        "reason": "a taller design space gives a stiffer part per gram",
+        "source": "fallback",
+        "reason_grounded": true,
+        "reason_rejected": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "error": "ServerError: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+            "seconds": 5.852125599994906
+          }
+        ]
+      },
+      "results": {
+        "problem": {
+          "thickness_mm": 10.0,
+          "design_space": {
+            "width_mm": 120.0,
+            "height_mm": 28.12
+          },
+          "printer": "desktop_fdm",
+          "materials": [
+            "pla",
+            "petg",
+            "pa6cf"
+          ]
+        },
+        "safety_factor_target": 2.0,
+        "n_designs": 3,
+        "n_pass": 1,
+        "n_ranked": 1,
+        "n_allowed_by_printer": 3,
+        "best": {
+          "material": "pa6cf",
+          "process": "fdm",
+          "status": "pass",
+          "printer_allowed": true,
+          "ranked": true,
+          "fill_pct": 25.0,
+          "reasons": [],
+          "notes": [
+            "quick mode: catalog level reported without refinement",
+            "not fully converged"
+          ],
+          "mass_g": 12.33,
+          "sf": 12.86,
+          "sf_target": 2.0,
+          "stress_MPa": 8.5,
+          "deflection_mm": [
+            0.192,
+            0.3,
+            0.0
+          ],
+          "deflection_limit_mm": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "load_cases": [
+            "Full thrust",
+            "Hard landing",
+            "Side crash (out of plane)"
+          ],
+          "worst_deflection_mm": 0.3,
+          "worst_deflection_limit_mm": 0.5,
+          "worst_case": "Hard landing",
+          "hand_checks_failed": [],
+          "material_cost_usd": 0.65
+        },
+        "designs": [
+          {
+            "material": "pla",
+            "process": "fdm",
+            "status": "fail",
+            "printer_allowed": true,
+            "ranked": false,
+            "fill_pct": 60.0,
+            "reasons": [
+              "deflection 0.512 mm > 0.5 mm (Hard landing)"
+            ],
+            "notes": [
+              "no fill level passes with the level above it also passing"
+            ],
+            "mass_g": 26.61,
+            "sf": 13.09,
+            "sf_target": 2.0,
+            "stress_MPa": 3.9,
+            "deflection_mm": [
+              0.328,
+              0.512,
+              0.0
+            ],
+            "deflection_limit_mm": [
+              0.5,
+              0.5,
+              0.5
+            ],
+            "load_cases": [
+              "Full thrust",
+              "Hard landing",
+              "Side crash (out of plane)"
+            ],
+            "worst_deflection_mm": 0.512,
+            "worst_deflection_limit_mm": 0.5,
+            "worst_case": "Hard landing",
+            "hand_checks_failed": [],
+            "material_cost_usd": 0.8
+          },
+          {
+            "material": "petg",
+            "process": "fdm",
+            "status": "fail",
+            "printer_allowed": true,
+            "ranked": false,
+            "fill_pct": 60.0,
+            "reasons": [
+              "deflection 0.791 mm > 0.5 mm (Hard landing)"
+            ],
+            "notes": [
+              "no fill level passes with the level above it also passing"
+            ],
+            "mass_g": 27.26,
+            "sf": 12.02,
+            "sf_target": 2.0,
+            "stress_MPa": 3.9,
+            "deflection_mm": [
+              0.506,
+              0.791,
+              0.0
+            ],
+            "deflection_limit_mm": [
+              0.5,
+              0.5,
+              0.5
+            ],
+            "load_cases": [
+              "Full thrust",
+              "Hard landing",
+              "Side crash (out of plane)"
+            ],
+            "worst_deflection_mm": 0.791,
+            "worst_deflection_limit_mm": 0.5,
+            "worst_case": "Hard landing",
+            "hand_checks_failed": [],
+            "material_cost_usd": 0.82
+          },
+          {
+            "material": "pa6cf",
+            "process": "fdm",
+            "status": "pass",
+            "printer_allowed": true,
+            "ranked": true,
+            "fill_pct": 25.0,
+            "reasons": [],
+            "notes": [
+              "quick mode: catalog level reported without refinement",
+              "not fully converged"
+            ],
+            "mass_g": 12.33,
+            "sf": 12.86,
+            "sf_target": 2.0,
+            "stress_MPa": 8.5,
+            "deflection_mm": [
+              0.192,
+              0.3,
+              0.0
+            ],
+            "deflection_limit_mm": [
+              0.5,
+              0.5,
+              0.5
+            ],
+            "load_cases": [
+              "Full thrust",
+              "Hard landing",
+              "Side crash (out of plane)"
+            ],
+            "worst_deflection_mm": 0.3,
+            "worst_deflection_limit_mm": 0.5,
+            "worst_case": "Hard landing",
+            "hand_checks_failed": [],
+            "material_cost_usd": 0.65
+          }
+        ],
+        "shortfall": 1.0
+      },
+      "seconds": 59.54063410000526,
+      "notes": []
+    },
+    {
+      "index": 3,
+      "change": "thickness 10 mm -> 7 mm",
+      "knobs": {
+        "thickness_mm": 7.0,
+        "design_space": {
+          "width_mm": 120.0,
+          "height_mm": 28.12
+        },
+        "printer": "desktop_fdm",
+        "materials": [
+          "pla",
+          "petg",
+          "pa6cf",
+          "pa12",
+          "alsi10mg",
+          "ti64"
+        ]
+      },
+      "proposal": {
+        "action": "thickness",
+        "value": {
+          "thickness_mm": 7.0
+        },
+        "reason": "pa6cf has worst deflection 0.3 mm against a limit of 0.5 mm and sf of 12.86 against a target of 2.0. Reducing thickness will lower mass while staying within deflection limits.",
+        "source": "llm",
+        "reason_grounded": true,
+        "reason_rejected": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "raw": {
+              "action": "thickness",
+              "thickness_mm": 7.0,
+              "reason": "pa6cf has worst deflection 0.3 mm against a limit of 0.5 mm and sf of 12.86 against a target of 2.0. Reducing thickness will lower mass while staying within deflection limits."
+            },
+            "seconds": 25.0878001999954
+          }
+        ]
+      },
+      "results": {
+        "problem": {
+          "thickness_mm": 7.0,
+          "design_space": {
+            "width_mm": 120.0,
+            "height_mm": 28.12
+          },
+          "printer": "desktop_fdm",
+          "materials": [
+            "pla",
+            "petg",
+            "pa6cf"
+          ]
+        },
+        "safety_factor_target": 2.0,
+        "n_designs": 3,
+        "n_pass": 1,
+        "n_ranked": 1,
+        "n_allowed_by_printer": 3,
+        "best": {
+          "material": "pa6cf",
+          "process": "fdm",
+          "status": "pass",
+          "printer_allowed": true,
+          "ranked": true,
+          "fill_pct": 25.0,
+          "reasons": [],
+          "notes": [
+            "quick mode: catalog level reported without refinement",
+            "not fully converged"
+          ],
+          "mass_g": 8.63,
+          "sf": 9.0,
+          "sf_target": 2.0,
+          "stress_MPa": 12.1,
+          "deflection_mm": [
+            0.274,
+            0.428,
+            0.0
+          ],
+          "deflection_limit_mm": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "load_cases": [
+            "Full thrust",
+            "Hard landing",
+            "Side crash (out of plane)"
+          ],
+          "worst_deflection_mm": 0.428,
+          "worst_deflection_limit_mm": 0.5,
+          "worst_case": "Hard landing",
+          "hand_checks_failed": [],
+          "material_cost_usd": 0.46
+        },
+        "designs": [
+          {
+            "material": "pla",
+            "process": "fdm",
+            "status": "fail",
+            "printer_allowed": true,
+            "ranked": false,
+            "fill_pct": 60.0,
+            "reasons": [
+              "deflection 0.731 mm > 0.5 mm (Hard landing)"
+            ],
+            "notes": [
+              "no fill level passes with the level above it also passing"
+            ],
+            "mass_g": 18.63,
+            "sf": 9.16,
+            "sf_target": 2.0,
+            "stress_MPa": 5.6,
+            "deflection_mm": [
+              0.468,
+              0.731,
+              0.0
+            ],
+            "deflection_limit_mm": [
+              0.5,
+              0.5,
+              0.5
+            ],
+            "load_cases": [
+              "Full thrust",
+              "Hard landing",
+              "Side crash (out of plane)"
+            ],
+            "worst_deflection_mm": 0.731,
+            "worst_deflection_limit_mm": 0.5,
+            "worst_case": "Hard landing",
+            "hand_checks_failed": [],
+            "material_cost_usd": 0.56
+          },
+          {
+            "material": "petg",
+            "process": "fdm",
+            "status": "fail",
+            "printer_allowed": true,
+            "ranked": false,
+            "fill_pct": 60.0,
+            "reasons": [
+              "deflection 1.130 mm > 0.5 mm (Hard landing)"
+            ],
+            "notes": [
+              "no fill level passes with the level above it also passing"
+            ],
+            "mass_g": 19.08,
+            "sf": 8.41,
+            "sf_target": 2.0,
+            "stress_MPa": 5.6,
+            "deflection_mm": [
+              0.723,
+              1.13,
+              0.0
+            ],
+            "deflection_limit_mm": [
+              0.5,
+              0.5,
+              0.5
+            ],
+            "load_cases": [
+              "Full thrust",
+              "Hard landing",
+              "Side crash (out of plane)"
+            ],
+            "worst_deflection_mm": 1.13,
+            "worst_deflection_limit_mm": 0.5,
+            "worst_case": "Hard landing",
+            "hand_checks_failed": [],
+            "material_cost_usd": 0.57
+          },
+          {
+            "material": "pa6cf",
+            "process": "fdm",
+            "status": "pass",
+            "printer_allowed": true,
+            "ranked": true,
+            "fill_pct": 25.0,
+            "reasons": [],
+            "notes": [
+              "quick mode: catalog level reported without refinement",
+              "not fully converged"
+            ],
+            "mass_g": 8.63,
+            "sf": 9.0,
+            "sf_target": 2.0,
+            "stress_MPa": 12.1,
+            "deflection_mm": [
+              0.274,
+              0.428,
+              0.0
+            ],
+            "deflection_limit_mm": [
+              0.5,
+              0.5,
+              0.5
+            ],
+            "load_cases": [
+              "Full thrust",
+              "Hard landing",
+              "Side crash (out of plane)"
+            ],
+            "worst_deflection_mm": 0.428,
+            "worst_deflection_limit_mm": 0.5,
+            "worst_case": "Hard landing",
+            "hand_checks_failed": [],
+            "material_cost_usd": 0.46
+          }
+        ],
+        "shortfall": 1.0
+      },
+      "seconds": 48.222597400002996,
+      "notes": []
+    },
+    {
+      "index": 4,
+      "change": "design space 120 x 28.12 mm -> 120 x 35.15 mm",
+      "knobs": {
+        "thickness_mm": 7.0,
+        "design_space": {
+          "width_mm": 120.0,
+          "height_mm": 35.15
+        },
+        "printer": "desktop_fdm",
+        "materials": [
+          "pla",
+          "petg",
+          "pa6cf",
+          "pa12",
+          "alsi10mg",
+          "ti64"
+        ]
+      },
+      "proposal": {
+        "action": "design_space",
+        "value": {
+          "width_mm": 120.0,
+          "height_mm": 35.15
+        },
+        "reason": "a taller design space gives a stiffer part per gram",
+        "source": "fallback",
+        "reason_grounded": true,
+        "reason_rejected": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "error": "ServerError: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+            "seconds": 3.380606999999145
+          }
+        ]
+      },
+      "results": {
+        "problem": {
+          "thickness_mm": 7.0,
+          "design_space": {
+            "width_mm": 120.0,
+            "height_mm": 35.15
+          },
+          "printer": "desktop_fdm",
+          "materials": [
+            "pla",
+            "petg",
+            "pa6cf"
+          ]
+        },
+        "safety_factor_target": 2.0,
+        "n_designs": 3,
+        "n_pass": 2,
+        "n_ranked": 2,
+        "n_allowed_by_printer": 3,
+        "best": {
+          "material": "pa6cf",
+          "process": "fdm",
+          "status": "pass",
+          "printer_allowed": true,
+          "ranked": true,
+          "fill_pct": 20.0,
+          "reasons": [],
+          "notes": [
+            "quick mode: catalog level reported without refinement",
+            "removed 8 elements in islands not connected to any pad",
+            "not fully converged"
+          ],
+          "mass_g": 8.64,
+          "sf": 5.12,
+          "sf_target": 2.0,
+          "stress_MPa": 21.3,
+          "deflection_mm": [
+            0.279,
+            0.436,
+            0.0
+          ],
+          "deflection_limit_mm": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "load_cases": [
+            "Full thrust",
+            "Hard landing",
+            "Side crash (out of plane)"
+          ],
+          "worst_deflection_mm": 0.436,
+          "worst_deflection_limit_mm": 0.5,
+          "worst_case": "Hard landing",
+          "hand_checks_failed": [],
+          "material_cost_usd": 0.46
+        },
+        "designs": [
+          {
+            "material": "pla",
+            "process": "fdm",
+            "status": "pass",
+            "printer_allowed": true,
+            "ranked": true,
+            "fill_pct": 60.0,
+            "reasons": [],
+            "notes": [
+              "quick mode: catalog level reported without refinement"
+            ],
+            "mass_g": 22.78,
+            "sf": 13.77,
+            "sf_target": 2.0,
+            "stress_MPa": 3.7,
+            "deflection_mm": [
+              0.3,
+              0.469,
+              0.0
+            ],
+            "deflection_limit_mm": [
+              0.5,
+              0.5,
+              0.5
+            ],
+            "load_cases": [
+              "Full thrust",
+              "Hard landing",
+              "Side crash (out of plane)"
+            ],
+            "worst_deflection_mm": 0.469,
+            "worst_deflection_limit_mm": 0.5,
+            "worst_case": "Hard landing",
+            "hand_checks_failed": [],
+            "material_cost_usd": 0.68
+          },
+          {
+            "material": "petg",
+            "process": "fdm",
+            "status": "fail",
+            "printer_allowed": true,
+            "ranked": false,
+            "fill_pct": 60.0,
+            "reasons": [
+              "deflection 0.726 mm > 0.5 mm (Hard landing)"
+            ],
+            "notes": [
+              "no fill level passes with the level above it also passing"
+            ],
+            "mass_g": 23.33,
+            "sf": 12.64,
+            "sf_target": 2.0,
+            "stress_MPa": 3.7,
+            "deflection_mm": [
+              0.465,
+              0.726,
+              0.0
+            ],
+            "deflection_limit_mm": [
+              0.5,
+              0.5,
+              0.5
+            ],
+            "load_cases": [
+              "Full thrust",
+              "Hard landing",
+              "Side crash (out of plane)"
+            ],
+            "worst_deflection_mm": 0.726,
+            "worst_deflection_limit_mm": 0.5,
+            "worst_case": "Hard landing",
+            "hand_checks_failed": [],
+            "material_cost_usd": 0.7
+          },
+          {
+            "material": "pa6cf",
+            "process": "fdm",
+            "status": "pass",
+            "printer_allowed": true,
+            "ranked": true,
+            "fill_pct": 20.0,
+            "reasons": [],
+            "notes": [
+              "quick mode: catalog level reported without refinement",
+              "removed 8 elements in islands not connected to any pad",
+              "not fully converged"
+            ],
+            "mass_g": 8.64,
+            "sf": 5.12,
+            "sf_target": 2.0,
+            "stress_MPa": 21.3,
+            "deflection_mm": [
+              0.279,
+              0.436,
+              0.0
+            ],
+            "deflection_limit_mm": [
+              0.5,
+              0.5,
+              0.5
+            ],
+            "load_cases": [
+              "Full thrust",
+              "Hard landing",
+              "Side crash (out of plane)"
+            ],
+            "worst_deflection_mm": 0.436,
+            "worst_deflection_limit_mm": 0.5,
+            "worst_case": "Hard landing",
+            "hand_checks_failed": [],
+            "material_cost_usd": 0.46
+          }
+        ],
+        "shortfall": 1.0
+      },
+      "seconds": 66.5941482999915,
+      "notes": []
+    },
+    {
+      "index": 5,
+      "change": "design space 120 x 35.15 mm -> 120 x 43.94 mm",
+      "knobs": {
+        "thickness_mm": 7.0,
+        "design_space": {
+          "width_mm": 120.0,
+          "height_mm": 43.94
+        },
+        "printer": "desktop_fdm",
+        "materials": [
+          "pla",
+          "petg",
+          "pa6cf",
+          "pa12",
+          "alsi10mg",
+          "ti64"
+        ]
+      },
+      "proposal": {
+        "action": "design_space",
+        "value": {
+          "width_mm": 120.0,
+          "height_mm": 43.94
+        },
+        "reason": "a taller design space gives a stiffer part per gram",
+        "source": "fallback",
+        "reason_grounded": true,
+        "reason_rejected": "",
+        "attempts": [
+          {
+            "attempt": 1,
+            "error": "ServerError: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+            "seconds": 6.331165800002054
+          }
+        ]
+      },
+      "results": {
+        "problem": {
+          "thickness_mm": 7.0,
+          "design_space": {
+            "width_mm": 120.0,
+            "height_mm": 43.94
+          },
+          "printer": "desktop_fdm",
+          "materials": [
+            "pla",
+            "petg",
+            "pa6cf"
+          ]
+        },
+        "safety_factor_target": 2.0,
+        "n_designs": 3,
+        "n_pass": 3,
+        "n_ranked": 3,
+        "n_allowed_by_printer": 3,
+        "best": {
+          "material": "pa6cf",
+          "process": "fdm",
+          "status": "pass",
+          "printer_allowed": true,
+          "ranked": true,
+          "fill_pct": 20.0,
+          "reasons": [],
+          "notes": [
+            "quick mode: catalog level reported without refinement",
+            "not fully converged"
+          ],
+          "mass_g": 10.31,
+          "sf": 7.43,
+          "sf_target": 2.0,
+          "stress_MPa": 14.7,
+          "deflection_mm": [
+            0.179,
+            0.279,
+            0.0
+          ],
+          "deflection_limit_mm": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "load_cases": [
+            "Full thrust",
+            "Hard landing",
+            "Side crash (out of plane)"
+          ],
+          "worst_deflection_mm": 0.279,
+          "worst_deflection_limit_mm": 0.5,
+          "worst_case": "Hard landing",
+          "hand_checks_failed": [],
+          "material_cost_usd": 0.55
+        },
+        "designs": [
+          {
+            "material": "pla",
+            "process": "fdm",
+            "status": "pass",
+            "printer_allowed": true,
+            "ranked": true,
+            "fill_pct": 40.0,
+            "reasons": [],
+            "notes": [
+              "quick mode: catalog level reported without refinement",
+              "not fully converged"
+            ],
+            "mass_g": 19.81,
+            "sf": 16.72,
+            "sf_target": 2.0,
+            "stress_MPa": 3.1,
+            "deflection_mm": [
+              0.276,
+              0.431,
+              0.0
+            ],
+            "deflection_limit_mm": [
+              0.5,
+              0.5,
+              0.5
+            ],
+            "load_cases": [
+              "Full thrust",
+              "Hard landing",
+              "Side crash (out of plane)"
+            ],
+            "worst_deflection_mm": 0.431,
+            "worst_deflection_limit_mm": 0.5,
+            "worst_case": "Hard landing",
+            "hand_checks_failed": [],
+            "material_cost_usd": 0.59
+          },
+          {
+            "material": "petg",
+            "process": "fdm",
+            "status": "pass",
+            "printer_allowed": true,
+            "ranked": true,
+            "fill_pct": 60.0,
+            "reasons": [],
+            "notes": [
+              "quick mode: catalog level reported without refinement"
+            ],
+            "mass_g": 29.06,
+            "sf": 19.71,
+            "sf_target": 2.0,
+            "stress_MPa": 2.4,
+            "deflection_mm": [
+              0.304,
+              0.475,
+              0.0
+            ],
+            "deflection_limit_mm": [
+              0.5,
+              0.5,
+              0.5
+            ],
+            "load_cases": [
+              "Full thrust",
+              "Hard landing",
+              "Side crash (out of plane)"
+            ],
+            "worst_deflection_mm": 0.475,
+            "worst_deflection_limit_mm": 0.5,
+            "worst_case": "Hard landing",
+            "hand_checks_failed": [],
+            "material_cost_usd": 0.87
+          },
+          {
+            "material": "pa6cf",
+            "process": "fdm",
+            "status": "pass",
+            "printer_allowed": true,
+            "ranked": true,
+            "fill_pct": 20.0,
+            "reasons": [],
+            "notes": [
+              "quick mode: catalog level reported without refinement",
+              "not fully converged"
+            ],
+            "mass_g": 10.31,
+            "sf": 7.43,
+            "sf_target": 2.0,
+            "stress_MPa": 14.7,
+            "deflection_mm": [
+              0.179,
+              0.279,
+              0.0
+            ],
+            "deflection_limit_mm": [
+              0.5,
+              0.5,
+              0.5
+            ],
+            "load_cases": [
+              "Full thrust",
+              "Hard landing",
+              "Side crash (out of plane)"
+            ],
+            "worst_deflection_mm": 0.279,
+            "worst_deflection_limit_mm": 0.5,
+            "worst_case": "Hard landing",
+            "hand_checks_failed": [],
+            "material_cost_usd": 0.55
+          }
+        ],
+        "shortfall": 1.0
+      },
+      "seconds": 59.635742100013886,
+      "notes": []
+    }
+  ],
+  "recommendation": {
+    "round": 3,
+    "change": "thickness 10 mm -> 7 mm",
+    "best_design": {
+      "material": "pa6cf",
+      "process": "fdm",
+      "status": "pass",
+      "printer_allowed": true,
+      "ranked": true,
+      "fill_pct": 25.0,
+      "reasons": [],
+      "notes": [
+        "quick mode: catalog level reported without refinement",
+        "not fully converged"
+      ],
+      "mass_g": 8.63,
+      "sf": 9.0,
+      "sf_target": 2.0,
+      "stress_MPa": 12.1,
+      "deflection_mm": [
+        0.274,
+        0.428,
+        0.0
+      ],
+      "deflection_limit_mm": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "load_cases": [
+        "Full thrust",
+        "Hard landing",
+        "Side crash (out of plane)"
+      ],
+      "worst_deflection_mm": 0.428,
+      "worst_deflection_limit_mm": 0.5,
+      "worst_case": "Hard landing",
+      "hand_checks_failed": [],
+      "material_cost_usd": 0.46
+    },
+    "text": "Round 3 is the recommended design, achieving the lightest passing part with a mass of 8.63 g and a material cost of 0.46 USD using pa6cf. By reducing the thickness to 7.0 mm, it easily satisfies structural requirements with a worst deflection of 0.428 mm against the 0.5 mm limit and a safety factor of 9.0 compared to the 2.0 target. The primary trade-off is the requirement for pa6cf on the desktop_fdm printer, as lower-cost materials like pla and petg fail deflection limits at 0.731 mm and 1.13 mm during Hard landing.",
+    "grounded": true,
+    "source": "llm",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "Round 3 is the recommended design, achieving the lightest passing part with a mass of 8.63 g and a material cost of 0.46 USD using pa6cf. By reducing the thickness to 7.0 mm, it easily satisfies structural requirements with a worst deflection of 0.428 mm against the 0.5 mm limit and a safety factor of 9.0 compared to the 2.0 target. The primary trade-off is the requirement for pa6cf on the desktop_fdm printer, as lower-cost materials like pla and petg fail deflection limits at 0.731 mm and 1.13 mm during Hard landing.",
+        "bad_numbers": [],
+        "seconds": 12.863623099998222
+      }
+    ]
+  },
+  "seconds": 562.5514822000114
+}

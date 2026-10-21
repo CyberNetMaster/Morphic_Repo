@@ -51,3 +51,15 @@ Step S9b (same benchmark) made each iteration 2.3x faster with identical results
 `examples/rc_arm.json`, `examples/drone_arm.json`, `examples/aero_bracket.json` (spec section 14).
 The bracket is a 2D slice of the GE / GrabCAD Jet Engine Bracket Challenge (2013) and is not comparable
 to the 3D challenge results; sources are listed in the file's `references` field.
+
+## Design agent
+
+`uv run morphic explore examples/drone_arm.json` runs the design agent (`morphic/agent.py`). It reads the
+results of a quick-mode run, proposes one change per round (thickness, materials, printer group, or
+design-space size; never the safety factor, a limit, a load or a support), runs the engine again in
+quick mode (10k-element cap, 7 warm levels, no refinement, no cold re-run), and repeats for at most
+5 rounds. It then recommends the lightest passing round. Every number in its reasons and in the
+recommendation is checked against the engine results the same way as the explanation (spec section 10);
+text that fails the check is replaced by a template. The structured log of every round goes to
+`.plans/agent/<part>.json`. `--no-llm` uses the built-in fallback rule only; `--rounds` and `--cap`
+change the round count and the element cap.
