@@ -6,3 +6,7 @@ __pycache__/
 .plans/dl/
 examples/cache/*/catalog_*.npz
 .plans/s14_smoke/
+design-refs/*.png
+design-refs/*.jpg
+design-refs/*.jpeg
+design-refs/*.webp
