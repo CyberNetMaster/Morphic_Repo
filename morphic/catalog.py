@@ -408,8 +408,10 @@ def run_all(problem: Problem, materials: dict[str, Material], processes: dict[st
         if rerun == "winner" and passing:
             targets = [min(passing, key=lambda d: d.mass_g)]
         elif rerun == "per_process":
+            # spec 6.7: the top design of each process (up to 3 per part), for the side-by-side
+            # FDM / SLS / metal growth render, so the printer filter does not apply here
             for pid in catalogs:
-                ps = [d for d in passing if d.process.id == pid]
+                ps = [d for d in designs if d.status == "pass" and d.process.id == pid]
                 if ps:
                     targets.append(min(ps, key=lambda d: d.mass_g))
         for d in targets:

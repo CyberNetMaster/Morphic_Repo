@@ -4,3 +4,5 @@ __pycache__/
 *.pyc
 .pytest_cache/
 .plans/dl/
+examples/cache/*/catalog_*.npz
+.plans/s14_smoke/

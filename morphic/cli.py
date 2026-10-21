@@ -140,6 +140,14 @@ def cmd_parse(args) -> int:
     return 0
 
 
+def cmd_precompute(args) -> int:
+    from .precompute import CACHE_DIR, precompute_all
+
+    levels = config.FILL_LEVELS[: args.levels] if args.levels else config.FILL_LEVELS
+    return precompute_all(args.parts, Path(args.log) if args.log else None, args.cap,
+                          Path(args.out) if args.out else CACHE_DIR, levels=levels)
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(prog="morphic")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -163,7 +171,15 @@ def main(argv=None) -> int:
     pp.add_argument("--compare", default="")
     pp.add_argument("--raw-out", default="")
     pp.set_defaults(fn=cmd_parse)
-    for name in ("precompute", "rerun", "render"):
+    pc = sub.add_parser("precompute", help="precompute demo parts into examples/cache (step S14)")
+    pc.add_argument("parts", nargs="*", default=["examples/rc_arm.json", "examples/drone_arm.json",
+                                                 "examples/aero_bracket.json"])
+    pc.add_argument("--cap", type=int, default=config.ELEMENT_CAP_CACHED)
+    pc.add_argument("--log", default="")
+    pc.add_argument("--out", default="")
+    pc.add_argument("--levels", type=int, default=0, help="only the first N fill levels (0 = all; for tests)")
+    pc.set_defaults(fn=cmd_precompute)
+    for name in ("rerun", "render"):
         s = sub.add_parser(name, help=f"{name} (built in a later step)")
         s.set_defaults(fn=lambda a, n=name: print(f"{n}: not built yet") or 1)
     args = ap.parse_args(argv)

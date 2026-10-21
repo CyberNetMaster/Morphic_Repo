@@ -74,3 +74,19 @@ def test_domain_build_and_two_case_convergence():
     # the two cases both matter: the optimized design beats uniform density in each case
     c_uniform = prob.compliance(x)
     assert np.all(res.compliance < c_uniform * 1.5)
+
+
+def test_out_of_plane_only_case_gets_zero_weight_and_converges():
+    """A load case with only an out-of-plane force (like the RC arm's front impact) must not
+    enter the optimization: weight 0, finite objective."""
+    d = small_bracket().model_dump()
+    d["load_cases"].append({"id": "c3", "name": "front impact",
+                            "loads": [{"pad_id": "L", "fz_N_out_of_plane": 60}], "max_deflection_mm": 0.5})
+    p = Problem.model_validate(d)
+    dom = build_domain(p, "fdm", 1.2, cap=1500)
+    prob = dom.topopt_problem()
+    w = topopt.normalization_weights(prob, 0.6)
+    assert w[2] == 0.0 and np.all(np.isfinite(w)) and np.all(w[:2] > 0)
+    prob.case_weights = w
+    res = topopt.run(prob, topopt.TopOptSettings(volfrac=0.4, rmin=dom.rmin_elements, mode="cold", max_iters=30))
+    assert np.isfinite(res.objective) and abs(res.volume - 0.4) < 1e-3

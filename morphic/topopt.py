@@ -139,12 +139,18 @@ class TopOptProblem:
 
 
 def normalization_weights(problem: TopOptProblem, fill: float = config.NORMALIZATION_FILL) -> np.ndarray:
-    """1 / compliance of each case at uniform density `fill` (fixed once per catalog)."""
+    """1 / compliance of each case at uniform density `fill` (fixed once per catalog).
+
+    A case with no in-plane load (out-of-plane only, spec 4.5) has zero compliance and is not
+    part of the optimization: its weight is 0 (not 1/0, which made the objective NaN).
+    """
     x = np.full(problem.mesh.nel, fill)
     x[problem.passive_solid] = 1.0
     x[problem.passive_void] = 0.0
     c = problem.compliance(x)
-    return 1.0 / c
+    w = np.zeros_like(c)
+    np.divide(1.0, c, out=w, where=c > 0)
+    return w
 
 
 # ----------------------------------------------------------------------------- settings/result
