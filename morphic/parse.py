@@ -4,8 +4,9 @@ Flow:
 1. Send the text and the draft JSON schema to the LLM (through `llm.py`).
 2. Validate with Pydantic and fill defaults (section 4.3). If the JSON or the
    validation fails, retry ONCE, sending the error back.
-3. Time limit 45 s per call. A timeout or an API error is not retried: the caller
-   shows the manual form and offers the saved demo problems.
+3. Time limit 45 s per HTTP attempt. The adapter retries HTTP 429/503 up to four
+   times with exponential backoff. After exhaustion or another API error, the
+   caller shows the manual form and offers the saved demo problems.
 
 The LLM only fills a draft. Defaults are applied here, in code, so every default is
 marked source "default" and shown in yellow on the check screen.
@@ -266,6 +267,10 @@ def parse_text(text: str, llm_call: Callable | None = None, timeout_s: float = c
                status: Callable[[str], None] | None = None) -> ParseResult:
     """Parse a description. Raises ParseFailed after the allowed attempts."""
     llm_call = llm_call or _default_llm
+    # Let the adapter finish its bounded transport retries before showing fallback.
+    # Injected callers retain the original single-call timeout contract.
+    from .llm import request_timeout_budget
+    wait_s = request_timeout_budget(timeout_s) + 5 if llm_call is _default_llm else timeout_s
     system = SYSTEM_PROMPT + schema_text()
     attempts: list[dict] = []
     error = previous = None
@@ -276,12 +281,12 @@ def parse_text(text: str, llm_call: Callable | None = None, timeout_s: float = c
         ta = time.perf_counter()
         fut = _POOL.submit(llm_call, system, user_prompt(text, error, previous), timeout_s)
         try:
-            res = fut.result(timeout=timeout_s)
+            res = fut.result(timeout=wait_s)
         except cf.TimeoutError:
-            attempts.append({"attempt": attempt + 1, "error": f"timeout after {timeout_s:g} s",
+            attempts.append({"attempt": attempt + 1, "error": f"timeout after {wait_s:g} s",
                              "seconds": time.perf_counter() - ta})
-            raise ParseFailed(f"the LLM did not answer within {timeout_s:g} s", attempts)
-        except Exception as exc:  # API unreachable, auth, quota: not retried
+            raise ParseFailed(f"the LLM did not answer within {wait_s:g} s", attempts)
+        except Exception as exc:  # adapter has already handled transport retries
             attempts.append({"attempt": attempt + 1, "error": f"{type(exc).__name__}: {exc}",
                              "seconds": time.perf_counter() - ta})
             raise ParseFailed(f"LLM call failed: {type(exc).__name__}: {exc}", attempts)

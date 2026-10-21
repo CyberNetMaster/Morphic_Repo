@@ -17,6 +17,9 @@ LLM_MODELS = {
 }
 LLM_TIMEOUT_S = 45.0
 LLM_RETRIES = 1
+LLM_HTTP_RETRIES = 4  # in addition to the initial request; only HTTP 429 and 503
+LLM_BACKOFF_INITIAL_S = 4.0  # exponential delays: 4, 8, 16, 32 seconds
+AGENT_LLM_INTERVAL_S = 4.0  # shared across agent workers, including HTTP retries
 
 # ---------------------------------------------------------------- element caps
 ELEMENT_CAP_LIVE = 40_000

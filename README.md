@@ -16,6 +16,11 @@ uv sync
 
 Copy `.env.example` to `.env` and fill in the key for the LLM provider named in
 `morphic/config.py` (`LLM_PROVIDER`). The provider is a thin adapter in `morphic/llm.py`.
+HTTP 429 and 503 responses get up to four retries, after 4, 8, 16, and 32 seconds,
+before the existing fallback runs. Each HTTP attempt has a 45-second timeout; other
+errors fail immediately. Design-agent requests (including retries and final
+recommendations) start at least four seconds apart across local worker processes.
+The parser allows the full retry budget before opening its manual fallback.
 
 ## Run tests
 

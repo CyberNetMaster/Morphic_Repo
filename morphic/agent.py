@@ -249,7 +249,8 @@ def _strip_json(text: str) -> str:
 def _default_llm(system: str, user: str) -> dict:
     from . import llm
 
-    res = llm.complete(system, user, config.LLM_TIMEOUT_S)
+    res = llm.complete(system, user, config.LLM_TIMEOUT_S,
+                       before_attempt=llm.wait_for_agent_slot)
     return json.loads(_strip_json(res.text))
 
 
