@@ -121,3 +121,22 @@ recommendation is checked against the engine results the same way as the explana
 text that fails the check is replaced by a template. The structured log of every round goes to
 `.plans/agent/<part>.json`. `--no-llm` uses the built-in fallback rule only; `--rounds` and `--cap`
 change the round count and the element cap.
+
+## Integrated app
+
+Run `uv run streamlit run app/streamlit_app.py --server.address 127.0.0.1` for the local
+Describe → Check → Compare → Export flow. The configured provider in `morphic/config.py`
+is used for parsing, checked explanations and design exploration. Credentials are read only
+from this checkout's `.env`; provider request details are excluded from error logs.
+Offline templates and deterministic proposals remain fallbacks for failed API calls or validation.
+
+Compare generates an explanation from the saved, smoothed results, checks its numbers, and
+caches it for an hour. Its Design agent panel runs up to five changes in the background,
+shows progress and trial results, and provides a downloadable log. `Review recommended design`
+restores the chosen round, including translated pads/zones, on Check with full mode selected.
+Quick exploration results do not replace the current checked result or its exports.
+
+Export provides geometry, results JSON, a PDF (one page per material), and a reproducible ZIP.
+The downloaded PDF is exactly the report inside the ZIP. Generated files and agent logs stay
+under `.plans/live_runs/`; downloads and browser screenshots are local files. No publishing
+or remote Git operations are part of this workflow.

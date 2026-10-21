@@ -7,6 +7,7 @@ Query parameters (for screenshots and the video): ?demo=rc_arm&step=2  or  ?tab=
 from __future__ import annotations
 
 import base64
+import json
 import re
 import sys
 import time
@@ -20,10 +21,10 @@ import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 import streamlit as st  # noqa: E402
 
-from app import data, maps, theme, ui  # noqa: E402
-from morphic import config, form as formmod, parse, sanity, validation  # noqa: E402
+from app import data, integration, maps, theme, ui  # noqa: E402
+from morphic import config, explain, form as formmod, parse, sanity, validation  # noqa: E402
 from morphic.materials import load_materials, load_processes  # noqa: E402
-from morphic.problem import MATERIAL_IDS, PRINTERS, Problem, Provenance  # noqa: E402
+from morphic.problem import MATERIAL_IDS, PRINTERS, Problem, Provenance, problem_from_dict  # noqa: E402
 
 st.set_page_config(page_title="Morphic", page_icon="◐", layout="wide", initial_sidebar_state="collapsed")
 
@@ -79,6 +80,16 @@ def cached_npz(folder: str, name: str) -> dict:
     return data.load_npz(Path(folder), name)
 
 
+@st.cache_data(show_spinner=False, ttl=3600, max_entries=32)
+def grounded_explanation(payload: str, provider: str, model: str):
+    return explain.explain(json.loads(payload), use_llm=True)
+
+
+@st.cache_data(show_spinner=False, max_entries=6)
+def prepared_downloads(folder: str, signature: tuple):
+    return integration.export_downloads(folder)
+
+
 @st.cache_data(show_spinner=False)
 def png_density(folder: str, key: str, nelx: int, nely: int, dark: bool, px: int) -> bytes:
     return maps.density_png(cached_npz(folder, "densities.npz")[key], nelx, nely, dark, px)
@@ -106,7 +117,7 @@ def img(png: bytes, style: str = "width:100%;display:block") -> str:
 def init_state() -> None:
     defaults = dict(tab="Design", step=0, text="", printer_choice=FROM_TEXT, quick=False, problem=None, form=None,
                     parse_fail=None, results=None, live=None, view3d=None, growth_play=False, growth_i=0,
-                    qp_done=False, stage_view="Shape")
+                    qp_done=False, stage_view="Shape", agent_jobs={})
     for k, v in defaults.items():
         S.setdefault(k, v)
 
@@ -610,6 +621,67 @@ def dialog_3d(r: dict, mid: str) -> None:
         st.rerun()
 
 
+@st.fragment(run_every=2.0)
+def design_agent_panel(r: dict) -> None:
+    key = r["key"]
+    job = S.agent_jobs.get(key)
+    running = job is not None and not job.done.is_set()
+    any_running = any(not j.done.is_set() for j in S.agent_jobs.values())
+    st.markdown(ui.eyebrow("Design agent"), unsafe_allow_html=True)
+    st.caption("Explore up to five changes with the configured LLM. Loads, supports and safety limits stay fixed.")
+    if st.button("Explore design changes" if job is None else "Explore again", key="agent_start",
+                 type="primary", disabled=any_running):
+        S.agent_jobs[key] = integration.start_agent(problem_from_dict(r["problem"]))
+        st.rerun(scope="app")
+    if job is None:
+        if any_running:
+            st.info("An exploration is running for another part in this session.")
+        st.caption("Each trial uses quick mode. A complete exploration usually takes several minutes.")
+        return
+    state = job.snapshot()
+    if running:
+        st.info(f"{state['messages'][-1] if state['messages'] else 'Starting exploration'} · {state['seconds'] / 60:.1f} min")
+    if state["error"]:
+        st.error(state["error"])
+    with st.expander("Exploration progress", expanded=running):
+        for message in state["messages"]:
+            st.text(message)
+    log = state["log"]
+    if log is None:
+        return
+    st.markdown(log.recommendation["text"])
+    st.caption(f"Recommendation: {log.recommendation['source']}. Quick-mode results require a full solve before export.")
+    rows = []
+    for row in log.rounds:
+        best = row.results.get("best") or {}
+        rows.append({"Round": row.index, "Change": row.change,
+                     "Proposal": row.proposal.source if row.proposal else "starting point",
+                     "Material": best.get("material", "none passes"), "Mass (g)": best.get("mass_g")})
+    st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch")
+    with st.expander("Reasons and trial details"):
+        for row in log.rounds:
+            if row.proposal:
+                st.write(f"Round {row.index}: {row.proposal.reason}")
+        st.json(log.to_dict(), expanded=False)
+    st.download_button("Exploration log", job.path.read_bytes(), file_name="exploration.json",
+                       mime="application/json", key="agent_log")
+    if st.button("Review recommended design", key="agent_review"):
+        try:
+            p = integration.recommended_problem(job.problem, log)
+        except ValueError as exc:
+            st.error(str(exc))
+            return
+        S.problem, S.form = p, formmod.problem_to_form(p)
+        for widget_key in list(S):
+            if widget_key.startswith("ed_") or widget_key == "quick_check":
+                del S[widget_key]
+        S.results, S.live, S.parse_fail = None, None, None
+        S.quick, S.view3d, S.growth_play, S.growth_i = False, None, False, 0
+        S.printer_choice = p.printer
+        S.step = 1
+        st.rerun(scope="app")
+
+
 def page_compare() -> None:
     if S.live is not None and S.results is None:
         pr: data.Progress = S.live
@@ -695,22 +767,29 @@ def page_compare() -> None:
             st.markdown(ui.eyebrow("No ranked design") + '<div class="mx-title">No material meets the limits with your printer</div>',
                         unsafe_allow_html=True)
 
-    # ---- explanation + the design agent panel (connected later)
+    # ---- grounded explanation + live design exploration
     e1, e2 = st.columns([3, 2], gap="medium")
     with e1:
         with st.container(key="card_explain"):
+            payload = explain.saved_results_json(r)
+            with st.spinner("Explaining the computed results…"):
+                explanation = grounded_explanation(json.dumps(payload, sort_keys=True), config.LLM_PROVIDER,
+                                                   config.LLM_MODELS[config.LLM_PROVIDER])
             st.markdown(ui.eyebrow("Why this wins") + f'<div style="font-size:{theme.TEXT_MD + 1}px;line-height:1.55;margin-top:8px">'
-                        f'{ui.esc(data.template_explanation(r))}</div>'
-                        f'<div class="mx-note" style="margin-top:8px">Every number above is read from the computed results. '
-                        f'The written explanation with its number check arrives in step S12.</div>', unsafe_allow_html=True)
+                        f'{ui.esc(explanation.text)}</div>', unsafe_allow_html=True)
+            st.caption("LLM explanation · numbers checked against the computed results" if explanation.source == "llm"
+                       else "Template fallback · the LLM was unavailable or its response failed validation")
+            with st.expander("Facts used in the explanation"):
+                for card in payload["cards"]:
+                    if card.get("mass"):
+                        cost = card.get("material_cost")
+                        st.text(f"{card['name']}: {card['mass']['value']} g · {card['printer']} · {card['state']}"
+                                + (f" · {cost['value']} USD material only" if cost else ""))
             for m in rk.get("messages") or []:
                 ui.msg(m, "info")
     with e2:
         with st.container(key="agent_panel"):
-            st.markdown(ui.eyebrow("Design agent") + '<div class="mx-sub" style="margin:8px 0 0">This panel is reserved '
-                        'for the design agent. It will read the ranked results and the limits and suggest the next change. '
-                        'Not connected yet.</div>', unsafe_allow_html=True)
-            st.empty()  # mount point for the agent panel
+            design_agent_panel(r)
 
     # ---- funnel and pareto
     st.markdown(ui.eyebrow("Funnel"), unsafe_allow_html=True)
@@ -805,12 +884,19 @@ def page_export() -> None:
         b = st.columns(3)
         b[0].download_button("results.json", data=(folder / "results.json").read_bytes(), file_name="results.json",
                              mime="application/json", key="dl_results", use_container_width=True)
-        b[1].button("PDF report", disabled=True, key="dl_pdf", use_container_width=True, help="Built in step S13 (report.py).")
-        b[2].button("Run bundle (zip)", disabled=True, key="dl_bundle", use_container_width=True, help="Built in step S13 (bundle.py).")
+        try:
+            with st.spinner("Preparing the report and reproducible bundle…"):
+                pdf, bundle = prepared_downloads(str(folder), integration.export_signature(str(folder)))
+            b[1].download_button("PDF report", pdf, file_name="report.pdf", mime="application/pdf",
+                                 key="dl_pdf", width="stretch")
+            b[2].download_button("Run bundle (zip)", bundle, file_name="run.zip", mime="application/zip",
+                                 key="dl_bundle", width="stretch")
+        except Exception as exc:
+            st.error(f"Report and bundle could not be prepared ({type(exc).__name__}). Geometry downloads remain available.")
         st.markdown(f'<div class="mx-note">Results folder: {ui.esc(folder)} · code {ui.esc(r["code_version"][:12])} · '
                     f'materials {ui.esc(r["materials_hash"])} · cap {r["solver_settings"]["cap_used"]:,} elements, '
-                    f'{ui.esc(r["solver_settings"]["sweep_mode_used"])} sweep. The PDF report and the reproducible run bundle '
-                    f'(with `morphic rerun`) are built in step S13.</div>', unsafe_allow_html=True)
+                    f'{ui.esc(r["solver_settings"]["sweep_mode_used"])} sweep. The PDF contains one page per material. '
+                    f'The bundle includes that same report and the inputs for morphic rerun.</div>', unsafe_allow_html=True)
     ui.foot(FIXED_NOTE)
     if st.button("← Compare", key="back3", type="tertiary"):
         go(2)

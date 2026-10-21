@@ -45,6 +45,25 @@ def results_json(ranking: RankResult) -> dict:
     return {"cards": cards, "ranking_basis": "mass", "cost_note": "material cost only, not print cost"}
 
 
+def saved_results_json(results: dict) -> dict:
+    """The same grounding contract for the app's final, smoothed saved results."""
+    from .materials import load_materials, load_processes
+
+    materials, processes = load_materials(), load_processes()
+    designs = {d["material"]: d for d in results["designs"]}
+    cards = []
+    for card in results["ranking"]["cards"]:
+        d = designs[card["material"]]
+        row = dict(name=materials[d["material"]].name, printer=processes[d["process"]].name,
+                   state=card["state"], rank=card["rank"])
+        if d.get("checks"):
+            row["mass"] = {"value": f"{d['checks']['mass_g']:.2f}", "unit": "g"}
+            if card.get("material_cost_usd") is not None:
+                row["material_cost"] = {"value": f"{card['material_cost_usd']:.2f}", "unit": "USD"}
+        cards.append(row)
+    return {"cards": cards, "ranking_basis": "mass", "cost_note": "material cost only, not print cost"}
+
+
 # Match numbers even inside names: only exact source identifiers are exempted.
 _NUMBER = re.compile(r"[+\-−]?(?:\d{1,3}(?:,\d{3})+|\d+|\.\d+)(?:\.\d+)?(?:[eE][+\-]?\d+)?")
 _UNIT = re.compile(r"\s*(%|[A-Za-zµμ]+(?:[²³]|\^?[23])?(?:/[A-Za-z]+)?)")

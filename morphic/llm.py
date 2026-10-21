@@ -7,10 +7,10 @@ Keys are read from .env: GEMINI_API_KEY or ANTHROPIC_API_KEY.
 from __future__ import annotations
 
 import json
-import os
 from dataclasses import dataclass
+from pathlib import Path
 
-from dotenv import load_dotenv
+from dotenv import dotenv_values
 
 from . import config
 
@@ -27,8 +27,8 @@ class LLMError(RuntimeError):
 
 
 def _key(name: str) -> str:
-    load_dotenv()
-    key = os.environ.get(name, "").strip()
+    # Read only this checkout's .env; never copy credentials into the environment.
+    key = (dotenv_values(Path(__file__).resolve().parents[1] / ".env").get(name) or "").strip()
     if not key:
         raise LLMError(f"{name} is not set in .env")
     return key
@@ -77,7 +77,15 @@ def complete(system: str, user: str, timeout_s: float | None = None) -> LLMResul
     fn = _PROVIDERS.get(config.LLM_PROVIDER)
     if fn is None:
         raise LLMError(f"unknown LLM_PROVIDER {config.LLM_PROVIDER!r}")
-    return fn(system, user, timeout_s or config.LLM_TIMEOUT_S)
+    try:
+        return fn(system, user, timeout_s or config.LLM_TIMEOUT_S)
+    except LLMError:
+        raise
+    except Exception as exc:
+        # SDK exceptions can include request URLs. Keep them out of saved agent logs.
+        code = getattr(exc, "code", None)
+        status = f", status {code}" if isinstance(code, int) else ""
+        raise LLMError(f"{config.LLM_PROVIDER} request failed ({type(exc).__name__}{status})") from None
 
 
 def complete_json(system: str, user: str, timeout_s: float | None = None) -> dict:

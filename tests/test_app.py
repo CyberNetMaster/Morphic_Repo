@@ -58,10 +58,16 @@ def test_ui_pieces():
 
 @pytest.mark.parametrize("state", [{}, {"demo": PARTS[0], "step": "1"}, {"demo": PARTS[0], "step": "2"},
                                    {"demo": PARTS[0], "step": "3"}, {"tab": "validation"}])
-def test_app_runs_headless(state):
+def test_app_runs_headless(state, monkeypatch):
     from streamlit.testing.v1 import AppTest
 
     from pathlib import Path
+    import json
+    from morphic import explain, llm
+
+    # Exercise the live explanation path without external requests in the suite.
+    monkeypatch.setattr(llm, "complete_json", lambda system, user:
+                        {"explanation": explain.template_explanation(json.loads(user))})
 
     at = AppTest.from_file(str(Path(__file__).resolve().parents[1] / "app" / "streamlit_app.py"), default_timeout=120)
     at.query_params.update(state)
