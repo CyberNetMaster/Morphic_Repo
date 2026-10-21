@@ -51,3 +51,61 @@ Step S9b (same benchmark) made each iteration 2.3x faster with identical results
 `examples/rc_arm.json`, `examples/drone_arm.json`, `examples/aero_bracket.json` (spec section 14).
 The bracket is a 2D slice of the GE / GrabCAD Jet Engine Bracket Challenge (2013) and is not comparable
 to the 3D challenge results; sources are listed in the file's `references` field.
+
+## Local reports, bundles and reproduction (S13)
+
+These commands use saved, checked problems and computed results. They require no API key or network:
+
+```powershell
+uv run morphic report examples/cache/rc_arm --out output/rc_arm.pdf
+uv run morphic report examples/cache/rc_arm --material pa6cf --out output/pa6cf.pdf
+uv run morphic bundle examples/cache/rc_arm --out output/rc_arm.zip
+uv run morphic rerun output/rc_arm.zip --out output/rerun-diff.json
+```
+
+The PDF has one A4 page per design, including the problem drawing, exported shape, recovered nodal
+utilization on a shared 0–1 scale, smoothed re-check results, hand checks, linked citations, and limits.
+The zip contains the solved problem, material and process YAML, settings, source commit, environment
+description, results, densities, available snapshots, geometry files and report. SHA-256 checksums
+detect damaged or changed files. Only solver artifacts are included; `.env` is never read or bundled.
+For existing S14 caches, the historical solve environment was not recorded: `environment.txt` explicitly
+describes the environment at bundle creation. The original solve commit is preserved separately from
+the exporter commit.
+
+`morphic rerun` runs both checks by default and prints an individual diff for every compared field:
+
+- **Evaluation (strict, 0.5%)** rebuilds the smoothed geometry from the stored final densities, runs
+  linear-area-fraction FE with nodal recovery, recomputes hand checks and baselines, and ranks again.
+  It compares final reported physics, geometry, mass savings, material cost, and ranking. Numbers
+  embedded in hand-check descriptions are included. Fill targets and selection history are replay
+  inputs; historical iteration counts, timings and pre-smoothing grid checks are not final measurements.
+- **Optimization (loose)** starts fresh catalogs and refinement using the saved settings and libraries.
+  Every material must select exactly the same fill level and have mass within **2%**. Multithreaded
+  PyPardiso can sum in different orders; the OC updates can amplify tiny differences over many iterations.
+  Bitwise-identical shapes are not promised. A production optimization replay can take hours.
+
+Use `--mode evaluation` or `--mode optimization` to run one check, and `--failures-only` to reduce console
+output while retaining the complete JSON diff. Exit status is 0 for pass, 1 for comparison failure,
+and 2 for invalid input or execution failure. Settings are restored before engine imports in isolated
+local processes; bundled libraries take precedence over installed ones. Bundles contain no code, so
+run the recorded source revision when reproducing on a different checkout. A code-version difference
+is shown and never hidden.
+
+```powershell
+# Full ten-level pipeline at a small mesh for an integration check, not production claims:
+uv run morphic precompute examples/rc_arm.json --cap 1200 --out output/smoke-cache
+uv run morphic bundle output/smoke-cache/rc_arm --out output/smoke.zip
+uv run morphic rerun output/smoke.zip --out output/smoke-diff.json
+
+# Hash-indexed local cache; the first command prints its location/key:
+uv run morphic cache --source examples/cache/rc_arm
+uv run morphic cache --key <sha256>
+
+# Recorded iterations only; no invented or interpolated shapes:
+uv run morphic render examples/cache/rc_arm --process fdm --out output/growth.gif
+```
+
+The cache key hashes the solved problem, combined material/process hash, solver settings, and code
+version. `RunCache` writes entries atomically and verifies artifact checksums on load. Existing named
+S14 caches remain compatible. `render` provides a local 2D snapshot GIF; the cinematic 3D MP4 renderer
+is the separate S15 stretch task.
