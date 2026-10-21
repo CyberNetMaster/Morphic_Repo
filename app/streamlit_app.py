@@ -22,6 +22,7 @@ import pandas as pd  # noqa: E402
 import streamlit as st  # noqa: E402
 
 from app import data, integration, maps, theme, ui  # noqa: E402
+from app import sketch_upload  # noqa: E402
 from morphic import config, explain, form as formmod, parse, sanity, validation  # noqa: E402
 from morphic.materials import load_materials, load_processes  # noqa: E402
 from morphic.problem import MATERIAL_IDS, PRINTERS, Problem, Provenance, problem_from_dict  # noqa: E402
@@ -219,7 +220,10 @@ def page_describe() -> None:
             if st.button("Read my description", type="primary", disabled=not S.text.strip(), key="read_btn",
                          use_container_width=True):
                 read_description()
-        st.markdown('<div class="mx-next"><b>What happens next</b>Morphic reads your text into a problem, you check '
+        # Keep E's two-column layout; read the current printer choice before the sketch action.
+        with left:
+            sketch_upload.control(S.text, None if S.printer_choice == FROM_TEXT else S.printer_choice)
+        st.markdown('<div class="mx-next"><b>What happens next</b>Morphic reads your text or sketch into a problem, you check '
                     'it on a drawing, then it optimizes a shape for six cited materials and ranks them by mass.</div>',
                     unsafe_allow_html=True)
 
@@ -436,8 +440,14 @@ def readouts(p: Problem, est: dict, stem: str | None) -> None:
 
 def page_check() -> None:
     materials, processes = libs()
-    ui.title("Check the problem", "Everything below came from your text or a default. Fix anything wrong; "
+    ui.title("Check the problem", "Everything below came from your description, sketch or a default. Fix anything wrong; "
                                   "the drawing and the checks update as you edit.")
+    if S.problem is not None and S.problem.warnings:
+        with st.container(key="card_interpretation_warnings"):
+            st.markdown(ui.eyebrow("Interpretation warnings"), unsafe_allow_html=True)
+            st.caption("Check these assumptions against your sketch or description before generating designs.")
+            for warning in dict.fromkeys(S.problem.warnings):
+                ui.msg(warning, "yellow", "Review")
     if S.parse_fail:
         ui.msg(f"{S.parse_fail}. The manual form below is open. You can also load a demo part.",
                "red", "Could not read the description")

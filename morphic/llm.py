@@ -1,11 +1,13 @@
-"""Thin LLM adapter. The rest of the code calls `complete_json()` only.
+"""Thin LLM adapter. The rest of the code calls `complete()` or `complete_json()` only.
 
-The provider is chosen by `config.LLM_PROVIDER` ("gemini" or "claude").
-Keys are read from .env: GEMINI_API_KEY or ANTHROPIC_API_KEY.
+The provider is chosen by `config.LLM_PROVIDER` ("gemini" or "claude"); a caller can name
+another one. Keys are read from .env: GEMINI_API_KEY or ANTHROPIC_API_KEY.
+Both providers accept one image with the prompt (`complete(..., image=Image(...))`).
 """
 
 from __future__ import annotations
 
+import base64
 import json
 import logging
 import os
@@ -28,6 +30,14 @@ class LLMResult:
 
 class LLMError(RuntimeError):
     pass
+
+
+@dataclass(frozen=True)
+class Image:
+    """One image sent before the prompt text. `data` is the encoded file (JPEG, PNG or WebP)."""
+
+    data: bytes
+    mime_type: str
 
 
 _LOG = logging.getLogger(__name__)
@@ -104,7 +114,7 @@ def _key(name: str) -> str:
     return key
 
 
-def _complete_gemini(system: str, user: str, timeout_s: float) -> LLMResult:
+def _complete_gemini(system: str, user: str, timeout_s: float, image: Image | None = None) -> LLMResult:
     from google import genai
     from google.genai import types
 
@@ -117,7 +127,8 @@ def _complete_gemini(system: str, user: str, timeout_s: float) -> LLMResult:
     try:
         resp = client.models.generate_content(
             model=model,
-            contents=user,
+            contents=user if image is None else [
+                types.Part.from_bytes(data=image.data, mime_type=image.mime_type), user],
             config=types.GenerateContentConfig(
                 system_instruction=system,
                 response_mime_type="application/json",
@@ -128,18 +139,24 @@ def _complete_gemini(system: str, user: str, timeout_s: float) -> LLMResult:
     return LLMResult(text=resp.text or "", provider="gemini", model=model)
 
 
-def _complete_claude(system: str, user: str, timeout_s: float) -> LLMResult:
+def _complete_claude(system: str, user: str, timeout_s: float, image: Image | None = None) -> LLMResult:
     import anthropic
 
     model = config.LLM_MODELS["claude"]
     client = anthropic.Anthropic(api_key=_key("ANTHROPIC_API_KEY"), timeout=timeout_s,
                                 max_retries=0)
+    content = user if image is None else [
+        {"type": "image", "source": {"type": "base64", "media_type": image.mime_type,
+                                     "data": base64.standard_b64encode(image.data).decode("ascii")}},
+        {"type": "text", "text": user}]
     try:
         msg = client.messages.create(
             model=model,
-            max_tokens=4096,
+            # Opus 5.5 always thinks, and thinking counts toward max_tokens. Reading a drawing
+            # can think far longer than reading text, so image requests get more room.
+            max_tokens=4096 if image is None else 16000,
             system=system,
-            messages=[{"role": "user", "content": user}],
+            messages=[{"role": "user", "content": content}],
         )
     finally:
         client.close()
@@ -151,33 +168,36 @@ _PROVIDERS = {"gemini": _complete_gemini, "claude": _complete_claude}
 
 
 def complete(system: str, user: str, timeout_s: float | None = None, *,
-             before_attempt=None) -> LLMResult:
+             before_attempt=None, image: Image | None = None, provider: str | None = None) -> LLMResult:
     """Return text; retry HTTP 429/503 four times before the caller falls back.
 
     ``before_attempt`` reserves an agent request slot, including transport retries.
     SDK retries are disabled so the attempt count and spacing remain under our control.
+    ``image`` is sent before the prompt text. ``provider`` overrides config.LLM_PROVIDER.
     """
-    fn = _PROVIDERS.get(config.LLM_PROVIDER)
+    name = provider or config.LLM_PROVIDER
+    fn = _PROVIDERS.get(name)
     if fn is None:
-        raise LLMError(f"unknown LLM_PROVIDER {config.LLM_PROVIDER!r}")
+        raise LLMError(f"unknown LLM_PROVIDER {name!r}")
+    extra = {} if image is None else {"image": image}  # text calls keep the 3-argument call
     for attempt in range(config.LLM_HTTP_RETRIES + 1):
         if before_attempt is not None:
             before_attempt()
         try:
-            return fn(system, user, timeout_s or config.LLM_TIMEOUT_S)
+            return fn(system, user, timeout_s or config.LLM_TIMEOUT_S, **extra)
         except LLMError:
             raise
         except Exception as exc:
             code = _status_code(exc)
             if code in (429, 503) and attempt < config.LLM_HTTP_RETRIES:
                 delay = config.LLM_BACKOFF_INITIAL_S * 2 ** attempt
-                _LOG.info("%s HTTP %s; retry %s/%s in %g s", config.LLM_PROVIDER,
+                _LOG.info("%s HTTP %s; retry %s/%s in %g s", name,
                           code, attempt + 1, config.LLM_HTTP_RETRIES, delay)
                 time.sleep(delay)
                 continue
             # SDK exceptions can include request URLs. Never save their raw text.
             status = f", status {code}" if code is not None else ""
-            raise LLMError(f"{config.LLM_PROVIDER} request failed "
+            raise LLMError(f"{name} request failed "
                            f"({type(exc).__name__}{status}; {attempt + 1} attempts)") from None
 
 
