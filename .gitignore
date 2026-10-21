@@ -15,3 +15,6 @@ design-refs/images/
 examples/cache/runs/
 .plans/live_runs/
 .plans/reports/streamlit.log
+renders/*.mp4
+renders/*.png
+renders/last_render.json

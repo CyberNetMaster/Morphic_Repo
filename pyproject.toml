@@ -25,6 +25,10 @@ dependencies = [
     "mapbox-earcut>=2.1.0",
 ]
 
+[project.optional-dependencies]
+# offline cinematic MP4 renders (render/cinematic.py, step S15): uv sync --extra render
+render = ["pyvista>=0.44", "imageio-ffmpeg>=0.5"]
+
 [project.scripts]
 morphic = "morphic.cli:main"
 

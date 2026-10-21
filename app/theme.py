@@ -126,6 +126,8 @@ OVER_LIMIT = "#FF2D55"
 # density / growth: dark stage, material glows white
 DENSITY_SCALE = [[0.0, "rgba(0,0,0,0)"], [0.35, "#3A3A40"], [1.0, "#F5F5F7"]]
 DENSITY_SCALE_LIGHT = [[0.0, "rgba(0,0,0,0)"], [0.35, "#D2D2D7"], [1.0, "#1D1D1F"]]
+# cinematic renders (render/cinematic.py): the slab on the dark stage, lit; opacity comes from density
+DENSITY_SCALE_CINEMATIC = [[0.0, "#8E8E93"], [0.5, "#C7C7CC"], [1.0, "#E8E8ED"]]
 
 # ----------------------------------------------------------------------------- motion
 EASE = "cubic-bezier(0.22, 1, 0.36, 1)"
