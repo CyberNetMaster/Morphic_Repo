@@ -77,6 +77,8 @@ class Catalog:
     notes: list[str] = field(default_factory=list)
     seconds: float = 0.0
     early_stopped: bool = False
+    main_levels: tuple = config.FILL_LEVELS  # the levels swept before any extension below them
+    reused_from: str = ""  # code version, when the catalog was restored from a cache
 
     def run_at(self, fill: float) -> LevelRun | None:
         return self.levels.get(fill) or self.refined.get(fill)
@@ -201,12 +203,27 @@ def _all_fail_everything(cat: Catalog, fill: float, materials: list[Material], s
     return True
 
 
-def _all_pass(cat: Catalog, fill: float, materials: list[Material], sf_target: float) -> bool:
-    for m in materials:
-        st = level_statuses({fill: cat.levels[fill]}, cat.domain, m, sf_target)[0]
-        if not st.passed:
-            return False
-    return True
+def _passes(cat: Catalog, fill: float, material: Material, sf_target: float) -> bool:
+    return level_statuses({fill: cat.levels[fill]}, cat.domain, material, sf_target)[0].passed
+
+
+def material_levels(cat: Catalog, material: Material, sf_target: float) -> dict:
+    """The catalog levels that count for one material (spec 6.3, per-material extension).
+
+    Below the main levels, a material follows the extension only while it passes: the first
+    extension level it fails at is kept (as the bottom of its refinement window) and lower
+    levels, computed for other materials, are dropped for it. A material that fails at the
+    lowest main level gets no extension levels.
+    """
+    main_min = min(cat.main_levels)
+    out = {f: r for f, r in cat.levels.items() if f >= main_min - 1e-12}
+    if main_min not in cat.levels or not _passes(cat, main_min, material, sf_target):
+        return out
+    for f in sorted((f for f in cat.levels if f < main_min - 1e-12), reverse=True):
+        out[f] = cat.levels[f]
+        if not _passes(cat, f, material, sf_target):
+            break
+    return out
 
 
 def run_catalog(problem: Problem, process: Process, materials: list[Material], cap: int,
@@ -221,25 +238,38 @@ def run_catalog(problem: Problem, process: Process, materials: list[Material], c
     cat = Catalog(process=process, domain=domain, weights=weights, sweep_mode=sweep_mode)
     cat.notes += domain.warnings
     sf = problem.safety_factor
+    cat.main_levels = tuple(levels)
     prev: LevelRun | None = None
-    seq = list(levels)
-    if extend_low:
-        seq = seq + [f for f in config.FILL_LEVELS_EXTRA_LOW if f < min(seq)]
-    for idx, fill in enumerate(seq):
-        if fill in config.FILL_LEVELS_EXTRA_LOW and fill not in levels:
-            if not _all_pass(cat, min(cat.levels), materials, sf):
-                break
-            cat.notes.append(f"every material passes at {min(cat.levels):.0%}: extending down to {fill:.0%}")
+
+    def run_one(fill):
+        nonlocal prev
         mode = "cold" if (sweep_mode == "cold" or prev is None) else "warm"
         run = _run_level(cat, fill, mode, None if mode == "cold" else prev.x, snapshot_every, "catalog", callback)
         cat.levels[fill] = run
         prev = run
+
+    for idx, fill in enumerate(levels):
+        run_one(fill)
         if early_stop and idx == 0 and _all_fail_everything(cat, fill, materials, sf):
             cat.early_stopped = True
             cat.notes.append(f"{fill:.0%} fails every limit for every material: sweep stopped")
             break
-    if extend_low and min(cat.levels) <= min(config.FILL_LEVELS_EXTRA_LOW) and _all_pass(cat, min(cat.levels), materials, sf):
-        cat.notes.append("limits are loose; part size is set by the minimum wall")
+    if extend_low and not cat.early_stopped:
+        # Per-material extension (spec 6.3): keep going down while at least one material still
+        # passes; a material leaves the extension at the first level it fails.
+        current = min(levels)
+        still = [m for m in materials if _passes(cat, current, m, sf)]
+        for fill in [f for f in config.FILL_LEVELS_EXTRA_LOW if f < current]:
+            if not still:
+                break
+            cat.notes.append(f"{', '.join(m.id for m in still)} still pass at {current:.0%}: "
+                             f"extending down to {fill:.0%}")
+            run_one(fill)
+            still = [m for m in still if _passes(cat, fill, m, sf)]
+            current = fill
+        if still and current <= min(config.FILL_LEVELS_EXTRA_LOW) + 1e-12:
+            cat.notes.append(f"{', '.join(m.id for m in still)} pass at {current:.0%}: limits are loose for "
+                             "these materials; part size is set by the minimum wall")
     cat.seconds = time.perf_counter() - t0
     return cat
 
@@ -261,6 +291,9 @@ def refine_pick(cat: Catalog, material: Material, pick: MaterialPick, quick: boo
         mid = round(0.5 * (lo + hi), 4)
         run = cat.refined.get(mid)
         if run is None:
+            if base.x is None:  # a catalog restored from a cache has no design variables to warm-start from
+                raise RuntimeError(f"restored catalog {cat.process.id} needs a new refinement run at {mid:.4f}; "
+                                   "re-run this catalog instead of restoring it")
             run = _run_level(cat, mid, "refine", base.x, config.SNAPSHOT_EVERY_CATALOG, "refine", callback)
             cat.refined[mid] = run
         st = level_statuses({mid: run}, cat.domain, material, sf)[0]
@@ -308,7 +341,7 @@ def final_recheck(cat: Catalog, material: Material, pick: MaterialPick, callback
 def pick_material(cat: Catalog, material: Material, quick: bool = False, callback=None) -> Design:
     problem = cat.domain.problem
     sf = problem.safety_factor
-    statuses = level_statuses(cat.levels, cat.domain, material, sf)
+    statuses = level_statuses(material_levels(cat, material, sf), cat.domain, material, sf)
     v, window, notes = choose_level(statuses)
     pick = MaterialPick(material_id=material.id, status="fail", levels=statuses, v_pick=v, v_final=None,
                         window=window, notes=notes)
@@ -324,8 +357,12 @@ def pick_material(cat: Catalog, material: Material, quick: bool = False, callbac
                       reasons=checks.fail_reasons or [pick.reason], notes=notes, printer_allowed=allowed,
                       converged=run.converged)
     if window is None:
-        pick.notes.append("passes at the lowest level computed; limits are loose")
-        pick.status = "loose"
+        if v <= min(config.FILL_LEVELS_EXTRA_LOW) + 1e-12:
+            pick.notes.append(f"passes at {v:.0%}, the lowest level: limits are loose; part size is set "
+                              "by the minimum wall")
+            pick.status = "loose"
+        else:  # the sweep did not reach the floor for this material (e.g. a short level list)
+            pick.notes.append(f"passes at the lowest level computed ({v:.0%}); lower levels were not computed")
     pick = refine_pick(cat, material, pick, quick, callback)
     run, mech, checks = final_recheck(cat, material, pick, callback)
     if run is None:
@@ -383,7 +420,7 @@ class RunResult:
 
 def run_all(problem: Problem, materials: dict[str, Material], processes: dict[str, Process], cap: int,
             sweep_mode: str = "warm", quick: bool = False, rerun: str = "winner", levels=config.FILL_LEVELS,
-            callback=None) -> RunResult:
+            callback=None, prebuilt: dict | None = None) -> RunResult:
     """Run every process catalog, pick every material, and do the cold re-runs.
 
     rerun: "winner" (live: the overall winner only), "per_process" (demo: top design per process), "none".
@@ -397,8 +434,11 @@ def run_all(problem: Problem, materials: dict[str, Material], processes: dict[st
     designs: list[Design] = []
     for pid, mats in by_proc.items():
         proc = processes[pid]
-        cat = run_catalog(problem, proc, mats, cap, sweep_mode=sweep_mode, levels=levels,
-                          snapshot_every=0 if quick else config.SNAPSHOT_EVERY_CATALOG, callback=callback)
+        if prebuilt and pid in prebuilt:  # restored from a cache (precompute partial update)
+            cat = prebuilt[pid]
+        else:
+            cat = run_catalog(problem, proc, mats, cap, sweep_mode=sweep_mode, levels=levels,
+                              snapshot_every=0 if quick else config.SNAPSHOT_EVERY_CATALOG, callback=callback)
         catalogs[pid] = cat
         for m in mats:
             designs.append(pick_material(cat, m, quick=quick, callback=callback))

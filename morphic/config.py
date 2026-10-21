@@ -10,9 +10,9 @@ from __future__ import annotations
 # LLM_PROVIDER to "claude" and the matching model name. Keys come from .env.
 LLM_PROVIDER = "gemini"  # "gemini" | "claude"
 LLM_MODELS = {
-    # gemini-2.5-pro is retired for new keys (404) and the free-tier key has 0 quota for Pro
-    # models (429), so the user chose gemini-3.5-flash on 2026-10-21.
-    "gemini": "gemini-3.5-flash",
+    # Pro models: 404 (retired) or 0 free-tier quota (429). gemini-3.5-flash returned 503 (overloaded)
+    # repeatedly. On 2026-10-21 the newest Flash model this key reaches is gemini-3.8-flash.
+    "gemini": "gemini-3.8-flash",
     "claude": "claude-opus-5-5",
 }
 LLM_TIMEOUT_S = 45.0

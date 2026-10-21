@@ -144,8 +144,12 @@ def cmd_precompute(args) -> int:
     from .precompute import CACHE_DIR, precompute_all
 
     levels = config.FILL_LEVELS[: args.levels] if args.levels else config.FILL_LEVELS
+    recompute = {}
+    for item in args.recompute:
+        part, _, procs = item.partition(":")
+        recompute[part] = [p for p in procs.split(",") if p]
     return precompute_all(args.parts, Path(args.log) if args.log else None, args.cap,
-                          Path(args.out) if args.out else CACHE_DIR, levels=levels)
+                          Path(args.out) if args.out else CACHE_DIR, levels=levels, recompute=recompute or None)
 
 
 def main(argv=None) -> int:
@@ -178,6 +182,9 @@ def main(argv=None) -> int:
     pc.add_argument("--log", default="")
     pc.add_argument("--out", default="")
     pc.add_argument("--levels", type=int, default=0, help="only the first N fill levels (0 = all; for tests)")
+    pc.add_argument("--recompute", action="append", default=[],
+                    help="partial update PART:PROC[,PROC] (e.g. rc_arm:fdm); the other catalogs of PART are "
+                         "restored from its cache; PART: restores every catalog")
     pc.set_defaults(fn=cmd_precompute)
     for name in ("rerun", "render"):
         s = sub.add_parser(name, help=f"{name} (built in a later step)")

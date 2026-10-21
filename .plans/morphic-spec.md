@@ -304,7 +304,7 @@ Rules:
 - **Live runs:** the 60% level runs cold from uniform density. Each lower level is warm-started from the level above (β from 4, section 6.2).
 - **Precomputed demo parts:** every level runs cold from uniform density, so each shape is independent and the side-by-side grid shows real topology differences, not one topology thickened. If the timing benchmark (step S9) shows cold runs at the chosen cap cannot finish in time, fall back in this order: (1) 80k cap with cold runs, (2) the chosen cap with the warm downward sweep. Whichever is used is recorded in the run bundle.
 - Early stop: if the 60% level fails every limit for every material, stop the sweep and go to the "no material passes" flow (section 8).
-- If every material passes at 15%: continue down to 12%, 10%, 8%. If they still pass, report "limits are loose; part size is set by the minimum wall".
+- **Extension below 15%, per material** (decided 2026-10-21): if at least one material passes at 15%, continue down to 12%, 10%, 8% while at least one material still passes. Each material follows the extension only while it passes: the first lower level it fails at is the bottom of its refinement window, and levels computed below that (for other materials) do not count for it. A material that fails at 15% gets no extension levels. A material that passes at 8% carries the card note "limits are loose; part size is set by the minimum wall". The global message is shown only when every material passes at 8%. (Before this change the sweep only extended when every material passed, so a lighter pick could be missed when another material failed at a lower level.)
 - If the 60% level fails for a material: that material fails (section 8).
 
 ### 6.4 Scaling to each material (why the catalog is valid)
@@ -417,7 +417,7 @@ The cost is close to linear in the element count (about 2.2e-5 s per element per
 | Situation | What Morphic does |
 |---|---|
 | No material passes | Show each material's best SF and deflection against the target (at 60% fill, or the full block if that is better). Suggest specific fixes from scaling: for in-plane loads, deflection and stress both scale **exactly** 1/t for the same shape, so required t ≈ t × max(SF_target/SF, δ/δ_limit); out-of-plane bending stress scales 1/t² and interlayer shear 1/t. Also suggest a larger design space or a lower safety factor, each with the computed number, e.g. "increase thickness to 9 mm". Never change the problem on its own. |
-| All pass at 8% | Report the loose-limits message (section 6.3). Show results at the lowest level. |
+| A material passes at 8% | Card note: limits are loose for that material. If every material passes at 8%, also the global loose-limits message (section 6.3). Show results at the lowest level. |
 | A material passes only with a fill above its catalog's 60% | Treated as fail for that material, with its numbers. |
 | Isolated stress failure at a level above the pick | Shown greyed in the funnel with the label; does not move the pick (section 6.5). |
 | Load pad not connected to a support after clean-up | That fill level fails with the message; the pick moves up (section 6.8). |

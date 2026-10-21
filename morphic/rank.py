@@ -161,7 +161,9 @@ def edge_messages(res: RunResult, cards: list[Card]) -> list[str]:
         names = [f"{c.design.material.id} ({PROCESS_WORD.get(c.design.process.printer_group, c.design.process.id)} service)"
                  for c in passing_any]
         msgs.append("Only " + ", ".join(names) + " meets the limits. Your printer selection filters it out.")
-    if any(c.design.pick.status == "loose" for c in cards):
+    # Spec 6.3 / section 8: the global message only when every material passes at the lowest
+    # level (8%); single materials that do carry the note on their own card.
+    if cards and all(c.design.pick.status == "loose" for c in cards):
         msgs.append("Limits are loose; part size is set by the minimum wall. Results shown at the lowest fill level.")
     for c in cards:
         if c.design.rerun and not c.design.rerun.get("replaced", True):

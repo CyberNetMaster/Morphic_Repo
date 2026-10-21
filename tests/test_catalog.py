@@ -168,3 +168,57 @@ def test_three_process_results():
     if winners:
         w = winners[0]
         assert w.rerun["snapshots"][-1][0] == w.rerun["iterations"]
+
+
+# ----------------------------------------------------------------------------- per-material extension (spec 6.3)
+def _fake_catalog(dom, stress_by_fill):
+    """A catalog whose levels carry chosen reference stresses (deflection always tiny)."""
+    from types import SimpleNamespace
+
+    from morphic.catalog import Catalog, LevelRun
+
+    cat = Catalog(process=PROCESSES["fdm"], domain=dom, weights=np.ones(2), sweep_mode="cold",
+                  main_levels=(0.60, 0.45, 0.30, 0.15))
+    for f, s in stress_by_fill.items():
+        mech = SimpleNamespace(E=1.0, deflection_mm=np.array([1e-9, 1e-9]), stress_reported_MPa=np.array([s, s]),
+                               connected=True)
+        cat.levels[f] = LevelRun(fill=f, xPhys=None, x=None, mech=mech, iterations=1, converged=True,
+                                 converged_by="change", seconds=0.0, seconds_per_iter=0.0, mode="cold")
+    return cat
+
+
+def test_material_levels_follow_extension_only_while_passing(full_block_domain):
+    from morphic.catalog import choose_level, level_statuses, material_levels
+
+    # strength 55 (pla) and 100 (pa6cf), SF 2: pla passes while stress <= 27.5, pa6cf while <= 50
+    stress = {0.60: 10, 0.45: 12, 0.30: 15, 0.15: 20, 0.12: 30, 0.10: 26, 0.08: 40}
+    cat = _fake_catalog(full_block_domain, stress)
+    pla, pa6cf = MATERIALS["pla"], MATERIALS["pa6cf"]
+    lv_pla = material_levels(cat, pla, 2.0)
+    assert sorted(lv_pla) == [0.12, 0.15, 0.30, 0.45, 0.60]  # fails at 12%: 10% ("passes" by noise) dropped
+    v, window, _ = choose_level(level_statuses(lv_pla, cat.domain, pla, 2.0))
+    assert v == 0.15 and window == (0.12, 0.15)
+    lv_cf = material_levels(cat, pa6cf, 2.0)
+    assert sorted(lv_cf) == [0.08, 0.10, 0.12, 0.15, 0.30, 0.45, 0.60]
+    v, window, _ = choose_level(level_statuses(lv_cf, cat.domain, pa6cf, 2.0))
+    assert v == 0.08 and window is None
+
+
+def test_material_failing_at_15_gets_no_extension_levels(full_block_domain):
+    from morphic.catalog import material_levels
+
+    cat = _fake_catalog(full_block_domain, {0.60: 10, 0.45: 12, 0.30: 20, 0.15: 30, 0.12: 20})
+    assert sorted(material_levels(cat, MATERIALS["pla"], 2.0)) == [0.15, 0.30, 0.45, 0.60]
+
+
+def test_global_loose_message_only_when_every_material_is_loose():
+    from morphic import rank
+    from tests.test_rank import design, run_result
+
+    a, b = design("pla", 6.0), design("pa6cf", 3.0)
+    a.pick.status = "loose"
+    out = rank.rank_designs(run_result([a, b]), baselines={})
+    assert not any("loose" in m for m in out.messages)
+    b.pick.status = "loose"
+    out = rank.rank_designs(run_result([a, b]), baselines={})
+    assert any("Limits are loose" in m for m in out.messages)

@@ -1,0 +1,219 @@
+{
+  "provider": "gemini",
+  "model": "gemini-3.8-flash",
+  "seconds": 10.139238200004911,
+  "attempts": [
+    {
+      "attempt": 1,
+      "seconds": 10.138063699996565,
+      "raw": "{\"name\": \"Rear lower suspension arm\", \"design_space\": {\"width_mm\": 90.0, \"height_mm\": 20.0}, \"thickness_mm\": 12.0, \"zones\": [], \"pads\": [{\"id\": \"hinge\", \"cx\": 6.0, \"cy\": 10.0, \"hole_r_mm\": null, \"ring_r_mm\": null, \"solid\": false}, {\"id\": \"shock\", \"cx\": 55.0, \"cy\": 16.0, \"hole_r_mm\": null, \"ring_r_mm\": null, \"solid\": false}, {\"id\": \"hub\", \"cx\": 84.0, \"cy\": 10.0, \"hole_r_mm\": null, \"ring_r_mm\": null, \"solid\": false}], \"supports\": [{\"pad_id\": \"hinge\", \"type\": \"pin\"}, {\"pad_id\": \"shock\", \"type\": \"slide_x\"}], \"load_cases\": [{\"id\": \"hard_landing\", \"name\": \"Hard landing\", \"reason\": \"about 0.5 kg per corner at a 15 g landing peak\", \"loads\": [{\"pad_id\": \"hub\", \"fx_N\": 0.0, \"fy_N\": -80.0, \"fz_N_out_of_plane\": 0.0}], \"max_deflection_mm\": 1.0}, {\"id\": \"curb_hit\", \"name\": \"Curb hit, sideways\", \"reason\": \"pushing the hub toward the hinge\", \"loads\": [{\"pad_id\": \"hub\", \"fx_N\": -40.0, \"fy_N\": 0.0, \"fz_N_out_of_plane\": 0.0}], \"max_deflection_mm\": 1.0}, {\"id\": \"front_impact\", \"name\": \"Front impact\", \"reason\": \"along the thickness direction, out of the drawing plane\", \"loads\": [{\"pad_id\": \"hub\", \"fx_N\": 0.0, \"fy_N\": 0.0, \"fz_N_out_of_plane\": 60.0}], \"max_deflection_mm\": null}], \"deflection_span_ratio\": null, \"safety_factor\": 2.0, \"printer\": \"desktop_fdm\", \"materials\": null, \"original_text\": {\"design_space.width_mm\": \"90 mm long\", \"design_space.height_mm\": \"20 mm tall\", \"thickness_mm\": \"12 mm thick\", \"pads[0].cx\": \"(6, 10) mm\", \"pads[0].cy\": \"(6, 10) mm\", \"pads[1].cx\": \"(55, 16) mm\", \"pads[1].cy\": \"(55, 16) mm\", \"pads[2].cx\": \"(84, 10) mm\", \"pads[2].cy\": \"(84, 10) mm\", \"supports[0].type\": \"fixed pin\", \"supports[1].type\": \"holds the arm up and down but lets it slide sideways\", \"load_cases[0].loads[0].fy_N\": \"80 N downward\", \"load_cases[0].max_deflection_mm\": \"1 mm\", \"load_cases[1].loads[0].fx_N\": \"40 N pushing the hub toward the hinge (in the minus x direction)\", \"load_cases[1].max_deflection_mm\": \"1 mm\", \"load_cases[2].loads[0].fz_N_out_of_plane\": \"60 N at the hub along the thickness direction, out of the drawing plane\", \"safety_factor\": \"2\", \"printer\": \"desktop FDM printer\"}, \"warnings\": []}",
+      "provider": "gemini",
+      "model": "gemini-3.8-flash"
+    }
+  ],
+  "problem": {
+    "name": "Rear lower suspension arm",
+    "design_space": {
+      "width_mm": 90.0,
+      "height_mm": 20.0
+    },
+    "thickness_mm": 12.0,
+    "zones": [],
+    "pads": [
+      {
+        "id": "hinge",
+        "cx": 6.0,
+        "cy": 10.0,
+        "hole_r_mm": 1.6,
+        "ring_r_mm": 3.6
+      },
+      {
+        "id": "shock",
+        "cx": 55.0,
+        "cy": 16.0,
+        "hole_r_mm": 1.6,
+        "ring_r_mm": 3.6
+      },
+      {
+        "id": "hub",
+        "cx": 84.0,
+        "cy": 10.0,
+        "hole_r_mm": 1.6,
+        "ring_r_mm": 3.6
+      }
+    ],
+    "supports": [
+      {
+        "pad_id": "hinge",
+        "type": "pin"
+      },
+      {
+        "pad_id": "shock",
+        "type": "slide_x"
+      }
+    ],
+    "load_cases": [
+      {
+        "id": "hard_landing",
+        "name": "Hard landing",
+        "reason": "about 0.5 kg per corner at a 15 g landing peak",
+        "loads": [
+          {
+            "pad_id": "hub",
+            "fx_N": 0.0,
+            "fy_N": -80.0,
+            "fz_N_out_of_plane": 0.0
+          }
+        ],
+        "max_deflection_mm": 1.0
+      },
+      {
+        "id": "curb_hit",
+        "name": "Curb hit, sideways",
+        "reason": "pushing the hub toward the hinge",
+        "loads": [
+          {
+            "pad_id": "hub",
+            "fx_N": -40.0,
+            "fy_N": 0.0,
+            "fz_N_out_of_plane": 0.0
+          }
+        ],
+        "max_deflection_mm": 1.0
+      },
+      {
+        "id": "front_impact",
+        "name": "Front impact",
+        "reason": "along the thickness direction, out of the drawing plane",
+        "loads": [
+          {
+            "pad_id": "hub",
+            "fx_N": 0.0,
+            "fy_N": 0.0,
+            "fz_N_out_of_plane": 60.0
+          }
+        ],
+        "max_deflection_mm": 0.78
+      }
+    ],
+    "safety_factor": 2.0,
+    "printer": "desktop_fdm",
+    "materials": [
+      "pla",
+      "petg",
+      "pa6cf",
+      "pa12",
+      "alsi10mg",
+      "ti64"
+    ],
+    "warnings": [],
+    "provenance": {
+      "pads[0].hole_r_mm": {
+        "source": "default",
+        "original_text": "default: M3 clearance"
+      },
+      "pads[0].ring_r_mm": {
+        "source": "default",
+        "original_text": "default: ring width max(2 mm, 2 x min wall) = 2 mm"
+      },
+      "pads[1].hole_r_mm": {
+        "source": "default",
+        "original_text": "default: M3 clearance"
+      },
+      "pads[1].ring_r_mm": {
+        "source": "default",
+        "original_text": "default: ring width max(2 mm, 2 x min wall) = 2 mm"
+      },
+      "pads[2].hole_r_mm": {
+        "source": "default",
+        "original_text": "default: M3 clearance"
+      },
+      "pads[2].ring_r_mm": {
+        "source": "default",
+        "original_text": "default: ring width max(2 mm, 2 x min wall) = 2 mm"
+      },
+      "thickness_mm": {
+        "source": "user",
+        "original_text": "12 mm thick"
+      },
+      "safety_factor": {
+        "source": "user",
+        "original_text": "2"
+      },
+      "printer": {
+        "source": "user",
+        "original_text": "desktop FDM printer"
+      },
+      "materials": {
+        "source": "default",
+        "original_text": "default: all 6"
+      },
+      "load_cases[0].max_deflection_mm": {
+        "source": "user",
+        "original_text": "1 mm"
+      },
+      "load_cases[1].max_deflection_mm": {
+        "source": "user",
+        "original_text": "1 mm"
+      },
+      "load_cases[2].max_deflection_mm": {
+        "source": "default",
+        "original_text": "default: span / 100 = 0.78 mm"
+      },
+      "design_space.width_mm": {
+        "source": "user",
+        "original_text": "90 mm long"
+      },
+      "design_space.height_mm": {
+        "source": "user",
+        "original_text": "20 mm tall"
+      },
+      "pads[0].cx": {
+        "source": "user",
+        "original_text": "(6, 10) mm"
+      },
+      "pads[0].cy": {
+        "source": "user",
+        "original_text": "(6, 10) mm"
+      },
+      "pads[1].cx": {
+        "source": "user",
+        "original_text": "(55, 16) mm"
+      },
+      "pads[1].cy": {
+        "source": "user",
+        "original_text": "(55, 16) mm"
+      },
+      "pads[2].cx": {
+        "source": "user",
+        "original_text": "(84, 10) mm"
+      },
+      "pads[2].cy": {
+        "source": "user",
+        "original_text": "(84, 10) mm"
+      },
+      "supports[0].type": {
+        "source": "user",
+        "original_text": "fixed pin"
+      },
+      "supports[1].type": {
+        "source": "user",
+        "original_text": "holds the arm up and down but lets it slide sideways"
+      },
+      "load_cases[0].loads[0].fy_N": {
+        "source": "user",
+        "original_text": "80 N downward"
+      },
+      "load_cases[1].loads[0].fx_N": {
+        "source": "user",
+        "original_text": "40 N pushing the hub toward the hinge (in the minus x direction)"
+      },
+      "load_cases[2].loads[0].fz_N_out_of_plane": {
+        "source": "user",
+        "original_text": "60 N at the hub along the thickness direction, out of the drawing plane"
+      }
+    },
+    "notes": [],
+    "references": []
+  }
+}
