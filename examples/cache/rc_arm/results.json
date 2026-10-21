@@ -1,0 +1,3221 @@
+{
+ "format_version": 1,
+ "key": "938e77da1ccbe0b9d4cfbc052ff6834d4b8b4725c30a2470b136cf1bce111d9b",
+ "code_version": "2578ddad4d5218a06aef370e41a344c3c8a37c18",
+ "materials_hash": "406e95fe4e949ea5",
+ "solver_settings": {
+  "LLM_PROVIDER": "gemini",
+  "LLM_MODELS": {
+   "gemini": "gemini-3.5-flash",
+   "claude": "claude-opus-5-5"
+  },
+  "LLM_TIMEOUT_S": 45.0,
+  "LLM_RETRIES": 1,
+  "ELEMENT_CAP_LIVE": 40000,
+  "ELEMENT_CAP_QUICK": 10000,
+  "ELEMENT_CAP_CACHED": 80000,
+  "ELEMENT_CAP_CACHED_SWEEP": "cold",
+  "MIN_WALL_TO_ELEMENT_RATIO": 2.5,
+  "SIMP_PENALTY": 3.0,
+  "E_MIN_RATIO": 1e-09,
+  "FILTER_RADIUS_MIN_ELEMENTS": 1.5,
+  "BETA_SCHEDULE_COLD": [
+   1,
+   2,
+   4,
+   8,
+   16
+  ],
+  "BETA_SCHEDULE_WARM": [
+   4,
+   8,
+   16
+  ],
+  "BETA_STEP_ITERS": 40,
+  "CHANGE_TOL": 0.01,
+  "PLATEAU_WINDOW": 10,
+  "PLATEAU_RTOL": 0.001,
+  "MAX_ITERS_COLD": 300,
+  "MAX_ITERS_WARM": 100,
+  "MAX_ITERS_REFINE": 60,
+  "OC_MOVE": 0.2,
+  "CATALOG_REFERENCE_E": 1.0,
+  "CATALOG_REFERENCE_NU": 0.33,
+  "SNAPSHOT_EVERY_CATALOG": 2,
+  "SNAPSHOT_EVERY_COLD_RERUN": 1,
+  "FILL_LEVELS": [
+   0.6,
+   0.55,
+   0.5,
+   0.45,
+   0.4,
+   0.35,
+   0.3,
+   0.25,
+   0.2,
+   0.15
+  ],
+  "FILL_LEVELS_LIVE_SHORT": [
+   0.6,
+   0.5,
+   0.4,
+   0.3,
+   0.25,
+   0.2,
+   0.15
+  ],
+  "FILL_LEVELS_LIVE": [
+   0.6,
+   0.5,
+   0.4,
+   0.3,
+   0.25,
+   0.2,
+   0.15
+  ],
+  "FILL_LEVELS_EXTRA_LOW": [
+   0.12,
+   0.1,
+   0.08
+  ],
+  "NORMALIZATION_FILL": 0.6,
+  "REFINE_BISECTION_STEPS": 3,
+  "SOLID_THRESHOLD": 0.5,
+  "EXCLUSION_RING_WIDTHS": 1.0,
+  "REACTION_SUM_RTOL": 1e-06,
+  "OUT_OF_PLANE_SECTIONS": 20,
+  "RECHECK_SUPERSAMPLE": 4,
+  "DEFAULT_SAFETY_FACTOR": 2.0,
+  "DEFAULT_THICKNESS_MM": 6.0,
+  "DEFAULT_DEFLECTION_SPAN_RATIO": 100.0,
+  "DEFAULT_PRINTER": "any",
+  "DEFAULT_HOLE_R_MM": 1.6,
+  "DEFAULT_RING_WIDTH_MIN_MM": 2.0,
+  "DEFAULT_RING_WIDTH_WALLS": 2.0,
+  "SIZE_MIN_MM": 5.0,
+  "SIZE_MAX_MM": 2000.0,
+  "FORCE_MAX_N": 1000000.0,
+  "THIN_SPAN_RATIO": 20.0,
+  "KEEP_IN_MAX_FRACTION": 0.9,
+  "VALIDATION_TOL_BEAM": 0.03,
+  "VALIDATION_TOL_MBB": 0.02,
+  "VALIDATION_TOL_SCALING": 1e-06,
+  "SMOOTH_MAX_MOVE_ELEMENTS": 0.5,
+  "VOLUME_CHECK_RTOL": 0.01,
+  "RERUN_STRICT_RTOL": 0.005,
+  "RERUN_LOOSE_MASS_RTOL": 0.02,
+  "cap_used": 80000,
+  "sweep_mode_used": "cold",
+  "levels_used": [
+   0.6,
+   0.55,
+   0.5,
+   0.45,
+   0.4,
+   0.35,
+   0.3,
+   0.25,
+   0.2,
+   0.15
+  ],
+  "format_version": 1
+ },
+ "problem": {
+  "name": "RC car lower suspension arm (1/10 scale buggy, rear)",
+  "design_space": {
+   "width_mm": 90.0,
+   "height_mm": 20.0
+  },
+  "thickness_mm": 12.0,
+  "zones": [],
+  "pads": [
+   {
+    "id": "hinge",
+    "cx": 6.0,
+    "cy": 10.0,
+    "hole_r_mm": 1.6,
+    "ring_r_mm": 3.6
+   },
+   {
+    "id": "shock",
+    "cx": 55.0,
+    "cy": 16.0,
+    "hole_r_mm": 1.6,
+    "ring_r_mm": 3.6
+   },
+   {
+    "id": "hub",
+    "cx": 84.0,
+    "cy": 10.0,
+    "hole_r_mm": 1.6,
+    "ring_r_mm": 3.6
+   }
+  ],
+  "supports": [
+   {
+    "pad_id": "hinge",
+    "type": "pin"
+   },
+   {
+    "pad_id": "shock",
+    "type": "slide_x"
+   }
+  ],
+  "load_cases": [
+   {
+    "id": "landing",
+    "name": "Hard landing",
+    "reason": "about 0.5 kg per corner x 9.81 x ~15 g landing peak (impact factor to cite from an RC or vehicle dynamics source)",
+    "loads": [
+     {
+      "pad_id": "hub",
+      "fx_N": 0.0,
+      "fy_N": -80.0,
+      "fz_N_out_of_plane": 0.0
+     }
+    ],
+    "max_deflection_mm": 1.0
+   },
+   {
+    "id": "curb",
+    "name": "Curb hit, sideways",
+    "reason": "lateral strike, ~3x the cornering force",
+    "loads": [
+     {
+      "pad_id": "hub",
+      "fx_N": -40.0,
+      "fy_N": 0.0,
+      "fz_N_out_of_plane": 0.0
+     }
+    ],
+    "max_deflection_mm": 1.0
+   },
+   {
+    "id": "front_impact",
+    "name": "Front impact (out of plane)",
+    "reason": "fore-aft strike; hand checks only (bending through the thickness and interlayer shear)",
+    "loads": [
+     {
+      "pad_id": "hub",
+      "fx_N": 0.0,
+      "fy_N": 0.0,
+      "fz_N_out_of_plane": 60.0
+     }
+    ],
+    "max_deflection_mm": 1.0
+   }
+  ],
+  "safety_factor": 2.0,
+  "printer": "desktop_fdm",
+  "materials": [
+   "pla",
+   "petg",
+   "pa6cf",
+   "pa12",
+   "alsi10mg",
+   "ti64"
+  ],
+  "warnings": [],
+  "provenance": {
+   "thickness_mm": {
+    "source": "user",
+    "original_text": "12 mm thick (fore-aft)"
+   },
+   "safety_factor": {
+    "source": "user",
+    "original_text": "safety factor 2"
+   }
+  },
+  "notes": [
+   "Front view of the arm: the vertical landing load is in-plane. Printed flat, extruded 12 mm fore-aft."
+  ],
+  "references": [
+   "Spec section 14.1 (approved 2026-10-20); impact factor citation still to add"
+  ]
+ },
+ "seconds": 4417.761177100001,
+ "created": "2026-10-21 02:15:22",
+ "catalogs": {
+  "fdm": {
+   "process": "fdm",
+   "mesh": [
+    282,
+    63
+   ],
+   "elements": 17766,
+   "h_mm": 0.3191489361702128,
+   "effective_min_wall_mm": 0.8,
+   "min_wall_text": "fdm: 0.80 mm enforced",
+   "weights": [
+    1.2908910878667822e-05,
+    0.0003950851114961751,
+    0.0
+   ],
+   "sweep_mode": "cold",
+   "early_stopped": 0,
+   "notes": [
+    "every material passes at 15%: extending down to 12%"
+   ],
+   "seconds": 637.6508035000006,
+   "levels": [
+    {
+     "fill": 0.12,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 255,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 71.97644130000117,
+     "ref_deflection_dE": [
+      1794.302476347206,
+      147.31077319649887,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      20.619130912882763,
+      4.060011941725149,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.135,
+     "kind": "refine",
+     "mode": "refine",
+     "iterations": 60,
+     "converged": 0,
+     "converged_by": null,
+     "seconds": 17.310059000003093,
+     "ref_deflection_dE": [
+      6426.692069116032,
+      1001.2590757681536,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      57.55899331450234,
+      10.519259546374624,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.1425,
+     "kind": "refine",
+     "mode": "refine",
+     "iterations": 60,
+     "converged": 0,
+     "converged_by": null,
+     "seconds": 17.950310000000172,
+     "ref_deflection_dE": [
+      5560.1880061674,
+      840.1957080930097,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      52.74398722721391,
+      9.898676550804657,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.1462,
+     "kind": "refine",
+     "mode": "refine",
+     "iterations": 60,
+     "converged": 0,
+     "converged_by": null,
+     "seconds": 17.746499900000344,
+     "ref_deflection_dE": [
+      1642.909776358414,
+      146.50568134662456,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      30.33492821792553,
+      5.821684247343755,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.15,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 189,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 53.60813110000163,
+     "ref_deflection_dE": [
+      1344.5365276005994,
+      108.82439130662111,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      11.996888352470798,
+      2.4196592895572913,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.2,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 185,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 55.04230700000335,
+     "ref_deflection_dE": [
+      996.2199116257641,
+      78.20803091433622,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      8.801800008061917,
+      1.8893466635034484,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.25,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 182,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 53.52762969999458,
+     "ref_deflection_dE": [
+      803.5092196145794,
+      61.577218347530625,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      7.070824129262474,
+      1.3179544159745198,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.3,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 183,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 53.85509009999805,
+     "ref_deflection_dE": [
+      679.8777234331011,
+      50.52191918423977,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      5.621264581201645,
+      1.0247844939828155,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.35,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 182,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 54.595303900001454,
+     "ref_deflection_dE": [
+      580.2904120289306,
+      42.56984061454396,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      5.687031291240424,
+      0.8779322095127065,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.4,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 180,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 54.8649390999999,
+     "ref_deflection_dE": [
+      511.1022739540145,
+      37.12651112630881,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      5.2892517197856925,
+      0.7761250926080042,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.45,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 178,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 52.71758460000274,
+     "ref_deflection_dE": [
+      450.820537252306,
+      32.890678243261725,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      4.489583342807772,
+      0.6969118126030808,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.5,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 177,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 50.91170730000158,
+     "ref_deflection_dE": [
+      410.2938868279116,
+      29.36548304304065,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      4.1922968221480215,
+      0.6032714757231578,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.55,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 177,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 49.22275950000039,
+     "ref_deflection_dE": [
+      377.74145135668726,
+      26.635474445319154,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      3.7061633490341848,
+      0.5691693520733537,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.6,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 238,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 67.66768729999603,
+     "ref_deflection_dE": [
+      353.0755733020185,
+      24.086988409659906,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      3.344123826870827,
+      0.6813949394028065,
+      0.0
+     ],
+     "connected": 1
+    }
+   ]
+  },
+  "sls": {
+   "process": "sls",
+   "mesh": [
+    282,
+    63
+   ],
+   "elements": 17766,
+   "h_mm": 0.3191489361702128,
+   "effective_min_wall_mm": 0.8,
+   "min_wall_text": "sls: 0.80 mm enforced",
+   "weights": [
+    1.2908910878667822e-05,
+    0.0003950851114961751,
+    0.0
+   ],
+   "sweep_mode": "cold",
+   "early_stopped": 0,
+   "notes": [
+    "every material passes at 15%: extending down to 12%"
+   ],
+   "seconds": 623.6609414999984,
+   "levels": [
+    {
+     "fill": 0.12,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 255,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 72.80555539999477,
+     "ref_deflection_dE": [
+      1794.302476347206,
+      147.31077319649887,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      20.619130912882763,
+      4.060011941725149,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.135,
+     "kind": "refine",
+     "mode": "refine",
+     "iterations": 60,
+     "converged": 0,
+     "converged_by": null,
+     "seconds": 18.8152012999999,
+     "ref_deflection_dE": [
+      6426.692069116032,
+      1001.2590757681536,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      57.55899331450234,
+      10.519259546374624,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.1425,
+     "kind": "refine",
+     "mode": "refine",
+     "iterations": 60,
+     "converged": 0,
+     "converged_by": null,
+     "seconds": 17.011765499999456,
+     "ref_deflection_dE": [
+      5560.1880061674,
+      840.1957080930097,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      52.74398722721391,
+      9.898676550804657,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.1462,
+     "kind": "refine",
+     "mode": "refine",
+     "iterations": 60,
+     "converged": 0,
+     "converged_by": null,
+     "seconds": 17.338633200000913,
+     "ref_deflection_dE": [
+      1642.909776358414,
+      146.50568134662456,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      30.33492821792553,
+      5.821684247343755,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.15,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 189,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 53.8337915000011,
+     "ref_deflection_dE": [
+      1344.5365276005994,
+      108.82439130662111,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      11.996888352470798,
+      2.4196592895572913,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.2,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 185,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 52.33659850000549,
+     "ref_deflection_dE": [
+      996.2199116257641,
+      78.20803091433622,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      8.801800008061917,
+      1.8893466635034484,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.25,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 182,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 53.424841399995785,
+     "ref_deflection_dE": [
+      803.5092196145794,
+      61.577218347530625,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      7.070824129262474,
+      1.3179544159745198,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.3,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 183,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 51.259720499998366,
+     "ref_deflection_dE": [
+      679.8777234331011,
+      50.52191918423977,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      5.621264581201645,
+      1.0247844939828155,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.35,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 182,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 51.78087039999809,
+     "ref_deflection_dE": [
+      580.2904120289306,
+      42.56984061454396,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      5.687031291240424,
+      0.8779322095127065,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.4,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 180,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 50.535771099996055,
+     "ref_deflection_dE": [
+      511.1022739540145,
+      37.12651112630881,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      5.2892517197856925,
+      0.7761250926080042,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.45,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 178,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 51.37445789999765,
+     "ref_deflection_dE": [
+      450.820537252306,
+      32.890678243261725,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      4.489583342807772,
+      0.6969118126030808,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.5,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 177,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 51.07751239999925,
+     "ref_deflection_dE": [
+      410.2938868279116,
+      29.36548304304065,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      4.1922968221480215,
+      0.6032714757231578,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.55,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 177,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 49.86454000000231,
+     "ref_deflection_dE": [
+      377.74145135668726,
+      26.635474445319154,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      3.7061633490341848,
+      0.5691693520733537,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.6,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 238,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 69.2919688999973,
+     "ref_deflection_dE": [
+      353.0755733020185,
+      24.086988409659906,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      3.344123826870827,
+      0.6813949394028065,
+      0.0
+     ],
+     "connected": 1
+    }
+   ]
+  },
+  "metal": {
+   "process": "metal",
+   "mesh": [
+    563,
+    125
+   ],
+   "elements": 70375,
+   "h_mm": 0.15985790408525755,
+   "effective_min_wall_mm": 0.4,
+   "min_wall_text": "metal: 0.40 mm enforced",
+   "weights": [
+    1.2642711971564324e-05,
+    0.00039337029766451926,
+    0.0
+   ],
+   "sweep_mode": "cold",
+   "early_stopped": 0,
+   "notes": [
+    "every material passes at 15%: extending down to 12%",
+    "every material passes at 12%: extending down to 10%",
+    "every material passes at 10%: extending down to 8%",
+    "limits are loose; part size is set by the minimum wall"
+   ],
+   "seconds": 2569.660396200001,
+   "levels": [
+    {
+     "fill": 0.08,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 189,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 198.54265479999594,
+     "ref_deflection_dE": [
+      4325.342317268807,
+      526.9507507174195,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      75.77889557307498,
+      16.29099373524233,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.1,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 187,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 200.02696540000034,
+     "ref_deflection_dE": [
+      2040.135275974381,
+      163.88886324019015,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      20.489717842768446,
+      3.8790575027459817,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.12,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 185,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 193.05381620000117,
+     "ref_deflection_dE": [
+      1645.1748810825159,
+      133.94866582183468,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      16.010475787224532,
+      3.3475685081649655,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.15,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 183,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 194.66689860000042,
+     "ref_deflection_dE": [
+      1334.4020403785266,
+      103.3956276261651,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      13.546585878343798,
+      2.744826666356404,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.2,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 181,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 190.74961520000215,
+     "ref_deflection_dE": [
+      1027.2199695646825,
+      78.819685216614,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      11.321631255541403,
+      2.177877483456516,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.25,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 180,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 192.49392429999716,
+     "ref_deflection_dE": [
+      823.3148040850712,
+      61.65992547395639,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      7.621409194827689,
+      1.401596744849163,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.3,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 179,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 189.35242880000442,
+     "ref_deflection_dE": [
+      687.9998876995978,
+      50.89656037945439,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      6.179280524239547,
+      1.0905236228493047,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.35,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 179,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 189.4528289000009,
+     "ref_deflection_dE": [
+      591.5249186312044,
+      43.71660318615991,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      6.328890702527696,
+      0.984594168396158,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.4,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 176,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 187.15906740000355,
+     "ref_deflection_dE": [
+      518.5386987860543,
+      37.89027528727989,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      5.682333753517403,
+      0.8917358303190268,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.45,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 176,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 186.29899860000296,
+     "ref_deflection_dE": [
+      457.91440872821465,
+      33.40760099125053,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      4.8525367444138965,
+      0.9314981224296071,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.5,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 175,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 188.5419791000022,
+     "ref_deflection_dE": [
+      416.7244064462035,
+      29.703997129901524,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      4.23007377329472,
+      0.7325715919693756,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.55,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 177,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 195.10339459999523,
+     "ref_deflection_dE": [
+      384.28108299802426,
+      26.664108529349246,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      3.769884945665279,
+      0.7025617232266455,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.6,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 173,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 187.1235444999984,
+     "ref_deflection_dE": [
+      350.3751117816119,
+      23.896560363115682,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      3.2402832115696656,
+      0.779990853733823,
+      0.0
+     ],
+     "connected": 1
+    }
+   ]
+  }
+ },
+ "designs": [
+  {
+   "material": "pla",
+   "process": "fdm",
+   "status": "pass",
+   "fill": 0.12,
+   "printer_allowed": 1,
+   "converged": 1,
+   "reasons": [],
+   "notes": [
+    "passes at the lowest level computed; limits are loose"
+   ],
+   "checks": {
+    "passed": 1,
+    "passed_in_plane": 1,
+    "sf": 2.566151109313929,
+    "sf_raw": 1.9012234518437297,
+    "sf_target": 2.0,
+    "stress_reported_MPa": 19.8741219154608,
+    "stress_raw_MPa": 26.824832162964466,
+    "stress_pass": 1,
+    "deflection_mm": [
+     0.7341341407571894,
+     0.05986623425398564,
+     0.0
+    ],
+    "deflection_limit_mm": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "deflection_pass": 1,
+    "mass_g": 4.578587030330467,
+    "out_of_plane": [
+     {
+      "name": "out-of-plane bending (Front impact (out of plane))",
+      "passed": 1,
+      "sf": 3.5305104192647856,
+      "detail": "approximate hand check: beam through the thickness, XY strength 51 MPa",
+      "where": "24.0 mm from pad hub, width 4.1 mm",
+      "suggestion": ""
+     },
+     {
+      "name": "interlayer shear (Front impact (out of plane))",
+      "passed": 1,
+      "sf": 5.488021409854409,
+      "detail": "approximate hand check: 1.5 Fz / (w t) vs 21.5 MPa (Z strength / sqrt(3), a conservative stand-in (XY x 0.73 knockdown (Ultimaker PLA TDS v2.00 (2022-04-20), p.2: tensile stress at break XY (flat) 45.5 +/- 1.1 MPa vs Z (upright) 33.1 +/- 2.8 MPa, ASTM D3039. Ratio 33.1/45.5 = 0.73. Different PLA brand; https://um-support-files.ultimaker.com/materials/2.85mm/tds/PLA/Ultimaker-PLA-TDS-v5.00.pdf)))",
+      "where": "8.5 mm from pad hub, width 1.9 mm",
+      "suggestion": ""
+     }
+    ],
+    "bearing": [
+     {
+      "name": "bearing at hinge",
+      "passed": 1,
+      "sf": 48.943914091558625,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Curb hit, sideways: FE reaction 40 N, 1.0 MPa vs 51 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at shock",
+      "passed": 1,
+      "sf": 17.70624776007089,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 111 N, 2.9 MPa vs 51 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at hub",
+      "passed": 1,
+      "sf": 24.480000000000004,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: applied force 80 N, 2.1 MPa vs 51 MPa",
+      "suggestion": ""
+     }
+    ],
+    "fail_reasons": [],
+    "notes": []
+   },
+   "grid_checks": {
+    "passed": 1,
+    "passed_in_plane": 1,
+    "sf": 2.4717849358224875,
+    "sf_raw": 1.8511063180317453,
+    "sf_target": 2.0,
+    "stress_reported_MPa": 20.63286302172957,
+    "stress_raw_MPa": 27.551091746165916,
+    "stress_pass": 1,
+    "deflection_mm": [
+     0.7802960243417807,
+     0.06403134743308742,
+     0.0
+    ],
+    "deflection_limit_mm": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "deflection_pass": 1,
+    "mass_g": 4.5695880488909015,
+    "out_of_plane": [
+     {
+      "name": "out-of-plane bending (Front impact (out of plane))",
+      "passed": 1,
+      "sf": 2.8213908051389534,
+      "detail": "approximate hand check: beam through the thickness, XY strength 51 MPa",
+      "where": "25.4 mm from pad hub, width 3.5 mm",
+      "suggestion": ""
+     },
+     {
+      "name": "interlayer shear (Front impact (out of plane))",
+      "passed": 1,
+      "sf": 5.488021409854409,
+      "detail": "approximate hand check: 1.5 Fz / (w t) vs 21.5 MPa (Z strength / sqrt(3), a conservative stand-in (XY x 0.73 knockdown (Ultimaker PLA TDS v2.00 (2022-04-20), p.2: tensile stress at break XY (flat) 45.5 +/- 1.1 MPa vs Z (upright) 33.1 +/- 2.8 MPa, ASTM D3039. Ratio 33.1/45.5 = 0.73. Different PLA brand; https://um-support-files.ultimaker.com/materials/2.85mm/tds/PLA/Ultimaker-PLA-TDS-v5.00.pdf)))",
+      "where": "8.5 mm from pad hub, width 1.9 mm",
+      "suggestion": ""
+     }
+    ],
+    "bearing": [
+     {
+      "name": "bearing at hinge",
+      "passed": 1,
+      "sf": 48.94385344241513,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Curb hit, sideways: FE reaction 40 N, 1.0 MPa vs 51 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at shock",
+      "passed": 1,
+      "sf": 17.75712968302662,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 110 N, 2.9 MPa vs 51 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at hub",
+      "passed": 1,
+      "sf": 24.480000000000004,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: applied force 80 N, 2.1 MPa vs 51 MPa",
+      "suggestion": ""
+     }
+    ],
+    "fail_reasons": [],
+    "notes": []
+   },
+   "pick": {
+    "status": "loose",
+    "v_pick": 0.12,
+    "v_final": 0.12,
+    "window": null,
+    "levels": [
+     {
+      "fill": 0.12,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 2.4734311167370966,
+      "deflection_ratio": 0.780131511455307,
+      "label": ""
+     },
+     {
+      "fill": 0.15,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 4.25110232767119,
+      "deflection_ratio": 0.5845810989567823,
+      "label": ""
+     },
+     {
+      "fill": 0.2,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 5.794269348688573,
+      "deflection_ratio": 0.4331390920112018,
+      "label": ""
+     },
+     {
+      "fill": 0.25,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 7.212737732923868,
+      "deflection_ratio": 0.3493518346150345,
+      "label": ""
+     },
+     {
+      "fill": 0.3,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 9.072691609384778,
+      "deflection_ratio": 0.2955990101883048,
+      "label": ""
+     },
+     {
+      "fill": 0.35,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 8.967772004095332,
+      "deflection_ratio": 0.25230017914301334,
+      "label": ""
+     },
+     {
+      "fill": 0.4,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 9.642195664317219,
+      "deflection_ratio": 0.22221837998000632,
+      "label": ""
+     },
+     {
+      "fill": 0.45,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 11.35962874632922,
+      "deflection_ratio": 0.19600892924013305,
+      "label": ""
+     },
+     {
+      "fill": 0.5,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 12.165169157528535,
+      "deflection_ratio": 0.1783886464469181,
+      "label": ""
+     },
+     {
+      "fill": 0.55,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 13.760861353639593,
+      "deflection_ratio": 0.1642354136333423,
+      "label": ""
+     },
+     {
+      "fill": 0.6,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 15.250631447975376,
+      "deflection_ratio": 0.15351111882696455,
+      "label": ""
+     }
+    ],
+    "refinement": [],
+    "notes": [
+     "passes at the lowest level computed; limits are loose"
+    ],
+    "reason": ""
+   },
+   "rerun": {},
+   "baseline": {
+    "mass_block_g": 26.5672666364871,
+    "strut_width_mm": 6.20078125,
+    "mass_strut_g": 8.95123947487551,
+    "strut_passed": 1,
+    "note": "constant-width straight struts, sized by the same solver to the same limits",
+    "struts": [
+     [
+      "hub",
+      "shock"
+     ],
+     [
+      "hub",
+      "hinge"
+     ]
+    ]
+   },
+   "geometry": {
+    "area_mm2": 306.8678619292442,
+    "volume_mm3": 3682.4143431509306,
+    "watertight": 1,
+    "volume_error": 0.0,
+    "files": {
+     "stl": "pla.stl",
+     "svg": "pla.svg",
+     "dxf": "pla.dxf"
+    }
+   },
+   "mesh_h_mm": 0.3191489361702128,
+   "effective_min_wall": "fdm: 0.80 mm enforced"
+  },
+  {
+   "material": "petg",
+   "process": "fdm",
+   "status": "pass",
+   "fill": 0.15,
+   "printer_allowed": 1,
+   "converged": 1,
+   "reasons": [],
+   "notes": [],
+   "checks": {
+    "passed": 1,
+    "passed_in_plane": 1,
+    "sf": 4.329309070922568,
+    "sf_raw": 2.7423257553434968,
+    "sf_target": 2.0,
+    "stress_reported_MPa": 10.856235771123725,
+    "stress_raw_MPa": 17.138737040418782,
+    "stress_pass": 1,
+    "deflection_mm": [
+     0.8528082081469788,
+     0.06902998888146598,
+     0.0
+    ],
+    "deflection_limit_mm": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "deflection_pass": 1,
+    "mass_g": 5.451725809189679,
+    "out_of_plane": [
+     {
+      "name": "out-of-plane bending (Front impact (out of plane))",
+      "passed": 1,
+      "sf": 3.2536076412832338,
+      "detail": "approximate hand check: beam through the thickness, XY strength 47 MPa",
+      "where": "24.0 mm from pad hub, width 4.1 mm",
+      "suggestion": ""
+     },
+     {
+      "name": "interlayer shear (Front impact (out of plane))",
+      "passed": 1,
+      "sf": 4.526426110446667,
+      "detail": "approximate hand check: 1.5 Fz / (w t) vs 13.3 MPa (Z strength / sqrt(3), a conservative stand-in (XY x 0.49 knockdown (Ultimaker PETG TDS v1.00 (2022-04-29), p.2: tensile stress at break XY (flat) 38.5 +/- 1.4 MPa vs Z (upright) 19.0 +/- 6.4 MPa, ASTM D3039. Ratio 19.0/38.5 = 0.49. Different PETG brand; https://um-support-files.ultimaker.com/materials/2.85mm/tds/PETG/Ultimaker-PETG-TDS-v1.00.pdf)))",
+      "where": "8.5 mm from pad hub, width 2.6 mm",
+      "suggestion": ""
+     }
+    ],
+    "bearing": [
+     {
+      "name": "bearing at hinge",
+      "passed": 1,
+      "sf": 45.11879969731558,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Curb hit, sideways: FE reaction 40 N, 1.0 MPa vs 47 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at shock",
+      "passed": 1,
+      "sf": 15.32069060295686,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 118 N, 3.1 MPa vs 47 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at hub",
+      "passed": 1,
+      "sf": 22.560000000000002,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: applied force 80 N, 2.1 MPa vs 47 MPa",
+      "suggestion": ""
+     }
+    ],
+    "fail_reasons": [],
+    "notes": []
+   },
+   "grid_checks": {
+    "passed": 1,
+    "passed_in_plane": 1,
+    "sf": 3.921849051574823,
+    "sf_raw": 2.6911960548728358,
+    "sf_target": 2.0,
+    "stress_reported_MPa": 11.984143036083221,
+    "stress_raw_MPa": 17.46435378236345,
+    "stress_pass": 1,
+    "deflection_mm": [
+     0.8974650927960595,
+     0.07249963717389062,
+     0.0
+    ],
+    "deflection_limit_mm": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "deflection_pass": 1,
+    "mass_g": 5.451628791308286,
+    "out_of_plane": [
+     {
+      "name": "out-of-plane bending (Front impact (out of plane))",
+      "passed": 1,
+      "sf": 3.2536076412832338,
+      "detail": "approximate hand check: beam through the thickness, XY strength 47 MPa",
+      "where": "24.0 mm from pad hub, width 4.1 mm",
+      "suggestion": ""
+     },
+     {
+      "name": "interlayer shear (Front impact (out of plane))",
+      "passed": 1,
+      "sf": 4.526426110446667,
+      "detail": "approximate hand check: 1.5 Fz / (w t) vs 13.3 MPa (Z strength / sqrt(3), a conservative stand-in (XY x 0.49 knockdown (Ultimaker PETG TDS v1.00 (2022-04-29), p.2: tensile stress at break XY (flat) 38.5 +/- 1.4 MPa vs Z (upright) 19.0 +/- 6.4 MPa, ASTM D3039. Ratio 19.0/38.5 = 0.49. Different PETG brand; https://um-support-files.ultimaker.com/materials/2.85mm/tds/PETG/Ultimaker-PETG-TDS-v1.00.pdf)))",
+      "where": "8.5 mm from pad hub, width 2.6 mm",
+      "suggestion": ""
+     }
+    ],
+    "bearing": [
+     {
+      "name": "bearing at hinge",
+      "passed": 1,
+      "sf": 45.11887536039487,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Curb hit, sideways: FE reaction 40 N, 1.0 MPa vs 47 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at shock",
+      "passed": 1,
+      "sf": 15.364062720340828,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 117 N, 3.1 MPa vs 47 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at hub",
+      "passed": 1,
+      "sf": 22.560000000000002,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: applied force 80 N, 2.1 MPa vs 47 MPa",
+      "suggestion": ""
+     }
+    ],
+    "fail_reasons": [],
+    "notes": []
+   },
+   "pick": {
+    "status": "pass",
+    "v_pick": 0.15,
+    "v_final": 0.15,
+    "window": [
+     0.12,
+     0.15
+    ],
+    "levels": [
+     {
+      "fill": 0.12,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 2.2794365193459516,
+      "deflection_ratio": 1.1962016508981372,
+      "label": ""
+     },
+     {
+      "fill": 0.15,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 3.917682537265607,
+      "deflection_ratio": 0.8963576850670663,
+      "label": ""
+     },
+     {
+      "fill": 0.2,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 5.339816850752214,
+      "deflection_ratio": 0.6641466077505094,
+      "label": ""
+     },
+     {
+      "fill": 0.25,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 6.647032812694546,
+      "deflection_ratio": 0.5356728130763863,
+      "label": ""
+     },
+     {
+      "fill": 0.3,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 8.361107953746755,
+      "deflection_ratio": 0.4532518156220674,
+      "label": ""
+     },
+     {
+      "fill": 0.35,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 8.264417337107464,
+      "deflection_ratio": 0.38686027468595374,
+      "label": ""
+     },
+     {
+      "fill": 0.4,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 8.885945023978614,
+      "deflection_ratio": 0.34073484930267633,
+      "label": ""
+     },
+     {
+      "fill": 0.45,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 10.46867747210732,
+      "deflection_ratio": 0.30054702483487067,
+      "label": ""
+     },
+     {
+      "fill": 0.5,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 11.211038243212572,
+      "deflection_ratio": 0.2735292578852744,
+      "label": ""
+     },
+     {
+      "fill": 0.55,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 12.68157811021688,
+      "deflection_ratio": 0.2518276342377915,
+      "label": ""
+     },
+     {
+      "fill": 0.6,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 14.054503491271426,
+      "deflection_ratio": 0.235383715534679,
+      "label": ""
+     }
+    ],
+    "refinement": [
+     {
+      "fill": 0.135,
+      "passed": 0,
+      "stress_pass": 0,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 0.8165535443469625,
+      "deflection_ratio": 4.284461379410688,
+      "label": ""
+     },
+     {
+      "fill": 0.1425,
+      "passed": 0,
+      "stress_pass": 0,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 0.8910968334178151,
+      "deflection_ratio": 3.7067920041116,
+      "label": ""
+     },
+     {
+      "fill": 0.1462,
+      "passed": 0,
+      "stress_pass": 0,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 1.5493690857731035,
+      "deflection_ratio": 1.0952731842389427,
+      "label": ""
+     }
+    ],
+    "notes": [],
+    "reason": ""
+   },
+   "rerun": {},
+   "baseline": {
+    "mass_block_g": 27.210023087369855,
+    "strut_width_mm": 8.204296875,
+    "mass_strut_g": 12.006933001358082,
+    "strut_passed": 1,
+    "note": "constant-width straight struts, sized by the same solver to the same limits",
+    "struts": [
+     [
+      "hub",
+      "shock"
+     ],
+     [
+      "hub",
+      "hinge"
+     ]
+    ]
+   },
+   "geometry": {
+    "area_mm2": 357.12606669926663,
+    "volume_mm3": 4285.512800391197,
+    "watertight": 1,
+    "volume_error": 6.366762234544527e-16,
+    "files": {
+     "stl": "petg.stl",
+     "svg": "petg.svg",
+     "dxf": "petg.dxf"
+    }
+   },
+   "mesh_h_mm": 0.3191489361702128,
+   "effective_min_wall": "fdm: 0.80 mm enforced"
+  },
+  {
+   "material": "pa6cf",
+   "process": "fdm",
+   "status": "pass",
+   "fill": 0.12,
+   "printer_allowed": 1,
+   "converged": 1,
+   "reasons": [],
+   "notes": [
+    "passes at the lowest level computed; limits are loose"
+   ],
+   "checks": {
+    "passed": 1,
+    "passed_in_plane": 1,
+    "sf": 5.4878262472137544,
+    "sf_raw": 4.197188810707381,
+    "sf_target": 2.0,
+    "stress_reported_MPa": 19.91681133408572,
+    "stress_raw_MPa": 26.041239727211348,
+    "stress_pass": 1,
+    "deflection_mm": [
+     0.19570352944676964,
+     0.015942430168180085,
+     0.0
+    ],
+    "deflection_limit_mm": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "deflection_pass": 1,
+    "mass_g": 4.32011840765052,
+    "out_of_plane": [
+     {
+      "name": "out-of-plane bending (Front impact (out of plane))",
+      "passed": 1,
+      "sf": 7.566368408345903,
+      "detail": "approximate hand check: beam through the thickness, XY strength 109.3 MPa",
+      "where": "24.0 mm from pad hub, width 4.1 mm",
+      "suggestion": ""
+     },
+     {
+      "name": "interlayer shear (Front impact (out of plane))",
+      "passed": 1,
+      "sf": 7.960063285848458,
+      "detail": "approximate hand check: 1.5 Fz / (w t) vs 31.2 MPa (Z strength / sqrt(3), a conservative stand-in (datasheet Z value))",
+      "where": "8.5 mm from pad hub, width 1.9 mm",
+      "suggestion": ""
+     }
+    ],
+    "bearing": [
+     {
+      "name": "bearing at hinge",
+      "passed": 1,
+      "sf": 104.89354989091557,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Curb hit, sideways: FE reaction 40 N, 1.0 MPa vs 109.3 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at shock",
+      "passed": 1,
+      "sf": 37.945284767230376,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 111 N, 2.9 MPa vs 109.3 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at hub",
+      "passed": 1,
+      "sf": 52.464000000000006,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: applied force 80 N, 2.1 MPa vs 109.3 MPa",
+      "suggestion": ""
+     }
+    ],
+    "fail_reasons": [],
+    "notes": []
+   },
+   "grid_checks": {
+    "passed": 1,
+    "passed_in_plane": 1,
+    "sf": 5.28479095697297,
+    "sf_raw": 4.0868528822903505,
+    "sf_target": 2.0,
+    "stress_reported_MPa": 20.68199118751993,
+    "stress_raw_MPa": 26.744295218854607,
+    "stress_pass": 1,
+    "deflection_mm": [
+     0.20785886025529743,
+     0.017037336988231167,
+     0.0
+    ],
+    "deflection_limit_mm": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "deflection_pass": 1,
+    "mass_g": 4.311627433227705,
+    "out_of_plane": [
+     {
+      "name": "out-of-plane bending (Front impact (out of plane))",
+      "passed": 1,
+      "sf": 6.046627745131129,
+      "detail": "approximate hand check: beam through the thickness, XY strength 109.3 MPa",
+      "where": "25.4 mm from pad hub, width 3.5 mm",
+      "suggestion": ""
+     },
+     {
+      "name": "interlayer shear (Front impact (out of plane))",
+      "passed": 1,
+      "sf": 7.960063285848458,
+      "detail": "approximate hand check: 1.5 Fz / (w t) vs 31.2 MPa (Z strength / sqrt(3), a conservative stand-in (datasheet Z value))",
+      "where": "8.5 mm from pad hub, width 1.9 mm",
+      "suggestion": ""
+     }
+    ],
+    "bearing": [
+     {
+      "name": "bearing at hinge",
+      "passed": 1,
+      "sf": 104.89342203403062,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Curb hit, sideways: FE reaction 40 N, 1.0 MPa vs 109.3 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at shock",
+      "passed": 1,
+      "sf": 38.05366076414808,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 110 N, 2.9 MPa vs 109.3 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at hub",
+      "passed": 1,
+      "sf": 52.464000000000006,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: applied force 80 N, 2.1 MPa vs 109.3 MPa",
+      "suggestion": ""
+     }
+    ],
+    "fail_reasons": [],
+    "notes": []
+   },
+   "pick": {
+    "status": "loose",
+    "v_pick": 0.12,
+    "v_final": 0.12,
+    "window": null,
+    "levels": [
+     {
+      "fill": 0.12,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 5.300902373713032,
+      "deflection_ratio": 0.2077580589761137,
+      "label": ""
+     },
+     {
+      "fill": 0.15,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 9.110695772832571,
+      "deflection_ratio": 0.15568071876345735,
+      "label": ""
+     },
+     {
+      "fill": 0.2,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 12.417914506111,
+      "deflection_ratio": 0.11534995792575281,
+      "label": ""
+     },
+     {
+      "fill": 0.25,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 15.457886945266251,
+      "deflection_ratio": 0.09303644064315167,
+      "label": ""
+     },
+     {
+      "fill": 0.3,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 19.444023390308946,
+      "deflection_ratio": 0.07872144079582019,
+      "label": ""
+     },
+     {
+      "fill": 0.35,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 19.219166275443524,
+      "deflection_ratio": 0.0671904604908158,
+      "label": ""
+     },
+     {
+      "fill": 0.4,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 20.664548747252393,
+      "deflection_ratio": 0.05917932888948237,
+      "label": ""
+     },
+     {
+      "fill": 0.45,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 24.345243568113407,
+      "deflection_ratio": 0.0521994485326586,
+      "label": ""
+     },
+     {
+      "fill": 0.5,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 26.071627233683703,
+      "deflection_ratio": 0.04750696310170921,
+      "label": ""
+     },
+     {
+      "fill": 0.55,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 29.491414626525636,
+      "deflection_ratio": 0.04373779324456519,
+      "label": ""
+     },
+     {
+      "fill": 0.6,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 32.684196416935464,
+      "deflection_ratio": 0.04088178930145528,
+      "label": ""
+     }
+    ],
+    "refinement": [],
+    "notes": [
+     "passes at the lowest level computed; limits are loose"
+    ],
+    "reason": ""
+   },
+   "rerun": {
+    "fill": 0.12,
+    "iterations": 255,
+    "converged": 1,
+    "seconds": 73.39525929999945,
+    "replaced": 1,
+    "note": ""
+   },
+   "baseline": {
+    "mass_block_g": 25.067501584427344,
+    "strut_width_mm": 4.0230468749999995,
+    "mass_strut_g": 6.4038035310095065,
+    "strut_passed": 1,
+    "note": "constant-width straight struts, sized by the same solver to the same limits",
+    "struts": [
+     [
+      "hub",
+      "shock"
+     ],
+     [
+      "hub",
+      "hinge"
+     ]
+    ]
+   },
+   "geometry": {
+    "area_mm2": 306.8678619292442,
+    "volume_mm3": 3682.4143431509306,
+    "watertight": 1,
+    "volume_error": 0.0,
+    "files": {
+     "stl": "pa6cf.stl",
+     "svg": "pa6cf.svg",
+     "dxf": "pa6cf.dxf"
+    }
+   },
+   "mesh_h_mm": 0.3191489361702128,
+   "effective_min_wall": "fdm: 0.80 mm enforced"
+  },
+  {
+   "material": "pa12",
+   "process": "sls",
+   "status": "pass",
+   "fill": 0.15,
+   "printer_allowed": 0,
+   "converged": 1,
+   "reasons": [],
+   "notes": [],
+   "checks": {
+    "passed": 1,
+    "passed_in_plane": 1,
+    "sf": 4.421691083070237,
+    "sf_raw": 2.7970721476411935,
+    "sf_target": 2.0,
+    "stress_reported_MPa": 10.85557518565291,
+    "stress_raw_MPa": 17.160801533302962,
+    "stress_pass": 1,
+    "deflection_mm": [
+     0.7752095757809385,
+     0.06275441283063901,
+     0.0
+    ],
+    "deflection_limit_mm": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "deflection_pass": 1,
+    "mass_g": 3.992208663422364,
+    "out_of_plane": [
+     {
+      "name": "out-of-plane bending (Front impact (out of plane))",
+      "passed": 1,
+      "sf": 3.3228333357786215,
+      "detail": "approximate hand check: beam through the thickness, XY strength 48 MPa",
+      "where": "24.0 mm from pad hub, width 4.1 mm",
+      "suggestion": ""
+     },
+     {
+      "name": "interlayer shear (Front impact (out of plane))",
+      "passed": 1,
+      "sf": 8.254880444583586,
+      "detail": "approximate hand check: 1.5 Fz / (w t) vs 24.2 MPa (Z strength / sqrt(3), a conservative stand-in (datasheet Z value))",
+      "where": "8.5 mm from pad hub, width 2.6 mm",
+      "suggestion": ""
+     }
+    ],
+    "bearing": [
+     {
+      "name": "bearing at hinge",
+      "passed": 1,
+      "sf": 46.07877402403763,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Curb hit, sideways: FE reaction 40 N, 1.0 MPa vs 48 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at shock",
+      "passed": 1,
+      "sf": 15.646663711842546,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 118 N, 3.1 MPa vs 48 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at hub",
+      "passed": 1,
+      "sf": 23.040000000000003,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: applied force 80 N, 2.1 MPa vs 48 MPa",
+      "suggestion": ""
+     }
+    ],
+    "fail_reasons": [],
+    "notes": []
+   },
+   "grid_checks": {
+    "passed": 1,
+    "passed_in_plane": 1,
+    "sf": 4.005173134108932,
+    "sf_raw": 2.744877308063714,
+    "sf_target": 2.0,
+    "stress_reported_MPa": 11.984500642736636,
+    "stress_raw_MPa": 17.487120411170608,
+    "stress_pass": 1,
+    "deflection_mm": [
+     0.8158391399692018,
+     0.06591153852156047,
+     0.0
+    ],
+    "deflection_limit_mm": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "deflection_pass": 1,
+    "mass_g": 3.992137618832052,
+    "out_of_plane": [
+     {
+      "name": "out-of-plane bending (Front impact (out of plane))",
+      "passed": 1,
+      "sf": 3.3228333357786215,
+      "detail": "approximate hand check: beam through the thickness, XY strength 48 MPa",
+      "where": "24.0 mm from pad hub, width 4.1 mm",
+      "suggestion": ""
+     },
+     {
+      "name": "interlayer shear (Front impact (out of plane))",
+      "passed": 1,
+      "sf": 8.254880444583586,
+      "detail": "approximate hand check: 1.5 Fz / (w t) vs 24.2 MPa (Z strength / sqrt(3), a conservative stand-in (datasheet Z value))",
+      "where": "8.5 mm from pad hub, width 2.6 mm",
+      "suggestion": ""
+     }
+    ],
+    "bearing": [
+     {
+      "name": "bearing at hinge",
+      "passed": 1,
+      "sf": 46.07885138128069,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Curb hit, sideways: FE reaction 40 N, 1.0 MPa vs 48 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at shock",
+      "passed": 1,
+      "sf": 15.69098070254656,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 117 N, 3.1 MPa vs 48 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at hub",
+      "passed": 1,
+      "sf": 23.040000000000003,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: applied force 80 N, 2.1 MPa vs 48 MPa",
+      "suggestion": ""
+     }
+    ],
+    "fail_reasons": [],
+    "notes": []
+   },
+   "pick": {
+    "status": "pass",
+    "v_pick": 0.15,
+    "v_final": 0.15,
+    "window": [
+     0.12,
+     0.15
+    ],
+    "levels": [
+     {
+      "fill": 0.12,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 2.3279351686937377,
+      "deflection_ratio": 1.0874560462710339,
+      "label": ""
+     },
+     {
+      "fill": 0.15,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 4.001037484867003,
+      "deflection_ratio": 0.8148706227882421,
+      "label": ""
+     },
+     {
+      "fill": 0.2,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 5.453429975236304,
+      "deflection_ratio": 0.603769643409554,
+      "label": ""
+     },
+     {
+      "fill": 0.25,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 6.788459042751876,
+      "deflection_ratio": 0.4869752846148966,
+      "label": ""
+     },
+     {
+      "fill": 0.3,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 8.53900386765626,
+      "deflection_ratio": 0.41204710511097037,
+      "label": ""
+     },
+     {
+      "fill": 0.35,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 8.44025600385443,
+      "deflection_ratio": 0.3516911588054125,
+      "label": ""
+     },
+     {
+      "fill": 0.4,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 9.075007684063266,
+      "deflection_ratio": 0.3097589539115239,
+      "label": ""
+     },
+     {
+      "fill": 0.45,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 10.691415290662794,
+      "deflection_ratio": 0.2732245680317006,
+      "label": ""
+     },
+     {
+      "fill": 0.5,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 11.449570971791562,
+      "deflection_ratio": 0.2486629617138858,
+      "label": ""
+     },
+     {
+      "fill": 0.55,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 12.951398921072558,
+      "deflection_ratio": 0.22893421294344682,
+      "label": ""
+     },
+     {
+      "fill": 0.6,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 14.353535480447414,
+      "deflection_ratio": 0.21398519594061727,
+      "label": ""
+     }
+    ],
+    "refinement": [
+     {
+      "fill": 0.135,
+      "passed": 0,
+      "stress_pass": 0,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 0.833927024013919,
+      "deflection_ratio": 3.8949648903733527,
+      "label": ""
+     },
+     {
+      "fill": 0.1425,
+      "passed": 0,
+      "stress_pass": 0,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 0.9100563405118112,
+      "deflection_ratio": 3.3698109128287275,
+      "label": ""
+     },
+     {
+      "fill": 0.1462,
+      "passed": 0,
+      "stress_pass": 0,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 1.5823343854704037,
+      "deflection_ratio": 0.9957028947626753,
+      "label": ""
+     }
+    ],
+    "notes": [],
+    "reason": ""
+   },
+   "rerun": {
+    "fill": 0.15,
+    "iterations": 189,
+    "converged": 1,
+    "seconds": 54.39311970000563,
+    "replaced": 1,
+    "note": ""
+   },
+   "baseline": {
+    "mass_block_g": 19.925449977365325,
+    "strut_width_mm": 7.594531249999999,
+    "mass_strut_g": 8.138868266183795,
+    "strut_passed": 1,
+    "note": "constant-width straight struts, sized by the same solver to the same limits",
+    "struts": [
+     [
+      "hub",
+      "shock"
+     ],
+     [
+      "hub",
+      "hinge"
+     ]
+    ]
+   },
+   "geometry": {
+    "area_mm2": 357.12606669926663,
+    "volume_mm3": 4285.512800391197,
+    "watertight": 1,
+    "volume_error": 6.366762234544527e-16,
+    "files": {
+     "stl": "pa12.stl",
+     "svg": "pa12.svg",
+     "dxf": "pa12.dxf"
+    }
+   },
+   "mesh_h_mm": 0.3191489361702128,
+   "effective_min_wall": "sls: 0.80 mm enforced"
+  },
+  {
+   "material": "alsi10mg",
+   "process": "metal",
+   "status": "pass",
+   "fill": 0.08,
+   "printer_allowed": 0,
+   "converged": 1,
+   "reasons": [],
+   "notes": [
+    "passes at the lowest level computed; limits are loose",
+    "removed 54 elements in islands not connected to any pad"
+   ],
+   "checks": {
+    "passed": 1,
+    "passed_in_plane": 1,
+    "sf": 4.818984329947983,
+    "sf_raw": 4.818984329947983,
+    "sf_target": 2.0,
+    "stress_reported_MPa": 56.02840381157961,
+    "stress_raw_MPa": 56.02840381157961,
+    "stress_pass": 1,
+    "deflection_mm": [
+     0.051463220742507705,
+     0.005932583268914741,
+     0.0
+    ],
+    "deflection_limit_mm": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "deflection_pass": 1,
+    "mass_g": 7.439375094252118,
+    "out_of_plane": [
+     {
+      "name": "out-of-plane bending (Front impact (out of plane))",
+      "passed": 1,
+      "sf": 12.242704528069444,
+      "detail": "approximate hand check: beam through the thickness, XY strength 270 MPa",
+      "where": "25.4 mm from pad hub, width 2.9 mm",
+      "suggestion": ""
+     },
+     {
+      "name": "interlayer shear (Front impact (out of plane))",
+      "passed": 1,
+      "sf": 28.303494546418605,
+      "detail": "approximate hand check: 1.5 Fz / (w t) vs 132.8 MPa (Z strength / sqrt(3), a conservative stand-in (datasheet Z value))",
+      "where": "7.1 mm from pad hub, width 1.6 mm",
+      "suggestion": ""
+     }
+    ],
+    "bearing": [
+     {
+      "name": "bearing at hinge",
+      "passed": 1,
+      "sf": 259.0830770350311,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Curb hit, sideways: FE reaction 40 N, 1.0 MPa vs 270 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at shock",
+      "passed": 1,
+      "sf": 99.06161408902197,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 105 N, 2.7 MPa vs 270 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at hub",
+      "passed": 1,
+      "sf": 129.60000000000002,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: applied force 80 N, 2.1 MPa vs 270 MPa",
+      "suggestion": ""
+     }
+    ],
+    "fail_reasons": [],
+    "notes": []
+   },
+   "grid_checks": {
+    "passed": 1,
+    "passed_in_plane": 1,
+    "sf": 3.562997295736971,
+    "sf_raw": 3.562997295736971,
+    "sf_target": 2.0,
+    "stress_reported_MPa": 75.77889557285032,
+    "stress_raw_MPa": 75.77889557285032,
+    "stress_pass": 1,
+    "deflection_mm": [
+     0.05767123089597984,
+     0.007026010009257404,
+     0.0
+    ],
+    "deflection_limit_mm": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "deflection_pass": 1,
+    "mass_g": 7.45324297328761,
+    "out_of_plane": [
+     {
+      "name": "out-of-plane bending (Front impact (out of plane))",
+      "passed": 1,
+      "sf": 11.522545438183005,
+      "detail": "approximate hand check: beam through the thickness, XY strength 270 MPa",
+      "where": "24.0 mm from pad hub, width 2.6 mm",
+      "suggestion": ""
+     },
+     {
+      "name": "interlayer shear (Front impact (out of plane))",
+      "passed": 1,
+      "sf": 28.303494546418605,
+      "detail": "approximate hand check: 1.5 Fz / (w t) vs 132.8 MPa (Z strength / sqrt(3), a conservative stand-in (datasheet Z value))",
+      "where": "5.6 mm from pad hub, width 1.6 mm",
+      "suggestion": ""
+     }
+    ],
+    "bearing": [
+     {
+      "name": "bearing at hinge",
+      "passed": 1,
+      "sf": 259.08394452692653,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Curb hit, sideways: FE reaction 40 N, 1.0 MPa vs 270 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at shock",
+      "passed": 1,
+      "sf": 99.20230589039285,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 105 N, 2.7 MPa vs 270 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at hub",
+      "passed": 1,
+      "sf": 129.60000000000002,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: applied force 80 N, 2.1 MPa vs 270 MPa",
+      "suggestion": ""
+     }
+    ],
+    "fail_reasons": [],
+    "notes": [
+     "removed 54 elements in islands not connected to any pad"
+    ]
+   },
+   "pick": {
+    "status": "loose",
+    "v_pick": 0.08,
+    "v_final": 0.08,
+    "window": null,
+    "levels": [
+     {
+      "fill": 0.08,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 3.562997295726408,
+      "deflection_ratio": 0.057671230896917426,
+      "label": ""
+     },
+     {
+      "fill": 0.1,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 13.17734104841725,
+      "deflection_ratio": 0.027201803679658413,
+      "label": ""
+     },
+     {
+      "fill": 0.12,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 16.86395854740588,
+      "deflection_ratio": 0.02193566508110021,
+      "label": ""
+     },
+     {
+      "fill": 0.15,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 19.931221226127136,
+      "deflection_ratio": 0.017792027205047023,
+      "label": ""
+     },
+     {
+      "fill": 0.2,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 23.84815349535852,
+      "deflection_ratio": 0.013696266260862433,
+      "label": ""
+     },
+     {
+      "fill": 0.25,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 35.426519308691226,
+      "deflection_ratio": 0.010977530721134282,
+      "label": ""
+     },
+     {
+      "fill": 0.3,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 43.694407292380944,
+      "deflection_ratio": 0.009173331835994638,
+      "label": ""
+     },
+     {
+      "fill": 0.35,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 42.66150462863337,
+      "deflection_ratio": 0.007886998915082726,
+      "label": ""
+     },
+     {
+      "fill": 0.4,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 47.51568839701965,
+      "deflection_ratio": 0.0069138493171473905,
+      "label": ""
+     },
+     {
+      "fill": 0.45,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 55.641000619071335,
+      "deflection_ratio": 0.006105525449709529,
+      "label": ""
+     },
+     {
+      "fill": 0.5,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 63.828674030359146,
+      "deflection_ratio": 0.0055563254192827136,
+      "label": ""
+     },
+     {
+      "fill": 0.55,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 71.62022286925591,
+      "deflection_ratio": 0.00512374777330699,
+      "label": ""
+     },
+     {
+      "fill": 0.6,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 83.32604972180995,
+      "deflection_ratio": 0.004671668157088159,
+      "label": ""
+     }
+    ],
+    "refinement": [],
+    "notes": [
+     "passes at the lowest level computed; limits are loose"
+    ],
+    "reason": ""
+   },
+   "rerun": {
+    "fill": 0.08,
+    "iterations": 189,
+    "converged": 1,
+    "seconds": 196.76304489999893,
+    "replaced": 1,
+    "note": ""
+   },
+   "baseline": {
+    "mass_block_g": 56.849502292022244,
+    "strut_width_mm": 2.5,
+    "mass_strut_g": 10.16090797522786,
+    "strut_passed": 1,
+    "note": "constant-width straight struts, sized by the same solver to the same limits",
+    "struts": [
+     [
+      "hub",
+      "shock"
+     ],
+     [
+      "hub",
+      "hinge"
+     ]
+    ]
+   },
+   "geometry": {
+    "area_mm2": 231.79983519689677,
+    "volume_mm3": 2781.598022362749,
+    "watertight": 1,
+    "volume_error": 4.414073627901536e-15,
+    "files": {
+     "stl": "alsi10mg.stl",
+     "svg": "alsi10mg.svg",
+     "dxf": "alsi10mg.dxf"
+    }
+   },
+   "mesh_h_mm": 0.15985790408525755,
+   "effective_min_wall": "metal: 0.40 mm enforced"
+  },
+  {
+   "material": "ti64",
+   "process": "metal",
+   "status": "pass",
+   "fill": 0.08,
+   "printer_allowed": 0,
+   "converged": 1,
+   "reasons": [],
+   "notes": [
+    "passes at the lowest level computed; limits are loose",
+    "removed 54 elements in islands not connected to any pad"
+   ],
+   "checks": {
+    "passed": 1,
+    "passed_in_plane": 1,
+    "sf": 17.830416602197257,
+    "sf_raw": 17.830416602197257,
+    "sf_target": 2.0,
+    "stress_reported_MPa": 56.08393916476237,
+    "stress_raw_MPa": 56.08393916476237,
+    "stress_pass": 1,
+    "deflection_mm": [
+     0.035089918135191314,
+     0.004044489467923135,
+     0.0
+    ],
+    "deflection_limit_mm": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "deflection_pass": 1,
+    "mass_g": 12.287507178146758,
+    "out_of_plane": [
+     {
+      "name": "out-of-plane bending (Front impact (out of plane))",
+      "passed": 1,
+      "sf": 45.3433501039609,
+      "detail": "approximate hand check: beam through the thickness, XY strength 1000 MPa",
+      "where": "25.4 mm from pad hub, width 2.9 mm",
+      "suggestion": ""
+     },
+     {
+      "name": "interlayer shear (Front impact (out of plane))",
+      "passed": 1,
+      "sf": 123.05867194095045,
+      "detail": "approximate hand check: 1.5 Fz / (w t) vs 577.4 MPa (Z strength / sqrt(3), a conservative stand-in (datasheet Z value))",
+      "where": "7.1 mm from pad hub, width 1.6 mm",
+      "suggestion": ""
+     }
+    ],
+    "bearing": [
+     {
+      "name": "bearing at hinge",
+      "passed": 1,
+      "sf": 959.5670195122851,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Curb hit, sideways: FE reaction 40 N, 1.0 MPa vs 1000 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at shock",
+      "passed": 1,
+      "sf": 366.8926490912296,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 105 N, 2.7 MPa vs 1000 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at hub",
+      "passed": 1,
+      "sf": 480.00000000000006,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: applied force 80 N, 2.1 MPa vs 1000 MPa",
+      "suggestion": ""
+     }
+    ],
+    "fail_reasons": [],
+    "notes": []
+   },
+   "grid_checks": {
+    "passed": 1,
+    "passed_in_plane": 1,
+    "sf": 13.200095053595327,
+    "sf_raw": 13.200095053595327,
+    "sf_target": 2.0,
+    "stress_reported_MPa": 75.75703022893224,
+    "stress_raw_MPa": 75.75703022893224,
+    "stress_pass": 1,
+    "deflection_mm": [
+     0.039312128099365004,
+     0.004788040828916058,
+     0.0
+    ],
+    "deflection_limit_mm": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "deflection_pass": 1,
+    "mass_g": 12.310412551385154,
+    "out_of_plane": [
+     {
+      "name": "out-of-plane bending (Front impact (out of plane))",
+      "passed": 1,
+      "sf": 42.67609421549261,
+      "detail": "approximate hand check: beam through the thickness, XY strength 1000 MPa",
+      "where": "24.0 mm from pad hub, width 2.6 mm",
+      "suggestion": ""
+     },
+     {
+      "name": "interlayer shear (Front impact (out of plane))",
+      "passed": 1,
+      "sf": 123.05867194095045,
+      "detail": "approximate hand check: 1.5 Fz / (w t) vs 577.4 MPa (Z strength / sqrt(3), a conservative stand-in (datasheet Z value))",
+      "where": "5.6 mm from pad hub, width 1.6 mm",
+      "suggestion": ""
+     }
+    ],
+    "bearing": [
+     {
+      "name": "bearing at hinge",
+      "passed": 1,
+      "sf": 959.5702435709354,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Curb hit, sideways: FE reaction 40 N, 1.0 MPa vs 1000 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at shock",
+      "passed": 1,
+      "sf": 367.41281498639506,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 105 N, 2.7 MPa vs 1000 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at hub",
+      "passed": 1,
+      "sf": 480.00000000000006,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: applied force 80 N, 2.1 MPa vs 1000 MPa",
+      "suggestion": ""
+     }
+    ],
+    "fail_reasons": [],
+    "notes": [
+     "removed 54 elements in islands not connected to any pad"
+    ]
+   },
+   "pick": {
+    "status": "loose",
+    "v_pick": 0.08,
+    "v_final": 0.08,
+    "window": null,
+    "levels": [
+     {
+      "fill": 0.08,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 13.196286280468177,
+      "deflection_ratio": 0.03932129379335279,
+      "label": ""
+     },
+     {
+      "fill": 0.1,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 48.80496684598982,
+      "deflection_ratio": 0.01854668432703983,
+      "label": ""
+     },
+     {
+      "fill": 0.12,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 62.45910573113288,
+      "deflection_ratio": 0.014956135282568327,
+      "label": ""
+     },
+     {
+      "fill": 0.15,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 73.81933787454494,
+      "deflection_ratio": 0.012130927639804787,
+      "label": ""
+     },
+     {
+      "fill": 0.2,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 88.32649442725378,
+      "deflection_ratio": 0.009338363359678931,
+      "label": ""
+     },
+     {
+      "fill": 0.25,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 131.20933077293049,
+      "deflection_ratio": 0.007484680037137011,
+      "label": ""
+     },
+     {
+      "fill": 0.3,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 161.83113811992942,
+      "deflection_ratio": 0.006254544433632708,
+      "label": ""
+     },
+     {
+      "fill": 0.35,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 158.0055726986421,
+      "deflection_ratio": 0.0053774992602836766,
+      "label": ""
+     },
+     {
+      "fill": 0.4,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 175.9840311000728,
+      "deflection_ratio": 0.004713988170782312,
+      "label": ""
+     },
+     {
+      "fill": 0.45,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 206.07778007063456,
+      "deflection_ratio": 0.004162858261165588,
+      "label": ""
+     },
+     {
+      "fill": 0.5,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 236.40249640873756,
+      "deflection_ratio": 0.0037884036949654863,
+      "label": ""
+     },
+     {
+      "fill": 0.55,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 265.2600847009478,
+      "deflection_ratio": 0.0034934643908911297,
+      "label": ""
+     },
+     {
+      "fill": 0.6,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 308.6149989696665,
+      "deflection_ratio": 0.0031852282889237448,
+      "label": ""
+     }
+    ],
+    "refinement": [],
+    "notes": [
+     "passes at the lowest level computed; limits are loose"
+    ],
+    "reason": ""
+   },
+   "rerun": {},
+   "baseline": {
+    "mass_block_g": 93.89749254974463,
+    "strut_width_mm": 1.625,
+    "mass_strut_g": 13.588380239077004,
+    "strut_passed": 1,
+    "note": "constant-width straight struts, sized by the same solver to the same limits",
+    "struts": [
+     [
+      "hub",
+      "shock"
+     ],
+     [
+      "hub",
+      "hinge"
+     ]
+    ]
+   },
+   "geometry": {
+    "area_mm2": 231.79983519689677,
+    "volume_mm3": 2781.598022362749,
+    "watertight": 1,
+    "volume_error": 4.414073627901536e-15,
+    "files": {
+     "stl": "ti64.stl",
+     "svg": "ti64.svg",
+     "dxf": "ti64.dxf"
+    }
+   },
+   "mesh_h_mm": 0.15985790408525755,
+   "effective_min_wall": "metal: 0.40 mm enforced"
+  }
+ ],
+ "ranking": {
+  "order": [
+   "pa6cf",
+   "pla",
+   "petg",
+   "alsi10mg",
+   "ti64",
+   "pa12"
+  ],
+  "cards": [
+   {
+    "material": "pa6cf",
+    "state": "ranked",
+    "rank": 1,
+    "reason": "",
+    "badges": [
+     "Lightest"
+    ],
+    "material_cost_usd": 0.22892307442140108,
+    "weight_saved_vs_strut": 0.32538242518981686,
+    "weight_saved_vs_block": 0.8276605910205945
+   },
+   {
+    "material": "pla",
+    "state": "ranked",
+    "rank": 2,
+    "reason": "",
+    "badges": [
+     "Cheapest material"
+    ],
+    "material_cost_usd": 0.1373118250396107,
+    "weight_saved_vs_strut": 0.48849686759227906,
+    "weight_saved_vs_block": 0.8276605910205944
+   },
+   {
+    "material": "petg",
+    "state": "ranked",
+    "rank": 3,
+    "reason": "",
+    "badges": [],
+    "material_cost_usd": 0.16349725701759849,
+    "weight_saved_vs_strut": 0.5459518422753716,
+    "weight_saved_vs_block": 0.7996427348964573
+   },
+   {
+    "material": "alsi10mg",
+    "state": "filtered",
+    "rank": null,
+    "reason": "needs a metal printing service",
+    "badges": [],
+    "material_cost_usd": 0.30501437886433685,
+    "weight_saved_vs_strut": 0.2678434730056406,
+    "weight_saved_vs_block": 0.8691391341293045
+   },
+   {
+    "material": "ti64",
+    "state": "filtered",
+    "rank": null,
+    "reason": "needs a metal printing service",
+    "badges": [],
+    "material_cost_usd": 1.671100976227959,
+    "weight_saved_vs_strut": 0.09573422571656043,
+    "weight_saved_vs_block": 0.8691391341293045
+   },
+   {
+    "material": "pa12",
+    "state": "filtered",
+    "rank": null,
+    "reason": "needs an SLS printing service",
+    "badges": [],
+    "material_cost_usd": 0.2994156497566773,
+    "weight_saved_vs_strut": 0.5094884776536313,
+    "weight_saved_vs_block": 0.7996427348964572
+   }
+  ],
+  "pareto": [
+   {
+    "material_id": "pa6cf",
+    "process_id": "fdm",
+    "mass_g": 4.32011840765052,
+    "cost_usd": 0.22892307442140108,
+    "state": "ranked",
+    "reason": "",
+    "on_front": 1
+   },
+   {
+    "material_id": "pla",
+    "process_id": "fdm",
+    "mass_g": 4.578587030330467,
+    "cost_usd": 0.1373118250396107,
+    "state": "ranked",
+    "reason": "",
+    "on_front": 1
+   },
+   {
+    "material_id": "petg",
+    "process_id": "fdm",
+    "mass_g": 5.451725809189679,
+    "cost_usd": 0.16349725701759849,
+    "state": "ranked",
+    "reason": "",
+    "on_front": 0
+   },
+   {
+    "material_id": "alsi10mg",
+    "process_id": "metal",
+    "mass_g": 7.439375094252118,
+    "cost_usd": 0.30501437886433685,
+    "state": "filtered",
+    "reason": "needs a metal printing service",
+    "on_front": 0
+   },
+   {
+    "material_id": "ti64",
+    "process_id": "metal",
+    "mass_g": 12.287507178146758,
+    "cost_usd": 1.671100976227959,
+    "state": "filtered",
+    "reason": "needs a metal printing service",
+    "on_front": 0
+   },
+   {
+    "material_id": "pa12",
+    "process_id": "sls",
+    "mass_g": 3.992208663422364,
+    "cost_usd": 0.2994156497566773,
+    "state": "filtered",
+    "reason": "needs an SLS printing service",
+    "on_front": 0
+   }
+  ],
+  "funnel": {
+   "candidates": 76,
+   "met_limits": 6,
+   "printable": 3,
+   "ranked": 3,
+   "isolated_stress_failures": 0,
+   "text": "76 candidate designs evaluated -> 6 met the limits -> 3 printable with your printer -> ranked by mass"
+  },
+  "winner": "pa6cf",
+  "messages": [
+   "Limits are loose; part size is set by the minimum wall. Results shown at the lowest fill level."
+  ],
+  "caption_cost": "material cost only, not print cost"
+ }
+}

@@ -1,0 +1,2117 @@
+{
+ "format_version": 1,
+ "key": "fd2872728f1334d36c8b9fcd80e0ba029c5d6d6c3e231b2bda3aada740ac6da7",
+ "code_version": "2578ddad4d5218a06aef370e41a344c3c8a37c18",
+ "materials_hash": "406e95fe4e949ea5",
+ "solver_settings": {
+  "LLM_PROVIDER": "gemini",
+  "LLM_MODELS": {
+   "gemini": "gemini-3.5-flash",
+   "claude": "claude-opus-5-5"
+  },
+  "LLM_TIMEOUT_S": 45.0,
+  "LLM_RETRIES": 1,
+  "ELEMENT_CAP_LIVE": 40000,
+  "ELEMENT_CAP_QUICK": 10000,
+  "ELEMENT_CAP_CACHED": 80000,
+  "ELEMENT_CAP_CACHED_SWEEP": "cold",
+  "MIN_WALL_TO_ELEMENT_RATIO": 2.5,
+  "SIMP_PENALTY": 3.0,
+  "E_MIN_RATIO": 1e-09,
+  "FILTER_RADIUS_MIN_ELEMENTS": 1.5,
+  "BETA_SCHEDULE_COLD": [
+   1,
+   2,
+   4,
+   8,
+   16
+  ],
+  "BETA_SCHEDULE_WARM": [
+   4,
+   8,
+   16
+  ],
+  "BETA_STEP_ITERS": 40,
+  "CHANGE_TOL": 0.01,
+  "PLATEAU_WINDOW": 10,
+  "PLATEAU_RTOL": 0.001,
+  "MAX_ITERS_COLD": 300,
+  "MAX_ITERS_WARM": 100,
+  "MAX_ITERS_REFINE": 60,
+  "OC_MOVE": 0.2,
+  "CATALOG_REFERENCE_E": 1.0,
+  "CATALOG_REFERENCE_NU": 0.33,
+  "SNAPSHOT_EVERY_CATALOG": 2,
+  "SNAPSHOT_EVERY_COLD_RERUN": 1,
+  "FILL_LEVELS": [
+   0.6,
+   0.55,
+   0.5,
+   0.45,
+   0.4,
+   0.35,
+   0.3,
+   0.25,
+   0.2,
+   0.15
+  ],
+  "FILL_LEVELS_LIVE_SHORT": [
+   0.6,
+   0.5,
+   0.4,
+   0.3,
+   0.25,
+   0.2,
+   0.15
+  ],
+  "FILL_LEVELS_LIVE": [
+   0.6,
+   0.5,
+   0.4,
+   0.3,
+   0.25,
+   0.2,
+   0.15
+  ],
+  "FILL_LEVELS_EXTRA_LOW": [
+   0.12,
+   0.1,
+   0.08
+  ],
+  "NORMALIZATION_FILL": 0.6,
+  "REFINE_BISECTION_STEPS": 3,
+  "SOLID_THRESHOLD": 0.5,
+  "EXCLUSION_RING_WIDTHS": 1.0,
+  "REACTION_SUM_RTOL": 1e-06,
+  "OUT_OF_PLANE_SECTIONS": 20,
+  "RECHECK_SUPERSAMPLE": 4,
+  "DEFAULT_SAFETY_FACTOR": 2.0,
+  "DEFAULT_THICKNESS_MM": 6.0,
+  "DEFAULT_DEFLECTION_SPAN_RATIO": 100.0,
+  "DEFAULT_PRINTER": "any",
+  "DEFAULT_HOLE_R_MM": 1.6,
+  "DEFAULT_RING_WIDTH_MIN_MM": 2.0,
+  "DEFAULT_RING_WIDTH_WALLS": 2.0,
+  "SIZE_MIN_MM": 5.0,
+  "SIZE_MAX_MM": 2000.0,
+  "FORCE_MAX_N": 1000000.0,
+  "THIN_SPAN_RATIO": 20.0,
+  "KEEP_IN_MAX_FRACTION": 0.9,
+  "VALIDATION_TOL_BEAM": 0.03,
+  "VALIDATION_TOL_MBB": 0.02,
+  "VALIDATION_TOL_SCALING": 1e-06,
+  "SMOOTH_MAX_MOVE_ELEMENTS": 0.5,
+  "VOLUME_CHECK_RTOL": 0.01,
+  "RERUN_STRICT_RTOL": 0.005,
+  "RERUN_LOOSE_MASS_RTOL": 0.02,
+  "cap_used": 80000,
+  "sweep_mode_used": "cold",
+  "levels_used": [
+   0.6,
+   0.55,
+   0.5,
+   0.45,
+   0.4,
+   0.35,
+   0.3,
+   0.25,
+   0.2,
+   0.15
+  ],
+  "format_version": 1
+ },
+ "problem": {
+  "name": "Aerospace mounting bracket (GE jet engine bracket challenge, 2D slice)",
+  "design_space": {
+   "width_mm": 178.0,
+   "height_mm": 65.0
+  },
+  "thickness_mm": 25.0,
+  "zones": [],
+  "pads": [
+   {
+    "id": "base_front",
+    "cx": 40.0,
+    "cy": 12.0,
+    "hole_r_mm": 4.76,
+    "ring_r_mm": 6.76
+   },
+   {
+    "id": "base_rear",
+    "cx": 138.0,
+    "cy": 12.0,
+    "hole_r_mm": 4.76,
+    "ring_r_mm": 6.76
+   },
+   {
+    "id": "clevis",
+    "cx": 89.0,
+    "cy": 52.0,
+    "hole_r_mm": 9.525,
+    "ring_r_mm": 11.525
+   }
+  ],
+  "supports": [
+   {
+    "pad_id": "base_front",
+    "type": "pin"
+   },
+   {
+    "pad_id": "base_rear",
+    "type": "pin"
+   }
+  ],
+  "load_cases": [
+   {
+    "id": "vertical",
+    "name": "Vertical",
+    "reason": "GE / GrabCAD Jet Engine Bracket Challenge (2013) load condition 1: 8,000 lbf vertical = 35,600 N",
+    "loads": [
+     {
+      "pad_id": "clevis",
+      "fx_N": 0.0,
+      "fy_N": 35600.0,
+      "fz_N_out_of_plane": 0.0
+     }
+    ],
+    "max_deflection_mm": 0.32
+   },
+   {
+    "id": "horizontal",
+    "name": "Horizontal",
+    "reason": "challenge load condition 2: 8,500 lbf horizontal = 37,800 N",
+    "loads": [
+     {
+      "pad_id": "clevis",
+      "fx_N": 37800.0,
+      "fy_N": 0.0,
+      "fz_N_out_of_plane": 0.0
+     }
+    ],
+    "max_deflection_mm": 0.32
+   },
+   {
+    "id": "angled",
+    "name": "Angled 42 deg",
+    "reason": "challenge load condition 3: 9,500 lbf at 42 degrees from vertical = 42,300 N (fx = 28,300 N, fy = 31,400 N)",
+    "loads": [
+     {
+      "pad_id": "clevis",
+      "fx_N": 28300.0,
+      "fy_N": 31400.0,
+      "fz_N_out_of_plane": 0.0
+     }
+    ],
+    "max_deflection_mm": 0.32
+   }
+  ],
+  "safety_factor": 1.5,
+  "printer": "any",
+  "materials": [
+   "pla",
+   "petg",
+   "pa6cf",
+   "pa12",
+   "alsi10mg",
+   "ti64"
+  ],
+  "warnings": [
+   "Envelope 178 x 65 mm and pad positions are to confirm from the challenge STEP file.",
+   "The challenge's torsion load (load condition 4, 5,000 lbf-in) is out-of-plane: noted, not checked in 2D."
+  ],
+  "provenance": {
+   "safety_factor": {
+    "source": "user",
+    "original_text": "SF 1.5 (standard aerospace ultimate factor, FAR 25.303, to cite)"
+   },
+   "load_cases[0].max_deflection_mm": {
+    "source": "default",
+    "original_text": "span / 200"
+   },
+   "load_cases[1].max_deflection_mm": {
+    "source": "default",
+    "original_text": "span / 200"
+   },
+   "load_cases[2].max_deflection_mm": {
+    "source": "default",
+    "original_text": "span / 200"
+   }
+  },
+  "notes": [
+   "2D slice of a known benchmark (original ~1.8 kg Ti-6Al-4V, winner ~80% lighter); not comparable to the 3D challenge results.",
+   "This is a 25 mm thick 2D slice that carries the full challenge load. The real bracket is wider at the base, so stresses here are several times those in the real part.",
+   "The four 0.375-24 base bolts (interfaces 2-5) are merged into two pad pairs in the side view; each pad stands for the two bolts behind each other along the viewing axis.",
+   "Original material: Ti-6Al-4V, yield 131 ksi (about 903 MPa) at 75 F; minimum wall 0.050 in (1.27 mm)."
+  ],
+  "references": [
+   "GE / GrabCAD Jet Engine Bracket Challenge page (2013): load cases, 0.75 in clevis pin, 0.375-24 bolts, Ti-6Al-4V, min wall 0.050 in, STEP file. https://grabcad.com/challenges/ge-jet-engine-bracket-challenge",
+   "Carter, W. T., et al. (2014), The GE Aircraft Engine Bracket Challenge: An Experiment in Crowdsourcing for Mechanical Design Concepts, Solid Freeform Fabrication Symposium: original mass about 1.8 kg, winner about 80% lighter."
+  ]
+ },
+ "seconds": 3445.6144513000036,
+ "created": "2026-10-21 04:30:21",
+ "catalogs": {
+  "fdm": {
+   "process": "fdm",
+   "mesh": [
+    469,
+    171
+   ],
+   "elements": 80199,
+   "h_mm": 0.3795309168443497,
+   "effective_min_wall_mm": 0.9488272921108742,
+   "min_wall_text": "fdm: 0.95 mm enforced (process allows 0.80 mm)",
+   "weights": [
+    2.6436726512072617e-09,
+    2.9233807100093967e-09,
+    2.0575711754264434e-09
+   ],
+   "sweep_mode": "cold",
+   "early_stopped": 1,
+   "notes": [
+    "fdm: the element cap limits the min wall to 0.95 mm (process allows 0.80 mm)",
+    "60% fails every limit for every material: sweep stopped"
+   ],
+   "seconds": 223.86689170000318,
+   "levels": [
+    {
+     "fill": 0.6,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 170,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 214.40501070000755,
+     "ref_deflection_dE": [
+      3922.02802640694,
+      3163.4617906897342,
+      4437.852317220657
+     ],
+     "ref_stress_MPa": [
+      109.16513912847553,
+      48.288733088212545,
+      117.59137139680743
+     ],
+     "connected": 1
+    }
+   ]
+  },
+  "sls": {
+   "process": "sls",
+   "mesh": [
+    469,
+    171
+   ],
+   "elements": 80199,
+   "h_mm": 0.3795309168443497,
+   "effective_min_wall_mm": 0.9488272921108742,
+   "min_wall_text": "sls: 0.95 mm enforced (process allows 0.80 mm)",
+   "weights": [
+    2.6436726512072617e-09,
+    2.9233807100093967e-09,
+    2.0575711754264434e-09
+   ],
+   "sweep_mode": "cold",
+   "early_stopped": 1,
+   "notes": [
+    "sls: the element cap limits the min wall to 0.95 mm (process allows 0.80 mm)",
+    "60% fails every limit for every material: sweep stopped"
+   ],
+   "seconds": 223.63893440000538,
+   "levels": [
+    {
+     "fill": 0.6,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 170,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 213.9165631999931,
+     "ref_deflection_dE": [
+      3922.02802640694,
+      3163.4617906897342,
+      4437.852317220657
+     ],
+     "ref_stress_MPa": [
+      109.16513912847553,
+      48.288733088212545,
+      117.59137139680743
+     ],
+     "connected": 1
+    }
+   ]
+  },
+  "metal": {
+   "process": "metal",
+   "mesh": [
+    469,
+    171
+   ],
+   "elements": 80199,
+   "h_mm": 0.3795309168443497,
+   "effective_min_wall_mm": 0.9488272921108742,
+   "min_wall_text": "metal: 0.95 mm enforced (process allows 0.40 mm)",
+   "weights": [
+    2.6436726512072617e-09,
+    2.9233807100093967e-09,
+    2.0575711754264434e-09
+   ],
+   "sweep_mode": "cold",
+   "early_stopped": 0,
+   "notes": [
+    "metal: the element cap limits the min wall to 0.95 mm (process allows 0.40 mm)",
+    "every material passes at 15%: extending down to 12%"
+   ],
+   "seconds": 2401.5770653000072,
+   "levels": [
+    {
+     "fill": 0.12,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 178,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 212.0734522999992,
+     "ref_deflection_dE": [
+      8964.161020355872,
+      12619.31476815498,
+      12095.287041926133
+     ],
+     "ref_stress_MPa": [
+      188.12277851201318,
+      186.99007581082694,
+      197.27917441797973
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.1237,
+     "kind": "refine",
+     "mode": "refine",
+     "iterations": 60,
+     "converged": 0,
+     "converged_by": null,
+     "seconds": 72.5849753000075,
+     "ref_deflection_dE": [
+      8558.492507221443,
+      11503.234129382223,
+      10938.864008253206
+     ],
+     "ref_stress_MPa": [
+      181.48151190613785,
+      178.1900436347099,
+      183.66962767506791
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.1275,
+     "kind": "refine",
+     "mode": "refine",
+     "iterations": 60,
+     "converged": 0,
+     "converged_by": null,
+     "seconds": 73.43957370000135,
+     "ref_deflection_dE": [
+      8285.993957012119,
+      11212.436556431676,
+      10715.022934509001
+     ],
+     "ref_stress_MPa": [
+      175.62524786386567,
+      176.9834724937362,
+      173.43829295719655
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.135,
+     "kind": "refine",
+     "mode": "refine",
+     "iterations": 60,
+     "converged": 0,
+     "converged_by": null,
+     "seconds": 73.47841660000267,
+     "ref_deflection_dE": [
+      7779.191373035799,
+      10619.208498680546,
+      10248.32841583102
+     ],
+     "ref_stress_MPa": [
+      164.46176888146175,
+      163.01032554055823,
+      163.32129159193846
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.15,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 176,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 215.22789270000067,
+     "ref_deflection_dE": [
+      7062.904860443148,
+      9775.231421450535,
+      9583.015045158196
+     ],
+     "ref_stress_MPa": [
+      150.04801125645258,
+      146.42660459843648,
+      164.54979999819975
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.2,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 174,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 210.7836454000062,
+     "ref_deflection_dE": [
+      5332.514735485925,
+      7221.2807300984405,
+      7409.075420852273
+     ],
+     "ref_stress_MPa": [
+      109.96716528842586,
+      110.89331020330468,
+      152.84323810123556
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.25,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 172,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 207.33943069999805,
+     "ref_deflection_dE": [
+      4723.213338743615,
+      5870.455683142941,
+      6328.999091471634
+     ],
+     "ref_stress_MPa": [
+      98.53197628509551,
+      91.7059126836969,
+      149.14551332476515
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.3,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 172,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 207.7501986999996,
+     "ref_deflection_dE": [
+      4412.425282507931,
+      4925.262308472797,
+      5652.8197297406405
+     ],
+     "ref_stress_MPa": [
+      109.08919638048128,
+      75.38562604393167,
+      142.58509615875025
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.35,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 172,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 211.13176569998905,
+     "ref_deflection_dE": [
+      4250.996549585558,
+      4291.733262838782,
+      5239.187875784988
+     ],
+     "ref_stress_MPa": [
+      113.12363368633636,
+      64.72113909512564,
+      137.3578361928919
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.4,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 172,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 213.377152999994,
+     "ref_deflection_dE": [
+      4150.8064869717555,
+      3887.7002569702727,
+      4965.6632049884665
+     ],
+     "ref_stress_MPa": [
+      113.8223772061129,
+      58.10739570258364,
+      132.279721379188
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.45,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 172,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 211.60733079999045,
+     "ref_deflection_dE": [
+      4062.30759362363,
+      3671.6565118183826,
+      4773.4527625120945
+     ],
+     "ref_stress_MPa": [
+      111.7513452334903,
+      54.35799682177398,
+      127.38359608785159
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.5,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 172,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 211.3844495000085,
+     "ref_deflection_dE": [
+      3982.8303040953133,
+      3526.3190112395146,
+      4624.972248000102
+     ],
+     "ref_stress_MPa": [
+      108.73520183415191,
+      51.15901241551116,
+      122.76171181585266
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.55,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 170,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 216.54113629998756,
+     "ref_deflection_dE": [
+      3938.83349334945,
+      3310.5193931705912,
+      4512.032738914846
+     ],
+     "ref_stress_MPa": [
+      108.6818925950811,
+      49.59117827085585,
+      119.57757964027603
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.6,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 170,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 211.9788671999995,
+     "ref_deflection_dE": [
+      3922.02802640694,
+      3163.4617906897342,
+      4437.852317220657
+     ],
+     "ref_stress_MPa": [
+      109.16513912847553,
+      48.288733088212545,
+      117.59137139680743
+     ],
+     "connected": 1
+    }
+   ]
+  }
+ },
+ "designs": [
+  {
+   "material": "pla",
+   "process": "fdm",
+   "status": "fail",
+   "fill": 0.6,
+   "printer_allowed": 1,
+   "converged": 1,
+   "reasons": [
+    "safety factor 0.43 < 1.5",
+    "deflection 1.939 mm > 0.32 mm (Angled 42 deg)",
+    "bearing at base_front: SF 0.34 < 1.5",
+    "bearing at base_rear: SF 0.51 < 1.5",
+    "bearing at clevis: SF 0.57 < 1.5"
+   ],
+   "notes": [
+    "no fill level passes with the level above it also passing"
+   ],
+   "checks": {
+    "passed": 0,
+    "passed_in_plane": 0,
+    "sf": 0.43289085419669276,
+    "sf_raw": 0.28663497699835233,
+    "sf_target": 1.5,
+    "stress_reported_MPa": 117.81260681665294,
+    "stress_raw_MPa": 177.92664570832596,
+    "stress_pass": 0,
+    "deflection_mm": [
+     1.7126703652306838,
+     1.384403279226787,
+     1.9394298356855084
+    ],
+    "deflection_limit_mm": [
+     0.32,
+     0.32,
+     0.32
+    ],
+    "deflection_pass": 0,
+    "mass_g": 210.37683874641417,
+    "out_of_plane": [],
+    "bearing": [
+     {
+      "name": "bearing at base_front",
+      "passed": 0,
+      "sf": 0.3436910544576994,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Angled 42 deg: FE reaction 35317 N, 148.4 MPa vs 51 MPa",
+      "suggestion": "required pin diameter x thickness = 1038.7 mm^2 (now 238.0): a 41.5 mm pin at this thickness, or 109.1 mm thick at this pin, or a bushing"
+     },
+     {
+      "name": "bearing at base_rear",
+      "passed": 0,
+      "sf": 0.5127266740135535,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Horizontal: FE reaction 23673 N, 99.5 MPa vs 51 MPa",
+      "suggestion": "required pin diameter x thickness = 696.3 mm^2 (now 238.0): a 27.9 mm pin at this thickness, or 73.1 mm thick at this pin, or a bushing"
+     },
+     {
+      "name": "bearing at clevis",
+      "passed": 0,
+      "sf": 0.5745940394658818,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Angled 42 deg: applied force 42271 N, 88.8 MPa vs 51 MPa",
+      "suggestion": "required pin diameter x thickness = 1243.3 mm^2 (now 476.2): a 49.7 mm pin at this thickness, or 65.3 mm thick at this pin, or a bushing"
+     }
+    ],
+    "fail_reasons": [
+     "safety factor 0.43 < 1.5",
+     "deflection 1.939 mm > 0.32 mm (Angled 42 deg)",
+     "bearing at base_front: SF 0.34 < 1.5",
+     "bearing at base_rear: SF 0.51 < 1.5",
+     "bearing at clevis: SF 0.57 < 1.5"
+    ],
+    "notes": []
+   },
+   "grid_checks": {
+    "passed": 0,
+    "passed_in_plane": 0,
+    "sf": 0.43280843218344633,
+    "sf_raw": 0.2865799242415469,
+    "sf_target": 1.5,
+    "stress_reported_MPa": 117.83504249839474,
+    "stress_raw_MPa": 177.96082588469847,
+    "stress_pass": 0,
+    "deflection_mm": [
+     1.7126983710303936,
+     1.3849637333580096,
+     1.9397204706584363
+    ],
+    "deflection_limit_mm": [
+     0.32,
+     0.32,
+     0.32
+    ],
+    "deflection_pass": 0,
+    "mass_g": 210.39414199789962,
+    "out_of_plane": [],
+    "bearing": [
+     {
+      "name": "bearing at base_front",
+      "passed": 0,
+      "sf": 0.3436805406640102,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Angled 42 deg: FE reaction 35318 N, 148.4 MPa vs 51 MPa",
+      "suggestion": "required pin diameter x thickness = 1038.8 mm^2 (now 238.0): a 41.6 mm pin at this thickness, or 109.1 mm thick at this pin, or a bushing"
+     },
+     {
+      "name": "bearing at base_rear",
+      "passed": 0,
+      "sf": 0.5127075284472099,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Horizontal: FE reaction 23674 N, 99.5 MPa vs 51 MPa",
+      "suggestion": "required pin diameter x thickness = 696.3 mm^2 (now 238.0): a 27.9 mm pin at this thickness, or 73.1 mm thick at this pin, or a bushing"
+     },
+     {
+      "name": "bearing at clevis",
+      "passed": 0,
+      "sf": 0.5745940394658818,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Angled 42 deg: applied force 42271 N, 88.8 MPa vs 51 MPa",
+      "suggestion": "required pin diameter x thickness = 1243.3 mm^2 (now 476.2): a 49.7 mm pin at this thickness, or 65.3 mm thick at this pin, or a bushing"
+     }
+    ],
+    "fail_reasons": [
+     "safety factor 0.43 < 1.5",
+     "deflection 1.940 mm > 0.32 mm (Angled 42 deg)",
+     "bearing at base_front: SF 0.34 < 1.5",
+     "bearing at base_rear: SF 0.51 < 1.5",
+     "bearing at clevis: SF 0.57 < 1.5"
+    ],
+    "notes": []
+   },
+   "pick": {
+    "status": "fail",
+    "v_pick": null,
+    "v_final": null,
+    "window": null,
+    "levels": [
+     {
+      "fill": 0.6,
+      "passed": 0,
+      "stress_pass": 0,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 0.433705291418896,
+      "deflection_ratio": 6.029690648397632,
+      "label": ""
+     }
+    ],
+    "refinement": [],
+    "notes": [
+     "no fill level passes with the level above it also passing"
+    ],
+    "reason": "no fill level passes with the level above it also passing"
+   },
+   "rerun": {},
+   "baseline": {
+    "mass_block_g": 344.899571996854,
+    "strut_width_mm": null,
+    "mass_strut_g": null,
+    "strut_passed": 0,
+    "note": "constant-width straight struts, sized by the same solver to the same limits",
+    "struts": [
+     [
+      "clevis",
+      "base_front"
+     ],
+     [
+      "clevis",
+      "base_rear"
+     ]
+    ]
+   },
+   "geometry": {
+    "area_mm2": 6785.011787587295,
+    "volume_mm3": 169625.29468968222,
+    "watertight": 1,
+    "volume_error": 8.578859217305158e-16,
+    "files": {
+     "stl": "pla.stl",
+     "svg": "pla.svg",
+     "dxf": "pla.dxf"
+    }
+   },
+   "mesh_h_mm": 0.3795309168443497,
+   "effective_min_wall": "fdm: 0.95 mm enforced (process allows 0.80 mm)"
+  },
+  {
+   "material": "petg",
+   "process": "fdm",
+   "status": "fail",
+   "fill": 0.6,
+   "printer_allowed": 1,
+   "converged": 1,
+   "reasons": [
+    "safety factor 0.40 < 1.5",
+    "deflection 3.012 mm > 0.32 mm (Angled 42 deg)",
+    "bearing at base_front: SF 0.32 < 1.5",
+    "bearing at base_rear: SF 0.47 < 1.5",
+    "bearing at clevis: SF 0.53 < 1.5"
+   ],
+   "notes": [
+    "no fill level passes with the level above it also passing"
+   ],
+   "checks": {
+    "passed": 0,
+    "passed_in_plane": 0,
+    "sf": 0.3968286107466873,
+    "sf_raw": 0.2623378196245178,
+    "sf_target": 1.5,
+    "stress_reported_MPa": 118.43904075253816,
+    "stress_raw_MPa": 179.1583084256428,
+    "stress_pass": 0,
+    "deflection_mm": [
+     2.654162030464371,
+     2.1590158162724027,
+     3.0123852864739833
+    ],
+    "deflection_limit_mm": [
+     0.32,
+     0.32,
+     0.32
+    ],
+    "deflection_pass": 0,
+    "mass_g": 215.46660097415,
+    "out_of_plane": [],
+    "bearing": [
+     {
+      "name": "bearing at base_front",
+      "passed": 0,
+      "sf": 0.31552418606972993,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Angled 42 deg: FE reaction 35452 N, 149.0 MPa vs 47 MPa",
+      "suggestion": "required pin diameter x thickness = 1131.5 mm^2 (now 238.0): a 45.3 mm pin at this thickness, or 118.8 mm thick at this pin, or a bushing"
+     },
+     {
+      "name": "bearing at base_rear",
+      "passed": 0,
+      "sf": 0.4723777244944175,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Horizontal: FE reaction 23680 N, 99.5 MPa vs 47 MPa",
+      "suggestion": "required pin diameter x thickness = 755.8 mm^2 (now 238.0): a 30.2 mm pin at this thickness, or 79.4 mm thick at this pin, or a bushing"
+     },
+     {
+      "name": "bearing at clevis",
+      "passed": 0,
+      "sf": 0.5295278402920872,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Angled 42 deg: applied force 42271 N, 88.8 MPa vs 47 MPa",
+      "suggestion": "required pin diameter x thickness = 1349.1 mm^2 (now 476.2): a 54.0 mm pin at this thickness, or 70.8 mm thick at this pin, or a bushing"
+     }
+    ],
+    "fail_reasons": [
+     "safety factor 0.40 < 1.5",
+     "deflection 3.012 mm > 0.32 mm (Angled 42 deg)",
+     "bearing at base_front: SF 0.32 < 1.5",
+     "bearing at base_rear: SF 0.47 < 1.5",
+     "bearing at clevis: SF 0.53 < 1.5"
+    ],
+    "notes": []
+   },
+   "grid_checks": {
+    "passed": 0,
+    "passed_in_plane": 0,
+    "sf": 0.39675371000132326,
+    "sf_raw": 0.26228810553761933,
+    "sf_target": 1.5,
+    "stress_reported_MPa": 118.46140014631052,
+    "stress_raw_MPa": 179.19226609099476,
+    "stress_pass": 0,
+    "deflection_mm": [
+     2.654202365904087,
+     2.1598470784035877,
+     3.0128176782709715
+    ],
+    "deflection_limit_mm": [
+     0.32,
+     0.32,
+     0.32
+    ],
+    "deflection_pass": 0,
+    "mass_g": 215.48432285268754,
+    "out_of_plane": [],
+    "bearing": [
+     {
+      "name": "bearing at base_front",
+      "passed": 0,
+      "sf": 0.31551526251168016,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Angled 42 deg: FE reaction 35453 N, 149.0 MPa vs 47 MPa",
+      "suggestion": "required pin diameter x thickness = 1131.5 mm^2 (now 238.0): a 45.3 mm pin at this thickness, or 118.9 mm thick at this pin, or a bushing"
+     },
+     {
+      "name": "bearing at base_rear",
+      "passed": 0,
+      "sf": 0.47236108467414023,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Horizontal: FE reaction 23681 N, 99.5 MPa vs 47 MPa",
+      "suggestion": "required pin diameter x thickness = 755.8 mm^2 (now 238.0): a 30.2 mm pin at this thickness, or 79.4 mm thick at this pin, or a bushing"
+     },
+     {
+      "name": "bearing at clevis",
+      "passed": 0,
+      "sf": 0.5295278402920872,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Angled 42 deg: applied force 42271 N, 88.8 MPa vs 47 MPa",
+      "suggestion": "required pin diameter x thickness = 1349.1 mm^2 (now 476.2): a 54.0 mm pin at this thickness, or 70.8 mm thick at this pin, or a bushing"
+     }
+    ],
+    "fail_reasons": [
+     "safety factor 0.40 < 1.5",
+     "deflection 3.013 mm > 0.32 mm (Angled 42 deg)",
+     "bearing at base_front: SF 0.32 < 1.5",
+     "bearing at base_rear: SF 0.47 < 1.5",
+     "bearing at clevis: SF 0.53 < 1.5"
+    ],
+    "notes": []
+   },
+   "pick": {
+    "status": "fail",
+    "v_pick": null,
+    "v_final": null,
+    "window": null,
+    "levels": [
+     {
+      "fill": 0.6,
+      "passed": 0,
+      "stress_pass": 0,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 0.39968919013113946,
+      "deflection_ratio": 9.245525660876368,
+      "label": ""
+     }
+    ],
+    "refinement": [],
+    "notes": [
+     "no fill level passes with the level above it also passing"
+    ],
+    "reason": "no fill level passes with the level above it also passing"
+   },
+   "rerun": {},
+   "baseline": {
+    "mass_block_g": 353.2439164806488,
+    "strut_width_mm": null,
+    "mass_strut_g": null,
+    "strut_passed": 0,
+    "note": "constant-width straight struts, sized by the same solver to the same limits",
+    "struts": [
+     [
+      "clevis",
+      "base_front"
+     ],
+     [
+      "clevis",
+      "base_rear"
+     ]
+    ]
+   },
+   "geometry": {
+    "area_mm2": 6785.011787587295,
+    "volume_mm3": 169625.29468968222,
+    "watertight": 1,
+    "volume_error": 8.578859217305158e-16,
+    "files": {
+     "stl": "petg.stl",
+     "svg": "petg.svg",
+     "dxf": "petg.dxf"
+    }
+   },
+   "mesh_h_mm": 0.3795309168443497,
+   "effective_min_wall": "fdm: 0.95 mm enforced (process allows 0.80 mm)"
+  },
+  {
+   "material": "pa6cf",
+   "process": "fdm",
+   "status": "fail",
+   "fill": 0.6,
+   "printer_allowed": 1,
+   "converged": 1,
+   "reasons": [
+    "safety factor 0.92 < 1.5",
+    "deflection 0.523 mm > 0.32 mm (Angled 42 deg)",
+    "bearing at base_front: SF 0.73 < 1.5",
+    "bearing at base_rear: SF 1.10 < 1.5",
+    "bearing at clevis: SF 1.23 < 1.5"
+   ],
+   "notes": [
+    "no fill level passes with the level above it also passing"
+   ],
+   "checks": {
+    "passed": 0,
+    "passed_in_plane": 0,
+    "sf": 0.9228375990276019,
+    "sf_raw": 0.6100749720166284,
+    "sf_target": 1.5,
+    "stress_reported_MPa": 118.43904075340005,
+    "stress_raw_MPa": 179.15830842675658,
+    "stress_pass": 0,
+    "deflection_mm": [
+     0.46097875826013557,
+     0.37498103681341977,
+     0.5231954993043388
+    ],
+    "deflection_limit_mm": [
+     0.32,
+     0.32,
+     0.32
+    ],
+    "deflection_pass": 0,
+    "mass_g": 198.50072688169723,
+    "out_of_plane": [],
+    "bearing": [
+     {
+      "name": "bearing at base_front",
+      "passed": 0,
+      "sf": 0.7337615646171968,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Angled 42 deg: FE reaction 35452 N, 149.0 MPa vs 109.3 MPa",
+      "suggestion": "required pin diameter x thickness = 486.5 mm^2 (now 238.0): a 19.5 mm pin at this thickness, or 51.1 mm thick at this pin, or a bushing"
+     },
+     {
+      "name": "bearing at base_rear",
+      "passed": 0,
+      "sf": 1.0985294741815326,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Horizontal: FE reaction 23680 N, 99.5 MPa vs 109.3 MPa",
+      "suggestion": "required pin diameter x thickness = 325.0 mm^2 (now 238.0): a 13.0 mm pin at this thickness, or 34.1 mm thick at this pin, or a bushing"
+     },
+     {
+      "name": "bearing at clevis",
+      "passed": 0,
+      "sf": 1.2314338924239387,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Angled 42 deg: applied force 42271 N, 88.8 MPa vs 109.3 MPa",
+      "suggestion": "required pin diameter x thickness = 580.1 mm^2 (now 476.2): a 23.2 mm pin at this thickness, or 30.5 mm thick at this pin, or a bushing"
+     }
+    ],
+    "fail_reasons": [
+     "safety factor 0.92 < 1.5",
+     "deflection 0.523 mm > 0.32 mm (Angled 42 deg)",
+     "bearing at base_front: SF 0.73 < 1.5",
+     "bearing at base_rear: SF 1.10 < 1.5",
+     "bearing at clevis: SF 1.23 < 1.5"
+    ],
+    "notes": []
+   },
+   "grid_checks": {
+    "passed": 0,
+    "passed_in_plane": 0,
+    "sf": 0.9226634149537537,
+    "sf_raw": 0.6099593603209155,
+    "sf_target": 1.5,
+    "stress_reported_MPa": 118.46140014717977,
+    "stress_raw_MPa": 179.19226609211213,
+    "stress_pass": 0,
+    "deflection_mm": [
+     0.4609857637784803,
+     0.3751254116408745,
+     0.5232705977465085
+    ],
+    "deflection_limit_mm": [
+     0.32,
+     0.32,
+     0.32
+    ],
+    "deflection_pass": 0,
+    "mass_g": 198.51705333672788,
+    "out_of_plane": [],
+    "bearing": [
+     {
+      "name": "bearing at base_front",
+      "passed": 0,
+      "sf": 0.7337408125980639,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Angled 42 deg: FE reaction 35453 N, 149.0 MPa vs 109.3 MPa",
+      "suggestion": "required pin diameter x thickness = 486.5 mm^2 (now 238.0): a 19.5 mm pin at this thickness, or 51.1 mm thick at this pin, or a bushing"
+     },
+     {
+      "name": "bearing at base_rear",
+      "passed": 0,
+      "sf": 1.0984907777482462,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Horizontal: FE reaction 23681 N, 99.5 MPa vs 109.3 MPa",
+      "suggestion": "required pin diameter x thickness = 325.0 mm^2 (now 238.0): a 13.0 mm pin at this thickness, or 34.1 mm thick at this pin, or a bushing"
+     },
+     {
+      "name": "bearing at clevis",
+      "passed": 0,
+      "sf": 1.2314338924239387,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Angled 42 deg: applied force 42271 N, 88.8 MPa vs 109.3 MPa",
+      "suggestion": "required pin diameter x thickness = 580.1 mm^2 (now 476.2): a 23.2 mm pin at this thickness, or 30.5 mm thick at this pin, or a bushing"
+     }
+    ],
+    "fail_reasons": [
+     "safety factor 0.92 < 1.5",
+     "deflection 0.523 mm > 0.32 mm (Angled 42 deg)",
+     "bearing at base_front: SF 0.73 < 1.5",
+     "bearing at base_rear: SF 1.10 < 1.5",
+     "bearing at clevis: SF 1.23 < 1.5"
+    ],
+    "notes": []
+   },
+   "pick": {
+    "status": "fail",
+    "v_pick": null,
+    "v_final": null,
+    "window": null,
+    "levels": [
+     {
+      "fill": 0.6,
+      "passed": 0,
+      "stress_pass": 0,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 0.9294899676879477,
+      "deflection_ratio": 1.6057764709447755,
+      "label": ""
+     }
+    ],
+    "refinement": [],
+    "notes": [
+     "no fill level passes with the level above it also passing"
+    ],
+    "reason": "no fill level passes with the level above it also passing"
+   },
+   "rerun": {},
+   "baseline": {
+    "mass_block_g": 325.4294348679993,
+    "strut_width_mm": null,
+    "mass_strut_g": null,
+    "strut_passed": 0,
+    "note": "constant-width straight struts, sized by the same solver to the same limits",
+    "struts": [
+     [
+      "clevis",
+      "base_front"
+     ],
+     [
+      "clevis",
+      "base_rear"
+     ]
+    ]
+   },
+   "geometry": {
+    "area_mm2": 6785.011787587295,
+    "volume_mm3": 169625.29468968222,
+    "watertight": 1,
+    "volume_error": 8.578859217305158e-16,
+    "files": {
+     "stl": "pa6cf.stl",
+     "svg": "pa6cf.svg",
+     "dxf": "pa6cf.dxf"
+    }
+   },
+   "mesh_h_mm": 0.3795309168443497,
+   "effective_min_wall": "fdm: 0.95 mm enforced (process allows 0.80 mm)"
+  },
+  {
+   "material": "pa12",
+   "process": "sls",
+   "status": "fail",
+   "fill": 0.6,
+   "printer_allowed": 1,
+   "converged": 1,
+   "reasons": [
+    "safety factor 0.41 < 1.5",
+    "deflection 2.736 mm > 0.32 mm (Angled 42 deg)",
+    "bearing at base_front: SF 0.32 < 1.5",
+    "bearing at base_rear: SF 0.48 < 1.5",
+    "bearing at clevis: SF 0.54 < 1.5"
+   ],
+   "notes": [
+    "no fill level passes with the level above it also passing"
+   ],
+   "checks": {
+    "passed": 0,
+    "passed_in_plane": 0,
+    "sf": 0.40541628827130344,
+    "sf_raw": 0.268049299475761,
+    "sf_target": 1.5,
+    "stress_reported_MPa": 118.3968217080576,
+    "stress_raw_MPa": 179.07153681757902,
+    "stress_pass": 0,
+    "deflection_mm": [
+     2.4112132776691584,
+     1.9605800948826242,
+     2.736240385670353
+    ],
+    "deflection_limit_mm": [
+     0.32,
+     0.32,
+     0.32
+    ],
+    "deflection_pass": 0,
+    "mass_g": 157.78262905981063,
+    "out_of_plane": [],
+    "bearing": [
+     {
+      "name": "bearing at base_front",
+      "passed": 0,
+      "sf": 0.3223184564080569,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Angled 42 deg: FE reaction 35443 N, 148.9 MPa vs 48 MPa",
+      "suggestion": "required pin diameter x thickness = 1107.6 mm^2 (now 238.0): a 44.3 mm pin at this thickness, or 116.3 mm thick at this pin, or a bushing"
+     },
+     {
+      "name": "bearing at base_rear",
+      "passed": 0,
+      "sf": 0.48243715953349386,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Horizontal: FE reaction 23680 N, 99.5 MPa vs 48 MPa",
+      "suggestion": "required pin diameter x thickness = 740.0 mm^2 (now 238.0): a 29.6 mm pin at this thickness, or 77.7 mm thick at this pin, or a bushing"
+     },
+     {
+      "name": "bearing at clevis",
+      "passed": 0,
+      "sf": 0.5407943900855359,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Angled 42 deg: applied force 42271 N, 88.8 MPa vs 48 MPa",
+      "suggestion": "required pin diameter x thickness = 1321.0 mm^2 (now 476.2): a 52.8 mm pin at this thickness, or 69.3 mm thick at this pin, or a bushing"
+     }
+    ],
+    "fail_reasons": [
+     "safety factor 0.41 < 1.5",
+     "deflection 2.736 mm > 0.32 mm (Angled 42 deg)",
+     "bearing at base_front: SF 0.32 < 1.5",
+     "bearing at base_rear: SF 0.48 < 1.5",
+     "bearing at clevis: SF 0.54 < 1.5"
+    ],
+    "notes": []
+   },
+   "grid_checks": {
+    "passed": 0,
+    "passed_in_plane": 0,
+    "sf": 0.4053397184028279,
+    "sf_raw": 0.26799845492699237,
+    "sf_target": 1.5,
+    "stress_reported_MPa": 118.41918721692466,
+    "stress_raw_MPa": 179.10551019063178,
+    "stress_pass": 0,
+    "deflection_mm": [
+     2.411250100089067,
+     1.9613375281304353,
+     2.736634288296787
+    ],
+    "deflection_limit_mm": [
+     0.32,
+     0.32,
+     0.32
+    ],
+    "deflection_pass": 0,
+    "mass_g": 157.79560649842472,
+    "out_of_plane": [],
+    "bearing": [
+     {
+      "name": "bearing at base_front",
+      "passed": 0,
+      "sf": 0.3223092914319274,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Angled 42 deg: FE reaction 35444 N, 148.9 MPa vs 48 MPa",
+      "suggestion": "required pin diameter x thickness = 1107.6 mm^2 (now 238.0): a 44.3 mm pin at this thickness, or 116.3 mm thick at this pin, or a bushing"
+     },
+     {
+      "name": "bearing at base_rear",
+      "passed": 0,
+      "sf": 0.48242009815019515,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Horizontal: FE reaction 23681 N, 99.5 MPa vs 48 MPa",
+      "suggestion": "required pin diameter x thickness = 740.0 mm^2 (now 238.0): a 29.6 mm pin at this thickness, or 77.7 mm thick at this pin, or a bushing"
+     },
+     {
+      "name": "bearing at clevis",
+      "passed": 0,
+      "sf": 0.5407943900855359,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Angled 42 deg: applied force 42271 N, 88.8 MPa vs 48 MPa",
+      "suggestion": "required pin diameter x thickness = 1321.0 mm^2 (now 476.2): a 52.8 mm pin at this thickness, or 69.3 mm thick at this pin, or a bushing"
+     }
+    ],
+    "fail_reasons": [
+     "safety factor 0.41 < 1.5",
+     "deflection 2.737 mm > 0.32 mm (Angled 42 deg)",
+     "bearing at base_front: SF 0.32 < 1.5",
+     "bearing at base_rear: SF 0.48 < 1.5",
+     "bearing at clevis: SF 0.54 < 1.5"
+    ],
+    "notes": []
+   },
+   "pick": {
+    "status": "fail",
+    "v_pick": null,
+    "v_final": null,
+    "window": null,
+    "levels": [
+     {
+      "fill": 0.6,
+      "passed": 0,
+      "stress_pass": 0,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 0.4081932154530786,
+      "deflection_ratio": 8.405023328069426,
+      "label": ""
+     }
+    ],
+    "refinement": [],
+    "notes": [
+     "no fill level passes with the level above it also passing"
+    ],
+    "reason": "no fill level passes with the level above it also passing"
+   },
+   "rerun": {},
+   "baseline": {
+    "mass_block_g": 258.6746789976405,
+    "strut_width_mm": null,
+    "mass_strut_g": null,
+    "strut_passed": 0,
+    "note": "constant-width straight struts, sized by the same solver to the same limits",
+    "struts": [
+     [
+      "clevis",
+      "base_front"
+     ],
+     [
+      "clevis",
+      "base_rear"
+     ]
+    ]
+   },
+   "geometry": {
+    "area_mm2": 6785.011787587295,
+    "volume_mm3": 169625.29468968222,
+    "watertight": 1,
+    "volume_error": 8.578859217305158e-16,
+    "files": {
+     "stl": "pa12.stl",
+     "svg": "pa12.svg",
+     "dxf": "pa12.dxf"
+    }
+   },
+   "mesh_h_mm": 0.3795309168443497,
+   "effective_min_wall": "sls: 0.95 mm enforced (process allows 0.80 mm)"
+  },
+  {
+   "material": "alsi10mg",
+   "process": "metal",
+   "status": "pass",
+   "fill": 0.1275,
+   "printer_allowed": 1,
+   "converged": 0,
+   "reasons": [],
+   "notes": [
+    "not fully converged",
+    "animation shows an independent run at the same fill level"
+   ],
+   "checks": {
+    "passed": 1,
+    "passed_in_plane": 1,
+    "sf": 1.7156678930974136,
+    "sf_raw": 0.7698460142054933,
+    "sf_target": 1.5,
+    "stress_reported_MPa": 157.37311462566942,
+    "stress_raw_MPa": 350.71948807664995,
+    "stress_pass": 1,
+    "deflection_mm": [
+     0.10909746938800714,
+     0.1481686923961368,
+     0.14156125383537363
+    ],
+    "deflection_limit_mm": [
+     0.32,
+     0.32,
+     0.32
+    ],
+    "deflection_pass": 1,
+    "mass_g": 111.12020940388295,
+    "out_of_plane": [],
+    "bearing": [
+     {
+      "name": "bearing at base_front",
+      "passed": 1,
+      "sf": 1.5582854115165197,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Angled 42 deg: FE reaction 41238 N, 173.3 MPa vs 270 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at base_rear",
+      "passed": 1,
+      "sf": 2.538258959988504,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Vertical: FE reaction 25317 N, 106.4 MPa vs 270 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at clevis",
+      "passed": 1,
+      "sf": 3.041968444231139,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Angled 42 deg: applied force 42271 N, 88.8 MPa vs 270 MPa",
+      "suggestion": ""
+     }
+    ],
+    "fail_reasons": [],
+    "notes": []
+   },
+   "grid_checks": {
+    "passed": 1,
+    "passed_in_plane": 1,
+    "sf": 1.52556617969888,
+    "sf_raw": 0.7687438825804997,
+    "sf_target": 1.5,
+    "stress_reported_MPa": 176.9834724923525,
+    "stress_raw_MPa": 351.22230708837765,
+    "stress_pass": 1,
+    "deflection_mm": [
+     0.11047991942620385,
+     0.1494991540851462,
+     0.14286697245961788
+    ],
+    "deflection_limit_mm": [
+     0.32,
+     0.32,
+     0.32
+    ],
+    "deflection_pass": 1,
+    "mass_g": 111.1965278162947,
+    "out_of_plane": [],
+    "bearing": [
+     {
+      "name": "bearing at base_front",
+      "passed": 1,
+      "sf": 1.5576818973399067,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Angled 42 deg: FE reaction 41254 N, 173.3 MPa vs 270 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at base_rear",
+      "passed": 1,
+      "sf": 2.5366680436555615,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Vertical: FE reaction 25332 N, 106.4 MPa vs 270 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at clevis",
+      "passed": 1,
+      "sf": 3.041968444231139,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Angled 42 deg: applied force 42271 N, 88.8 MPa vs 270 MPa",
+      "suggestion": ""
+     }
+    ],
+    "fail_reasons": [],
+    "notes": []
+   },
+   "pick": {
+    "status": "pass",
+    "v_pick": 0.15,
+    "v_final": 0.1275,
+    "window": [
+     0.12,
+     0.15
+    ],
+    "levels": [
+     {
+      "fill": 0.12,
+      "passed": 0,
+      "stress_pass": 0,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 1.3686188661148035,
+      "deflection_ratio": 0.5258047820064575,
+      "label": ""
+     },
+     {
+      "fill": 0.15,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 1.640840645220802,
+      "deflection_ratio": 0.40730130922710567,
+      "label": ""
+     },
+     {
+      "fill": 0.2,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 1.7665158325235546,
+      "deflection_ratio": 0.30871147586884473,
+      "label": ""
+     },
+     {
+      "fill": 0.25,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 1.8103125865548069,
+      "deflection_ratio": 0.26370829547798474,
+      "label": ""
+     },
+     {
+      "fill": 0.3,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 1.8936060449080145,
+      "deflection_ratio": 0.23553415540586,
+      "label": ""
+     },
+     {
+      "fill": 0.35,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 1.965668705066367,
+      "deflection_ratio": 0.2182994948243745,
+      "label": ""
+     },
+     {
+      "fill": 0.4,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 2.0411291858260596,
+      "deflection_ratio": 0.2069026335411861,
+      "label": ""
+     },
+     {
+      "fill": 0.45,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 2.119582177706707,
+      "deflection_ratio": 0.1988938651046706,
+      "label": ""
+     },
+     {
+      "fill": 0.5,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 2.19938282063882,
+      "deflection_ratio": 0.19270717700000425,
+      "label": ""
+     },
+     {
+      "fill": 0.55,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 2.257948361325243,
+      "deflection_ratio": 0.1880013641214519,
+      "label": ""
+     },
+     {
+      "fill": 0.6,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 2.296086836923567,
+      "deflection_ratio": 0.18491051321752738,
+      "label": ""
+     }
+    ],
+    "refinement": [
+     {
+      "fill": 0.135,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 1.6417189346577348,
+      "deflection_ratio": 0.44246702077835603,
+      "label": ""
+     },
+     {
+      "fill": 0.1275,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 1.5255661796869526,
+      "deflection_ratio": 0.46718485651798647,
+      "label": ""
+     },
+     {
+      "fill": 0.1237,
+      "passed": 0,
+      "stress_pass": 0,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 1.4700307471503136,
+      "deflection_ratio": 0.47930142205759263,
+      "label": ""
+     }
+    ],
+    "notes": [],
+    "reason": ""
+   },
+   "rerun": {
+    "fill": 0.1275,
+    "iterations": 176,
+    "converged": 1,
+    "seconds": 214.82179520001228,
+    "replaced": 0,
+    "note": "animation shows an independent run at the same fill level"
+   },
+   "baseline": {
+    "mass_block_g": 742.646659057742,
+    "strut_width_mm": 28.094368420175908,
+    "mass_strut_g": 245.1804115274981,
+    "strut_passed": 1,
+    "note": "constant-width straight struts, sized by the same solver to the same limits",
+    "struts": [
+     [
+      "clevis",
+      "base_front"
+     ],
+     [
+      "clevis",
+      "base_rear"
+     ]
+    ]
+   },
+   "geometry": {
+    "area_mm2": 1662.9142710745496,
+    "volume_mm3": 41572.856776863606,
+    "watertight": 1,
+    "volume_error": 3.1503064068521744e-15,
+    "files": {
+     "stl": "alsi10mg.stl",
+     "svg": "alsi10mg.svg",
+     "dxf": "alsi10mg.dxf"
+    }
+   },
+   "mesh_h_mm": 0.3795309168443497,
+   "effective_min_wall": "metal: 0.95 mm enforced (process allows 0.40 mm)"
+  },
+  {
+   "material": "ti64",
+   "process": "metal",
+   "status": "pass",
+   "fill": 0.12,
+   "printer_allowed": 1,
+   "converged": 1,
+   "reasons": [],
+   "notes": [
+    "passes at the lowest level computed; limits are loose"
+   ],
+   "checks": {
+    "passed": 1,
+    "passed_in_plane": 1,
+    "sf": 5.660656147492049,
+    "sf_raw": 2.5499698506382624,
+    "sf_target": 1.5,
+    "stress_reported_MPa": 176.65796578070714,
+    "stress_raw_MPa": 392.1614993799625,
+    "stress_pass": 1,
+    "deflection_mm": [
+     0.08028033057128506,
+     0.1133704377307115,
+     0.10861809099956748
+    ],
+    "deflection_limit_mm": [
+     0.32,
+     0.32,
+     0.32
+    ],
+    "deflection_pass": 1,
+    "mass_g": 174.02301571897976,
+    "out_of_plane": [],
+    "bearing": [
+     {
+      "name": "bearing at base_front",
+      "passed": 1,
+      "sf": 5.755142189807635,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Angled 42 deg: FE reaction 41354 N, 173.8 MPa vs 1000 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at base_rear",
+      "passed": 1,
+      "sf": 9.349080531240993,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Vertical: FE reaction 25457 N, 107.0 MPa vs 1000 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at clevis",
+      "passed": 1,
+      "sf": 11.266549793448663,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Angled 42 deg: applied force 42271 N, 88.8 MPa vs 1000 MPa",
+      "suggestion": ""
+     }
+    ],
+    "fail_reasons": [],
+    "notes": []
+   },
+   "grid_checks": {
+    "passed": 1,
+    "passed_in_plane": 1,
+    "sf": 5.065512523584387,
+    "sf_raw": 2.524761902745307,
+    "sf_target": 1.5,
+    "stress_reported_MPa": 197.41339012471613,
+    "stress_raw_MPa": 396.0769524099073,
+    "stress_pass": 1,
+    "deflection_mm": [
+     0.08146539452615406,
+     0.11476214778427046,
+     0.10999884815275898
+    ],
+    "deflection_limit_mm": [
+     0.32,
+     0.32,
+     0.32
+    ],
+    "deflection_pass": 1,
+    "mass_g": 173.40267119625753,
+    "out_of_plane": [],
+    "bearing": [
+     {
+      "name": "bearing at base_front",
+      "passed": 1,
+      "sf": 5.754346448520454,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Angled 42 deg: FE reaction 41360 N, 173.8 MPa vs 1000 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at base_rear",
+      "passed": 1,
+      "sf": 9.346244045883077,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Vertical: FE reaction 25465 N, 107.0 MPa vs 1000 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at clevis",
+      "passed": 1,
+      "sf": 11.266549793448663,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Angled 42 deg: applied force 42271 N, 88.8 MPa vs 1000 MPa",
+      "suggestion": ""
+     }
+    ],
+    "fail_reasons": [],
+    "notes": []
+   },
+   "pick": {
+    "status": "loose",
+    "v_pick": 0.12,
+    "v_final": 0.12,
+    "window": null,
+    "levels": [
+     {
+      "fill": 0.12,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 5.068958763388162,
+      "deflection_ratio": 0.35850326045894826,
+      "label": ""
+     },
+     {
+      "fill": 0.15,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 6.07718757489186,
+      "deflection_ratio": 0.2777054381093902,
+      "label": ""
+     },
+     {
+      "fill": 0.2,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 6.542651231568721,
+      "deflection_ratio": 0.21048509718330322,
+      "label": ""
+     },
+     {
+      "fill": 0.25,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 6.70486143168447,
+      "deflection_ratio": 0.1798011105531714,
+      "label": ""
+     },
+     {
+      "fill": 0.3,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 7.013355721881536,
+      "deflection_ratio": 0.16059146959490456,
+      "label": ""
+     },
+     {
+      "fill": 0.35,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 7.280254463208767,
+      "deflection_ratio": 0.14884056465298262,
+      "label": ""
+     },
+     {
+      "fill": 0.4,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 7.5597377252817015,
+      "deflection_ratio": 0.14106997741444507,
+      "label": ""
+     },
+     {
+      "fill": 0.45,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 7.850304361876692,
+      "deflection_ratio": 0.13560945348045722,
+      "label": ""
+     },
+     {
+      "fill": 0.5,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 8.145862298662296,
+      "deflection_ratio": 0.13139125704545743,
+      "label": ""
+     },
+     {
+      "fill": 0.55,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 8.36277170861201,
+      "deflection_ratio": 0.1281827482646263,
+      "label": ""
+     },
+     {
+      "fill": 0.6,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 8.504025321939137,
+      "deflection_ratio": 0.12607534992104139,
+      "label": ""
+     }
+    ],
+    "refinement": [],
+    "notes": [
+     "passes at the lowest level computed; limits are loose"
+    ],
+    "reason": ""
+   },
+   "rerun": {},
+   "baseline": {
+    "mass_block_g": 1226.6186391178435,
+    "strut_width_mm": 17.72027626932303,
+    "mass_strut_g": 233.25748095344179,
+    "strut_passed": 1,
+    "note": "constant-width straight struts, sized by the same solver to the same limits",
+    "struts": [
+     [
+      "clevis",
+      "base_front"
+     ],
+     [
+      "clevis",
+      "base_rear"
+     ]
+    ]
+   },
+   "geometry": {
+    "area_mm2": 1577.1088646709134,
+    "volume_mm3": 39427.72161677277,
+    "watertight": 1,
+    "volume_error": 1.6608522086093261e-15,
+    "files": {
+     "stl": "ti64.stl",
+     "svg": "ti64.svg",
+     "dxf": "ti64.dxf"
+    }
+   },
+   "mesh_h_mm": 0.3795309168443497,
+   "effective_min_wall": "metal: 0.95 mm enforced (process allows 0.40 mm)"
+  }
+ ],
+ "ranking": {
+  "order": [
+   "alsi10mg",
+   "ti64",
+   "pa6cf",
+   "petg",
+   "pla",
+   "pa12"
+  ],
+  "cards": [
+   {
+    "material": "alsi10mg",
+    "state": "ranked",
+    "rank": 1,
+    "reason": "",
+    "badges": [
+     "Lightest",
+     "Cheapest material"
+    ],
+    "material_cost_usd": 4.555928585559201,
+    "weight_saved_vs_strut": 0.5467818627450982,
+    "weight_saved_vs_block": 0.8503727067932003
+   },
+   {
+    "material": "ti64",
+    "state": "ranked",
+    "rank": 2,
+    "reason": "",
+    "badges": [],
+    "material_cost_usd": 23.66713013778125,
+    "weight_saved_vs_strut": 0.2539445465686274,
+    "weight_saved_vs_block": 0.8581278563937906
+   },
+   {
+    "material": "pa6cf",
+    "state": "failed",
+    "rank": null,
+    "reason": "Bearing: FAIL (bearing at base_front: required pin diameter x thickness = 486.5 mm^2 (now 238.0): a 19.5 mm pin at this thickness, or 51.1 mm thick at this pin, or a bushing; bearing at base_rear: required pin diameter x thickness = 325.0 mm^2 (now 238.0): a 13.0 mm pin at this thickness, or 34.1 mm thick at this pin, or a bushing; bearing at clevis: required pin diameter x thickness = 580.1 mm^2 (now 476.2): a 23.2 mm pin at this thickness, or 30.5 mm thick at this pin, or a bushing); safety factor 0.92 < 1.5; deflection 0.523 mm > 0.32 mm (Angled 42 deg)",
+    "badges": [],
+    "material_cost_usd": 10.518553517461136,
+    "weight_saved_vs_strut": null,
+    "weight_saved_vs_block": 0.39003450329496747
+   },
+   {
+    "material": "petg",
+    "state": "failed",
+    "rank": null,
+    "reason": "Bearing: FAIL (bearing at base_front: required pin diameter x thickness = 1131.5 mm^2 (now 238.0): a 45.3 mm pin at this thickness, or 118.8 mm thick at this pin, or a bushing; bearing at base_rear: required pin diameter x thickness = 755.8 mm^2 (now 238.0): a 30.2 mm pin at this thickness, or 79.4 mm thick at this pin, or a bushing; bearing at clevis: required pin diameter x thickness = 1349.1 mm^2 (now 476.2): a 54.0 mm pin at this thickness, or 70.8 mm thick at this pin, or a bushing); safety factor 0.40 < 1.5; deflection 3.012 mm > 0.32 mm (Angled 42 deg)",
+    "badges": [],
+    "material_cost_usd": 6.461843363214758,
+    "weight_saved_vs_strut": null,
+    "weight_saved_vs_block": 0.39003450329496736
+   },
+   {
+    "material": "pla",
+    "state": "failed",
+    "rank": null,
+    "reason": "Bearing: FAIL (bearing at base_front: required pin diameter x thickness = 1038.7 mm^2 (now 238.0): a 41.5 mm pin at this thickness, or 109.1 mm thick at this pin, or a bushing; bearing at base_rear: required pin diameter x thickness = 696.3 mm^2 (now 238.0): a 27.9 mm pin at this thickness, or 73.1 mm thick at this pin, or a bushing; bearing at clevis: required pin diameter x thickness = 1243.3 mm^2 (now 476.2): a 49.7 mm pin at this thickness, or 65.3 mm thick at this pin, or a bushing); safety factor 0.43 < 1.5; deflection 1.939 mm > 0.32 mm (Angled 42 deg)",
+    "badges": [],
+    "material_cost_usd": 6.30920139400496,
+    "weight_saved_vs_strut": null,
+    "weight_saved_vs_block": 0.39003450329496747
+   },
+   {
+    "material": "pa12",
+    "state": "failed",
+    "rank": null,
+    "reason": "Bearing: FAIL (bearing at base_front: required pin diameter x thickness = 1107.6 mm^2 (now 238.0): a 44.3 mm pin at this thickness, or 116.3 mm thick at this pin, or a bushing; bearing at base_rear: required pin diameter x thickness = 740.0 mm^2 (now 238.0): a 29.6 mm pin at this thickness, or 77.7 mm thick at this pin, or a bushing; bearing at clevis: required pin diameter x thickness = 1321.0 mm^2 (now 476.2): a 52.8 mm pin at this thickness, or 69.3 mm thick at this pin, or a bushing); safety factor 0.41 < 1.5; deflection 2.736 mm > 0.32 mm (Angled 42 deg)",
+    "badges": [],
+    "material_cost_usd": 11.833697179485798,
+    "weight_saved_vs_strut": null,
+    "weight_saved_vs_block": 0.39003450329496747
+   }
+  ],
+  "pareto": [
+   {
+    "material_id": "alsi10mg",
+    "process_id": "metal",
+    "mass_g": 111.12020940388295,
+    "cost_usd": 4.555928585559201,
+    "state": "ranked",
+    "reason": "",
+    "on_front": 1
+   },
+   {
+    "material_id": "ti64",
+    "process_id": "metal",
+    "mass_g": 174.02301571897976,
+    "cost_usd": 23.66713013778125,
+    "state": "ranked",
+    "reason": "",
+    "on_front": 0
+   },
+   {
+    "material_id": "pa6cf",
+    "process_id": "fdm",
+    "mass_g": 198.50072688169723,
+    "cost_usd": 10.518553517461136,
+    "state": "failed",
+    "reason": "Bearing: FAIL (bearing at base_front: required pin diameter x thickness = 486.5 mm^2 (now 238.0): a 19.5 mm pin at this thickness, or 51.1 mm thick at this pin, or a bushing; bearing at base_rear: required pin diameter x thickness = 325.0 mm^2 (now 238.0): a 13.0 mm pin at this thickness, or 34.1 mm thick at this pin, or a bushing; bearing at clevis: required pin diameter x thickness = 580.1 mm^2 (now 476.2): a 23.2 mm pin at this thickness, or 30.5 mm thick at this pin, or a bushing); safety factor 0.92 < 1.5; deflection 0.523 mm > 0.32 mm (Angled 42 deg)",
+    "on_front": 0
+   },
+   {
+    "material_id": "petg",
+    "process_id": "fdm",
+    "mass_g": 215.46660097415,
+    "cost_usd": 6.461843363214758,
+    "state": "failed",
+    "reason": "Bearing: FAIL (bearing at base_front: required pin diameter x thickness = 1131.5 mm^2 (now 238.0): a 45.3 mm pin at this thickness, or 118.8 mm thick at this pin, or a bushing; bearing at base_rear: required pin diameter x thickness = 755.8 mm^2 (now 238.0): a 30.2 mm pin at this thickness, or 79.4 mm thick at this pin, or a bushing; bearing at clevis: required pin diameter x thickness = 1349.1 mm^2 (now 476.2): a 54.0 mm pin at this thickness, or 70.8 mm thick at this pin, or a bushing); safety factor 0.40 < 1.5; deflection 3.012 mm > 0.32 mm (Angled 42 deg)",
+    "on_front": 0
+   },
+   {
+    "material_id": "pla",
+    "process_id": "fdm",
+    "mass_g": 210.37683874641417,
+    "cost_usd": 6.30920139400496,
+    "state": "failed",
+    "reason": "Bearing: FAIL (bearing at base_front: required pin diameter x thickness = 1038.7 mm^2 (now 238.0): a 41.5 mm pin at this thickness, or 109.1 mm thick at this pin, or a bushing; bearing at base_rear: required pin diameter x thickness = 696.3 mm^2 (now 238.0): a 27.9 mm pin at this thickness, or 73.1 mm thick at this pin, or a bushing; bearing at clevis: required pin diameter x thickness = 1243.3 mm^2 (now 476.2): a 49.7 mm pin at this thickness, or 65.3 mm thick at this pin, or a bushing); safety factor 0.43 < 1.5; deflection 1.939 mm > 0.32 mm (Angled 42 deg)",
+    "on_front": 0
+   },
+   {
+    "material_id": "pa12",
+    "process_id": "sls",
+    "mass_g": 157.78262905981063,
+    "cost_usd": 11.833697179485798,
+    "state": "failed",
+    "reason": "Bearing: FAIL (bearing at base_front: required pin diameter x thickness = 1107.6 mm^2 (now 238.0): a 44.3 mm pin at this thickness, or 116.3 mm thick at this pin, or a bushing; bearing at base_rear: required pin diameter x thickness = 740.0 mm^2 (now 238.0): a 29.6 mm pin at this thickness, or 77.7 mm thick at this pin, or a bushing; bearing at clevis: required pin diameter x thickness = 1321.0 mm^2 (now 476.2): a 52.8 mm pin at this thickness, or 69.3 mm thick at this pin, or a bushing); safety factor 0.41 < 1.5; deflection 2.736 mm > 0.32 mm (Angled 42 deg)",
+    "on_front": 0
+   }
+  ],
+  "funnel": {
+   "candidates": 29,
+   "met_limits": 2,
+   "printable": 2,
+   "ranked": 2,
+   "isolated_stress_failures": 0,
+   "text": "29 candidate designs evaluated -> 2 met the limits -> 2 printable with your printer -> ranked by mass"
+  },
+  "winner": "alsi10mg",
+  "messages": [
+   "Limits are loose; part size is set by the minimum wall. Results shown at the lowest fill level.",
+   "alsi10mg: animation shows an independent run at the same fill level"
+  ],
+  "caption_cost": "material cost only, not print cost"
+ }
+}

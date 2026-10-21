@@ -1,0 +1,3065 @@
+{
+ "format_version": 1,
+ "key": "245e86f476e7863f9dbc7e38039c6aa1d75417f9e5296b9ecc309334aefcc6ec",
+ "code_version": "2578ddad4d5218a06aef370e41a344c3c8a37c18",
+ "materials_hash": "406e95fe4e949ea5",
+ "solver_settings": {
+  "LLM_PROVIDER": "gemini",
+  "LLM_MODELS": {
+   "gemini": "gemini-3.5-flash",
+   "claude": "claude-opus-5-5"
+  },
+  "LLM_TIMEOUT_S": 45.0,
+  "LLM_RETRIES": 1,
+  "ELEMENT_CAP_LIVE": 40000,
+  "ELEMENT_CAP_QUICK": 10000,
+  "ELEMENT_CAP_CACHED": 80000,
+  "ELEMENT_CAP_CACHED_SWEEP": "cold",
+  "MIN_WALL_TO_ELEMENT_RATIO": 2.5,
+  "SIMP_PENALTY": 3.0,
+  "E_MIN_RATIO": 1e-09,
+  "FILTER_RADIUS_MIN_ELEMENTS": 1.5,
+  "BETA_SCHEDULE_COLD": [
+   1,
+   2,
+   4,
+   8,
+   16
+  ],
+  "BETA_SCHEDULE_WARM": [
+   4,
+   8,
+   16
+  ],
+  "BETA_STEP_ITERS": 40,
+  "CHANGE_TOL": 0.01,
+  "PLATEAU_WINDOW": 10,
+  "PLATEAU_RTOL": 0.001,
+  "MAX_ITERS_COLD": 300,
+  "MAX_ITERS_WARM": 100,
+  "MAX_ITERS_REFINE": 60,
+  "OC_MOVE": 0.2,
+  "CATALOG_REFERENCE_E": 1.0,
+  "CATALOG_REFERENCE_NU": 0.33,
+  "SNAPSHOT_EVERY_CATALOG": 2,
+  "SNAPSHOT_EVERY_COLD_RERUN": 1,
+  "FILL_LEVELS": [
+   0.6,
+   0.55,
+   0.5,
+   0.45,
+   0.4,
+   0.35,
+   0.3,
+   0.25,
+   0.2,
+   0.15
+  ],
+  "FILL_LEVELS_LIVE_SHORT": [
+   0.6,
+   0.5,
+   0.4,
+   0.3,
+   0.25,
+   0.2,
+   0.15
+  ],
+  "FILL_LEVELS_LIVE": [
+   0.6,
+   0.5,
+   0.4,
+   0.3,
+   0.25,
+   0.2,
+   0.15
+  ],
+  "FILL_LEVELS_EXTRA_LOW": [
+   0.12,
+   0.1,
+   0.08
+  ],
+  "NORMALIZATION_FILL": 0.6,
+  "REFINE_BISECTION_STEPS": 3,
+  "SOLID_THRESHOLD": 0.5,
+  "EXCLUSION_RING_WIDTHS": 1.0,
+  "REACTION_SUM_RTOL": 1e-06,
+  "OUT_OF_PLANE_SECTIONS": 20,
+  "RECHECK_SUPERSAMPLE": 4,
+  "DEFAULT_SAFETY_FACTOR": 2.0,
+  "DEFAULT_THICKNESS_MM": 6.0,
+  "DEFAULT_DEFLECTION_SPAN_RATIO": 100.0,
+  "DEFAULT_PRINTER": "any",
+  "DEFAULT_HOLE_R_MM": 1.6,
+  "DEFAULT_RING_WIDTH_MIN_MM": 2.0,
+  "DEFAULT_RING_WIDTH_WALLS": 2.0,
+  "SIZE_MIN_MM": 5.0,
+  "SIZE_MAX_MM": 2000.0,
+  "FORCE_MAX_N": 1000000.0,
+  "THIN_SPAN_RATIO": 20.0,
+  "KEEP_IN_MAX_FRACTION": 0.9,
+  "VALIDATION_TOL_BEAM": 0.03,
+  "VALIDATION_TOL_MBB": 0.02,
+  "VALIDATION_TOL_SCALING": 1e-06,
+  "SMOOTH_MAX_MOVE_ELEMENTS": 0.5,
+  "VOLUME_CHECK_RTOL": 0.01,
+  "RERUN_STRICT_RTOL": 0.005,
+  "RERUN_LOOSE_MASS_RTOL": 0.02,
+  "cap_used": 80000,
+  "sweep_mode_used": "cold",
+  "levels_used": [
+   0.6,
+   0.55,
+   0.5,
+   0.45,
+   0.4,
+   0.35,
+   0.3,
+   0.25,
+   0.2,
+   0.15
+  ],
+  "format_version": 1
+ },
+ "problem": {
+  "name": "5-inch FPV drone arm",
+  "design_space": {
+   "width_mm": 120.0,
+   "height_mm": 18.0
+  },
+  "thickness_mm": 10.0,
+  "zones": [],
+  "pads": [
+   {
+    "id": "bolt1",
+    "cx": 5.0,
+    "cy": 9.0,
+    "hole_r_mm": 1.6,
+    "ring_r_mm": 3.6
+   },
+   {
+    "id": "bolt2",
+    "cx": 25.0,
+    "cy": 9.0,
+    "hole_r_mm": 1.6,
+    "ring_r_mm": 3.6
+   },
+   {
+    "id": "motor",
+    "cx": 112.0,
+    "cy": 9.0,
+    "hole_r_mm": 0.0,
+    "ring_r_mm": 8.0
+   }
+  ],
+  "supports": [
+   {
+    "pad_id": "bolt1",
+    "type": "pin"
+   },
+   {
+    "pad_id": "bolt2",
+    "type": "pin"
+   }
+  ],
+  "load_cases": [
+   {
+    "id": "thrust",
+    "name": "Full thrust",
+    "reason": "~1.6 kgf max static thrust for a 2306 motor on 6S with a 5-inch prop (to cite from a motor thrust table) x 2 for dynamic loads",
+    "loads": [
+     {
+      "pad_id": "motor",
+      "fx_N": 0.0,
+      "fy_N": 32.0,
+      "fz_N_out_of_plane": 0.0
+     }
+    ],
+    "max_deflection_mm": 0.5
+   },
+   {
+    "id": "landing",
+    "name": "Hard landing",
+    "reason": "arm hits the ground first (impact factor to cite)",
+    "loads": [
+     {
+      "pad_id": "motor",
+      "fx_N": 0.0,
+      "fy_N": -50.0,
+      "fz_N_out_of_plane": 0.0
+     }
+    ],
+    "max_deflection_mm": 0.5
+   },
+   {
+    "id": "side_crash",
+    "name": "Side crash (out of plane)",
+    "reason": "hand checks only",
+    "loads": [
+     {
+      "pad_id": "motor",
+      "fx_N": 0.0,
+      "fy_N": 0.0,
+      "fz_N_out_of_plane": 30.0
+     }
+    ],
+    "max_deflection_mm": 0.5
+   }
+  ],
+  "safety_factor": 2.0,
+  "printer": "desktop_fdm",
+  "materials": [
+   "pla",
+   "petg",
+   "pa6cf",
+   "pa12",
+   "alsi10mg",
+   "ti64"
+  ],
+  "warnings": [],
+  "provenance": {},
+  "notes": [
+   "Side view along the arm: thrust is in-plane. The motor mount is a solid keep-in disc (no hole).",
+   "Deflection limit 0.5 mm: arm stiffness affects motor vibration seen by the flight controller.",
+   "Design space enlarged from 120 x 15 mm to 120 x 18 mm and pads recentred at y = 9 mm (2026-10-21), so the 8 mm motor ring fits inside the design area (spec 14.2)."
+  ],
+  "references": [
+   "Spec section 14.2 (approved 2026-10-20); thrust table and impact factor citations still to add"
+  ]
+ },
+ "seconds": 4652.762695499994,
+ "created": "2026-10-21 03:32:55",
+ "catalogs": {
+  "fdm": {
+   "process": "fdm",
+   "mesh": [
+    375,
+    56
+   ],
+   "elements": 21000,
+   "h_mm": 0.32,
+   "effective_min_wall_mm": 0.8,
+   "min_wall_text": "fdm: 0.80 mm enforced",
+   "weights": [
+    3.8138584228369733e-06,
+    1.5621564100906633e-06,
+    0.0
+   ],
+   "sweep_mode": "cold",
+   "early_stopped": 0,
+   "notes": [],
+   "seconds": 708.0885662000001,
+   "levels": [
+    {
+     "fill": 0.15,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 223,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 81.49842219999846,
+     "ref_deflection_dE": [
+      16119.858918268521,
+      25187.279560254723,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      103.89968352352655,
+      162.34325550650618,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.2,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 185,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 69.38050780000049,
+     "ref_deflection_dE": [
+      6073.754116850935,
+      9490.240807504322,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      13.679597499416106,
+      21.374371092664923,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.25,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 182,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 68.62285930000508,
+     "ref_deflection_dE": [
+      5031.163803627289,
+      7861.193443229459,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      8.980918593451435,
+      14.032685302398976,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.3,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 180,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 66.46712280000065,
+     "ref_deflection_dE": [
+      4446.85969003159,
+      6948.218265684597,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      7.570433668193151,
+      11.828802606567699,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.35,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 178,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 65.32767769999919,
+     "ref_deflection_dE": [
+      4069.9730027983333,
+      6359.332816767104,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      6.380101133842946,
+      9.968908021453366,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.4,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 178,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 67.57777470000292,
+     "ref_deflection_dE": [
+      3295.6715910664625,
+      5149.486861065006,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      8.470672758276665,
+      13.235426184868107,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.45,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 178,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 69.01313069999742,
+     "ref_deflection_dE": [
+      2774.652425351301,
+      4335.39441458725,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      6.877524128635164,
+      10.74613145095596,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.4563,
+     "kind": "refine",
+     "mode": "refine",
+     "iterations": 60,
+     "converged": 0,
+     "converged_by": null,
+     "seconds": 23.976112399999693,
+     "ref_deflection_dE": [
+      2702.6201771983174,
+      4222.844026866191,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      6.580094033885526,
+      10.281396927932237,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.4625,
+     "kind": "refine",
+     "mode": "refine",
+     "iterations": 60,
+     "converged": 0,
+     "converged_by": null,
+     "seconds": 23.655433100000664,
+     "ref_deflection_dE": [
+      2681.9057238045825,
+      4190.477693444718,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      6.553676522267801,
+      10.24011956604646,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.475,
+     "kind": "refine",
+     "mode": "refine",
+     "iterations": 60,
+     "converged": 0,
+     "converged_by": null,
+     "seconds": 22.675196099997265,
+     "ref_deflection_dE": [
+      2639.6264288970287,
+      4124.416295191648,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      6.401391978152521,
+      10.002174965961597,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.5,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 178,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 68.07568089999404,
+     "ref_deflection_dE": [
+      2576.4972830087995,
+      4025.777004660543,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      6.400342178659682,
+      10.000534654056803,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.55,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 176,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 66.56249110000499,
+     "ref_deflection_dE": [
+      2422.2099236318236,
+      3784.7030056581234,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      6.116378703322799,
+      9.556841723903224,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.6,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 175,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 66.12891610000224,
+     "ref_deflection_dE": [
+      2272.4295492300384,
+      3550.6711706452834,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      5.881872142099094,
+      9.190425221947681,
+      0.0
+     ],
+     "connected": 1
+    }
+   ]
+  },
+  "sls": {
+   "process": "sls",
+   "mesh": [
+    375,
+    56
+   ],
+   "elements": 21000,
+   "h_mm": 0.32,
+   "effective_min_wall_mm": 0.8,
+   "min_wall_text": "sls: 0.80 mm enforced",
+   "weights": [
+    3.8138584228369733e-06,
+    1.5621564100906633e-06,
+    0.0
+   ],
+   "sweep_mode": "cold",
+   "early_stopped": 0,
+   "notes": [],
+   "seconds": 665.681674899999,
+   "levels": [
+    {
+     "fill": 0.15,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 223,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 78.35671019999427,
+     "ref_deflection_dE": [
+      16119.858918268521,
+      25187.279560254723,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      103.89968352352655,
+      162.34325550650618,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.2,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 185,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 65.33756829999766,
+     "ref_deflection_dE": [
+      6073.754116850935,
+      9490.240807504322,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      13.679597499416106,
+      21.374371092664923,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.25,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 182,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 66.06075459999556,
+     "ref_deflection_dE": [
+      5031.163803627289,
+      7861.193443229459,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      8.980918593451435,
+      14.032685302398976,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.3,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 180,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 64.3161506999968,
+     "ref_deflection_dE": [
+      4446.85969003159,
+      6948.218265684597,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      7.570433668193151,
+      11.828802606567699,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.35,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 178,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 63.461722799998824,
+     "ref_deflection_dE": [
+      4069.9730027983333,
+      6359.332816767104,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      6.380101133842946,
+      9.968908021453366,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.4,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 178,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 63.27652549999766,
+     "ref_deflection_dE": [
+      3295.6715910664625,
+      5149.486861065006,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      8.470672758276665,
+      13.235426184868107,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.45,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 178,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 63.70586750000075,
+     "ref_deflection_dE": [
+      2774.652425351301,
+      4335.39441458725,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      6.877524128635164,
+      10.74613145095596,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.5,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 178,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 62.85187579999911,
+     "ref_deflection_dE": [
+      2576.4972830087995,
+      4025.777004660543,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      6.400342178659682,
+      10.000534654056803,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.55,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 176,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 61.595845499999996,
+     "ref_deflection_dE": [
+      2422.2099236318236,
+      3784.7030056581234,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      6.116378703322799,
+      9.556841723903224,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.6,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 175,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 59.57337319999351,
+     "ref_deflection_dE": [
+      2272.4295492300384,
+      3550.6711706452834,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      5.881872142099094,
+      9.190425221947681,
+      0.0
+     ],
+     "connected": 1
+    }
+   ]
+  },
+  "metal": {
+   "process": "metal",
+   "mesh": [
+    731,
+    110
+   ],
+   "elements": 80410,
+   "h_mm": 0.16415868673050615,
+   "effective_min_wall_mm": 0.4103967168262654,
+   "min_wall_text": "metal: 0.41 mm enforced (process allows 0.40 mm)",
+   "weights": [
+    3.874665710234607e-06,
+    1.5870630747041464e-06,
+    0.0
+   ],
+   "sweep_mode": "cold",
+   "early_stopped": 0,
+   "notes": [
+    "metal: the element cap limits the min wall to 0.41 mm (process allows 0.40 mm)",
+    "every material passes at 15%: extending down to 12%"
+   ],
+   "seconds": 2512.7469593999995,
+   "levels": [
+    {
+     "fill": 0.12,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 191,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 233.4541648000013,
+     "ref_deflection_dE": [
+      18607.217032167115,
+      29073.776614908264,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      141.2257249955982,
+      220.66519532362574,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.1237,
+     "kind": "refine",
+     "mode": "refine",
+     "iterations": 60,
+     "converged": 0,
+     "converged_by": null,
+     "seconds": 74.24573690000398,
+     "ref_deflection_dE": [
+      8667.969866618088,
+      13543.70291695759,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      19.986796571736537,
+      31.22936964411967,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.1275,
+     "kind": "refine",
+     "mode": "refine",
+     "iterations": 60,
+     "converged": 0,
+     "converged_by": null,
+     "seconds": 74.45862079999642,
+     "ref_deflection_dE": [
+      8405.223754649887,
+      13133.162117411179,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      17.61330265051456,
+      27.520785392948277,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.135,
+     "kind": "refine",
+     "mode": "refine",
+     "iterations": 60,
+     "converged": 0,
+     "converged_by": null,
+     "seconds": 73.79010209999979,
+     "ref_deflection_dE": [
+      8030.804119304339,
+      12548.13143610912,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      17.08589792466263,
+      26.69671550657244,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.15,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 183,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 230.73909289999574,
+     "ref_deflection_dE": [
+      7589.864447951589,
+      11859.16319951721,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      21.024278642404564,
+      32.85043537757286,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.2,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 179,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 224.96115099999588,
+     "ref_deflection_dE": [
+      6026.637910824532,
+      9416.62173557411,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      15.410252417014224,
+      24.078519401323245,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.25,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 176,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 217.47221930000524,
+     "ref_deflection_dE": [
+      5100.914161326619,
+      7970.178377137561,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      11.901051396102398,
+      18.5953928065868,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.3,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 176,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 220.8494592999923,
+     "ref_deflection_dE": [
+      4559.169556332479,
+      7123.7024320367145,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      9.118675182117125,
+      14.247929972582847,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.35,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 175,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 219.68215110000165,
+     "ref_deflection_dE": [
+      4163.946162359445,
+      6506.165878870532,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      7.328059517260681,
+      11.450092996024177,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.4,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 177,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 225.2089169000028,
+     "ref_deflection_dE": [
+      3012.6210803717786,
+      4707.220438067311,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      8.080750333054732,
+      12.626172395381644,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.45,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 176,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 217.9024583999999,
+     "ref_deflection_dE": [
+      2746.1595461526554,
+      4290.874290959008,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      7.2777222512201565,
+      11.371441017771806,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.5,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 175,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 218.26129730000685,
+     "ref_deflection_dE": [
+      2546.42785515942,
+      3978.793523582333,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      6.681530143732178,
+      10.439890849331558,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.55,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 175,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 213.75078100000246,
+     "ref_deflection_dE": [
+      2388.299598056317,
+      3731.718121924233,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      6.259838787137702,
+      9.780998104784008,
+      0.0
+     ],
+     "connected": 1
+    },
+    {
+     "fill": 0.6,
+     "kind": "catalog",
+     "mode": "cold",
+     "iterations": 174,
+     "converged": 1,
+     "converged_by": "plateau",
+     "seconds": 219.129792300002,
+     "ref_deflection_dE": [
+      2236.0928355108035,
+      3493.8950555627493,
+      0.0
+     ],
+     "ref_stress_MPa": [
+      6.0035925257295375,
+      9.380613321708454,
+      0.0
+     ],
+     "connected": 1
+    }
+   ]
+  }
+ },
+ "designs": [
+  {
+   "material": "pla",
+   "process": "fdm",
+   "status": "fail",
+   "fill": 0.6,
+   "printer_allowed": 1,
+   "converged": 1,
+   "reasons": [
+    "deflection 1.534 mm > 0.5 mm (Hard landing)"
+   ],
+   "notes": [
+    "no fill level passes with the level above it also passing"
+   ],
+   "checks": {
+    "passed": 0,
+    "passed_in_plane": 0,
+    "sf": 5.5637790716812745,
+    "sf_raw": 4.021822477228851,
+    "sf_target": 2.0,
+    "stress_reported_MPa": 9.166431546425281,
+    "stress_raw_MPa": 12.68081828294431,
+    "stress_pass": 1,
+    "deflection_mm": [
+     0.981514035750805,
+     1.5336156808334138,
+     0.0
+    ],
+    "deflection_limit_mm": [
+     0.5,
+     0.5,
+     0.5
+    ],
+    "deflection_pass": 0,
+    "mass_g": 17.31071744,
+    "out_of_plane": [
+     {
+      "name": "out-of-plane bending (Side crash (out of plane))",
+      "passed": 1,
+      "sf": 3.685904416212946,
+      "detail": "approximate hand check: beam through the thickness, XY strength 51 MPa",
+      "where": "78.7 mm from pad motor, width 10.2 mm",
+      "suggestion": ""
+     },
+     {
+      "name": "interlayer shear (Side crash (out of plane))",
+      "passed": 1,
+      "sf": 21.399218297387858,
+      "detail": "approximate hand check: 1.5 Fz / (w t) vs 21.5 MPa (Z strength / sqrt(3), a conservative stand-in (XY x 0.73 knockdown (Ultimaker PLA TDS v2.00 (2022-04-20), p.2: tensile stress at break XY (flat) 45.5 +/- 1.1 MPa vs Z (upright) 33.1 +/- 2.8 MPa, ASTM D3039. Ratio 33.1/45.5 = 0.73. Different PLA brand; https://um-support-files.ultimaker.com/materials/2.85mm/tds/PLA/Ultimaker-PLA-TDS-v5.00.pdf)))",
+      "where": "12.4 mm from pad motor, width 4.5 mm",
+      "suggestion": ""
+     }
+    ],
+    "bearing": [
+     {
+      "name": "bearing at bolt1",
+      "passed": 1,
+      "sf": 10.002173554042928,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 163 N, 5.1 MPa vs 51 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at bolt2",
+      "passed": 1,
+      "sf": 7.6561106780700054,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 213 N, 6.7 MPa vs 51 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at motor",
+      "passed": 1,
+      "sf": "inf",
+      "detail": "n/a (solid mount)",
+      "where": "",
+      "suggestion": ""
+     }
+    ],
+    "fail_reasons": [
+     "deflection 1.534 mm > 0.5 mm (Hard landing)"
+    ],
+    "notes": []
+   },
+   "grid_checks": {
+    "passed": 0,
+    "passed_in_plane": 0,
+    "sf": 5.547636387905656,
+    "sf_raw": 4.010248522430697,
+    "sf_target": 2.0,
+    "stress_reported_MPa": 9.193104312168794,
+    "stress_raw_MPa": 12.717416318400092,
+    "stress_pass": 1,
+    "deflection_mm": [
+     0.9900922313386388,
+     1.5470191114432021,
+     0.0
+    ],
+    "deflection_limit_mm": [
+     0.5,
+     0.5,
+     0.5
+    ],
+    "deflection_pass": 0,
+    "mass_g": 17.2242944,
+    "out_of_plane": [
+     {
+      "name": "out-of-plane bending (Side crash (out of plane))",
+      "passed": 1,
+      "sf": 3.685904416212946,
+      "detail": "approximate hand check: beam through the thickness, XY strength 51 MPa",
+      "where": "78.7 mm from pad motor, width 10.2 mm",
+      "suggestion": ""
+     },
+     {
+      "name": "interlayer shear (Side crash (out of plane))",
+      "passed": 1,
+      "sf": 21.399218297387858,
+      "detail": "approximate hand check: 1.5 Fz / (w t) vs 21.5 MPa (Z strength / sqrt(3), a conservative stand-in (XY x 0.73 knockdown (Ultimaker PLA TDS v2.00 (2022-04-20), p.2: tensile stress at break XY (flat) 45.5 +/- 1.1 MPa vs Z (upright) 33.1 +/- 2.8 MPa, ASTM D3039. Ratio 33.1/45.5 = 0.73. Different PLA brand; https://um-support-files.ultimaker.com/materials/2.85mm/tds/PLA/Ultimaker-PLA-TDS-v5.00.pdf)))",
+      "where": "12.4 mm from pad motor, width 4.5 mm",
+      "suggestion": ""
+     }
+    ],
+    "bearing": [
+     {
+      "name": "bearing at bolt1",
+      "passed": 1,
+      "sf": 10.009948654286129,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 163 N, 5.1 MPa vs 51 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at bolt2",
+      "passed": 1,
+      "sf": 7.660639231329622,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 213 N, 6.7 MPa vs 51 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at motor",
+      "passed": 1,
+      "sf": "inf",
+      "detail": "n/a (solid mount)",
+      "where": "",
+      "suggestion": ""
+     }
+    ],
+    "fail_reasons": [
+     "deflection 1.547 mm > 0.5 mm (Hard landing)"
+    ],
+    "notes": []
+   },
+   "pick": {
+    "status": "fail",
+    "v_pick": null,
+    "v_final": null,
+    "window": null,
+    "levels": [
+     {
+      "fill": 0.15,
+      "passed": 0,
+      "stress_pass": 0,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 0.31414917632938616,
+      "deflection_ratio": 21.901982226308455,
+      "label": ""
+     },
+     {
+      "fill": 0.2,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 2.386035115554897,
+      "deflection_ratio": 8.252383310873324,
+      "label": ""
+     },
+     {
+      "fill": 0.25,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 3.6343721034833747,
+      "deflection_ratio": 6.8358203854169215,
+      "label": ""
+     },
+     {
+      "fill": 0.3,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 4.31150993860387,
+      "deflection_ratio": 6.0419289266822584,
+      "label": ""
+     },
+     {
+      "fill": 0.35,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 5.115906365095012,
+      "deflection_ratio": 5.529854623275743,
+      "label": ""
+     },
+     {
+      "fill": 0.4,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 3.8532948835684375,
+      "deflection_ratio": 4.477814661795658,
+      "label": ""
+     },
+     {
+      "fill": 0.45,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 4.745893927759753,
+      "deflection_ratio": 3.769908186597609,
+      "label": ""
+     },
+     {
+      "fill": 0.5,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 5.099727341008854,
+      "deflection_ratio": 3.500675656226559,
+      "label": ""
+     },
+     {
+      "fill": 0.55,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 5.336491015901275,
+      "deflection_ratio": 3.291046091876629,
+      "label": ""
+     },
+     {
+      "fill": 0.6,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 5.549253572969263,
+      "deflection_ratio": 3.087540148387203,
+      "label": ""
+     }
+    ],
+    "refinement": [],
+    "notes": [
+     "no fill level passes with the level above it also passing"
+    ],
+    "reason": "no fill level passes with the level above it also passing"
+   },
+   "rerun": {},
+   "baseline": {
+    "mass_block_g": 26.4617984,
+    "strut_width_mm": null,
+    "mass_strut_g": null,
+    "strut_passed": 0,
+    "note": "constant-width straight struts, sized by the same solver to the same limits",
+    "struts": [
+     [
+      "motor",
+      "bolt2"
+     ],
+     [
+      "motor",
+      "bolt1"
+     ]
+    ]
+   },
+   "geometry": {
+    "area_mm2": 1395.74250349176,
+    "volume_mm3": 13957.425034917587,
+    "watertight": 1,
+    "volume_error": 9.122689746114883e-16,
+    "files": {
+     "stl": "pla.stl",
+     "svg": "pla.svg",
+     "dxf": "pla.dxf"
+    }
+   },
+   "mesh_h_mm": 0.32,
+   "effective_min_wall": "fdm: 0.80 mm enforced"
+  },
+  {
+   "material": "petg",
+   "process": "fdm",
+   "status": "fail",
+   "fill": 0.6,
+   "printer_allowed": 1,
+   "converged": 1,
+   "reasons": [
+    "deflection 2.364 mm > 0.5 mm (Hard landing)"
+   ],
+   "notes": [
+    "no fill level passes with the level above it also passing"
+   ],
+   "checks": {
+    "passed": 0,
+    "passed_in_plane": 0,
+    "sf": 5.123207686073641,
+    "sf_raw": 3.785180560703897,
+    "sf_target": 2.0,
+    "stress_reported_MPa": 9.173940015697506,
+    "stress_raw_MPa": 12.416844915651744,
+    "stress_pass": 1,
+    "deflection_mm": [
+     1.5128875101086623,
+     2.363886734525673,
+     0.0
+    ],
+    "deflection_limit_mm": [
+     0.5,
+     0.5,
+     0.5
+    ],
+    "deflection_pass": 0,
+    "mass_g": 17.729525119999998,
+    "out_of_plane": [
+     {
+      "name": "out-of-plane bending (Side crash (out of plane))",
+      "passed": 1,
+      "sf": 3.396813873764872,
+      "detail": "approximate hand check: beam through the thickness, XY strength 47 MPa",
+      "where": "78.7 mm from pad motor, width 10.2 mm",
+      "suggestion": ""
+     },
+     {
+      "name": "interlayer shear (Side crash (out of plane))",
+      "passed": 1,
+      "sf": 13.23728169188403,
+      "detail": "approximate hand check: 1.5 Fz / (w t) vs 13.3 MPa (Z strength / sqrt(3), a conservative stand-in (XY x 0.49 knockdown (Ultimaker PETG TDS v1.00 (2022-04-29), p.2: tensile stress at break XY (flat) 38.5 +/- 1.4 MPa vs Z (upright) 19.0 +/- 6.4 MPa, ASTM D3039. Ratio 19.0/38.5 = 0.49. Different PETG brand; https://um-support-files.ultimaker.com/materials/2.85mm/tds/PETG/Ultimaker-PETG-TDS-v1.00.pdf)))",
+      "where": "12.4 mm from pad motor, width 4.5 mm",
+      "suggestion": ""
+     }
+    ],
+    "bearing": [
+     {
+      "name": "bearing at bolt1",
+      "passed": 1,
+      "sf": 9.183061202343163,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 164 N, 5.1 MPa vs 47 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at bolt2",
+      "passed": 1,
+      "sf": 7.035324617196895,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 214 N, 6.7 MPa vs 47 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at motor",
+      "passed": 1,
+      "sf": "inf",
+      "detail": "n/a (solid mount)",
+      "where": "",
+      "suggestion": ""
+     }
+    ],
+    "fail_reasons": [
+     "deflection 2.364 mm > 0.5 mm (Hard landing)"
+    ],
+    "notes": []
+   },
+   "grid_checks": {
+    "passed": 0,
+    "passed_in_plane": 0,
+    "sf": 5.108324042524162,
+    "sf_raw": 3.773952334436362,
+    "sf_target": 2.0,
+    "stress_reported_MPa": 9.200669262315635,
+    "stress_raw_MPa": 12.453787391837695,
+    "stress_pass": 1,
+    "deflection_mm": [
+     1.52595361604187,
+     2.384302525060143,
+     0.0
+    ],
+    "deflection_limit_mm": [
+     0.5,
+     0.5,
+     0.5
+    ],
+    "deflection_pass": 0,
+    "mass_g": 17.6410112,
+    "out_of_plane": [
+     {
+      "name": "out-of-plane bending (Side crash (out of plane))",
+      "passed": 1,
+      "sf": 3.396813873764872,
+      "detail": "approximate hand check: beam through the thickness, XY strength 47 MPa",
+      "where": "78.7 mm from pad motor, width 10.2 mm",
+      "suggestion": ""
+     },
+     {
+      "name": "interlayer shear (Side crash (out of plane))",
+      "passed": 1,
+      "sf": 13.23728169188403,
+      "detail": "approximate hand check: 1.5 Fz / (w t) vs 13.3 MPa (Z strength / sqrt(3), a conservative stand-in (XY x 0.49 knockdown (Ultimaker PETG TDS v1.00 (2022-04-29), p.2: tensile stress at break XY (flat) 38.5 +/- 1.4 MPa vs Z (upright) 19.0 +/- 6.4 MPa, ASTM D3039. Ratio 19.0/38.5 = 0.49. Different PETG brand; https://um-support-files.ultimaker.com/materials/2.85mm/tds/PETG/Ultimaker-PETG-TDS-v1.00.pdf)))",
+      "where": "12.4 mm from pad motor, width 4.5 mm",
+      "suggestion": ""
+     }
+    ],
+    "bearing": [
+     {
+      "name": "bearing at bolt1",
+      "passed": 1,
+      "sf": 9.189353268954946,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 164 N, 5.1 MPa vs 47 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at bolt2",
+      "passed": 1,
+      "sf": 7.038992732458845,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 214 N, 6.7 MPa vs 47 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at motor",
+      "passed": 1,
+      "sf": "inf",
+      "detail": "n/a (solid mount)",
+      "where": "",
+      "suggestion": ""
+     }
+    ],
+    "fail_reasons": [
+     "deflection 2.384 mm > 0.5 mm (Hard landing)"
+    ],
+    "notes": []
+   },
+   "pick": {
+    "status": "fail",
+    "v_pick": null,
+    "v_final": null,
+    "window": null,
+    "levels": [
+     {
+      "fill": 0.15,
+      "passed": 0,
+      "stress_pass": 0,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 0.2895100252447284,
+      "deflection_ratio": 33.583039413672964,
+      "label": ""
+     },
+     {
+      "fill": 0.2,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 2.1988951064917677,
+      "deflection_ratio": 12.653654410005762,
+      "label": ""
+     },
+     {
+      "fill": 0.25,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 3.349323311053306,
+      "deflection_ratio": 10.481591257639279,
+      "label": ""
+     },
+     {
+      "fill": 0.3,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 3.9733522963604293,
+      "deflection_ratio": 9.264291020912795,
+      "label": ""
+     },
+     {
+      "fill": 0.35,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 4.714658807048345,
+      "deflection_ratio": 8.479110422356138,
+      "label": ""
+     },
+     {
+      "fill": 0.4,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 3.55107567701405,
+      "deflection_ratio": 6.8659824814200086,
+      "label": ""
+     },
+     {
+      "fill": 0.45,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 4.373666953033498,
+      "deflection_ratio": 5.780525886116333,
+      "label": ""
+     },
+     {
+      "fill": 0.5,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 4.699748726027767,
+      "deflection_ratio": 5.367702672880724,
+      "label": ""
+     },
+     {
+      "fill": 0.55,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 4.917942700928625,
+      "deflection_ratio": 5.046270674210831,
+      "label": ""
+     },
+     {
+      "fill": 0.6,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 5.114017998618732,
+      "deflection_ratio": 4.734228227527044,
+      "label": ""
+     }
+    ],
+    "refinement": [],
+    "notes": [
+     "no fill level passes with the level above it also passing"
+    ],
+    "reason": "no fill level passes with the level above it also passing"
+   },
+   "rerun": {},
+   "baseline": {
+    "mass_block_g": 27.1020032,
+    "strut_width_mm": null,
+    "mass_strut_g": null,
+    "strut_passed": 0,
+    "note": "constant-width straight struts, sized by the same solver to the same limits",
+    "struts": [
+     [
+      "motor",
+      "bolt2"
+     ],
+     [
+      "motor",
+      "bolt1"
+     ]
+    ]
+   },
+   "geometry": {
+    "area_mm2": 1395.74250349176,
+    "volume_mm3": 13957.425034917587,
+    "watertight": 1,
+    "volume_error": 9.122689746114883e-16,
+    "files": {
+     "stl": "petg.stl",
+     "svg": "petg.svg",
+     "dxf": "petg.dxf"
+    }
+   },
+   "mesh_h_mm": 0.32,
+   "effective_min_wall": "fdm: 0.80 mm enforced"
+  },
+  {
+   "material": "pa6cf",
+   "process": "fdm",
+   "status": "pass",
+   "fill": 0.4563,
+   "printer_allowed": 1,
+   "converged": 0,
+   "reasons": [],
+   "notes": [
+    "not fully converged",
+    "animation shows an independent run at the same fill level"
+   ],
+   "checks": {
+    "passed": 1,
+    "passed_in_plane": 1,
+    "sf": 10.66251241152265,
+    "sf_raw": 7.455020612190724,
+    "sf_target": 2.0,
+    "stress_reported_MPa": 10.250867317339095,
+    "stress_raw_MPa": 14.661260603527857,
+    "stress_pass": 1,
+    "deflection_mm": [
+     0.3115647296058001,
+     0.4868198900070348,
+     0.0
+    ],
+    "deflection_limit_mm": [
+     0.5,
+     0.5,
+     0.5
+    ],
+    "deflection_pass": 1,
+    "mass_g": 13.265291519999998,
+    "out_of_plane": [
+     {
+      "name": "out-of-plane bending (Side crash (out of plane))",
+      "passed": 1,
+      "sf": 7.29597275436356,
+      "detail": "approximate hand check: beam through the thickness, XY strength 109.3 MPa",
+      "where": "74.6 mm from pad motor, width 9.0 mm",
+      "suggestion": ""
+     },
+     {
+      "name": "interlayer shear (Side crash (out of plane))",
+      "passed": 1,
+      "sf": 26.604300404257955,
+      "detail": "approximate hand check: 1.5 Fz / (w t) vs 31.2 MPa (Z strength / sqrt(3), a conservative stand-in (datasheet Z value))",
+      "where": "12.4 mm from pad motor, width 3.8 mm",
+      "suggestion": ""
+     }
+    ],
+    "bearing": [
+     {
+      "name": "bearing at bolt1",
+      "passed": 1,
+      "sf": 25.84493306692489,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 135 N, 4.2 MPa vs 109.3 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at bolt2",
+      "passed": 1,
+      "sf": 18.872787216996844,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 185 N, 5.8 MPa vs 109.3 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at motor",
+      "passed": 1,
+      "sf": "inf",
+      "detail": "n/a (solid mount)",
+      "where": "",
+      "suggestion": ""
+     }
+    ],
+    "fail_reasons": [],
+    "notes": []
+   },
+   "grid_checks": {
+    "passed": 1,
+    "passed_in_plane": 1,
+    "sf": 10.622683515484056,
+    "sf_raw": 7.39877601215395,
+    "sf_target": 2.0,
+    "stress_reported_MPa": 10.289302118497634,
+    "stress_raw_MPa": 14.772713732711082,
+    "stress_pass": 1,
+    "deflection_mm": [
+     0.31498155586155546,
+     0.49215868102485943,
+     0.0
+    ],
+    "deflection_limit_mm": [
+     0.5,
+     0.5,
+     0.5
+    ],
+    "deflection_pass": 1,
+    "mass_g": 13.275924480000002,
+    "out_of_plane": [
+     {
+      "name": "out-of-plane bending (Side crash (out of plane))",
+      "passed": 1,
+      "sf": 7.29597275436356,
+      "detail": "approximate hand check: beam through the thickness, XY strength 109.3 MPa",
+      "where": "74.6 mm from pad motor, width 9.0 mm",
+      "suggestion": ""
+     },
+     {
+      "name": "interlayer shear (Side crash (out of plane))",
+      "passed": 1,
+      "sf": 26.604300404257955,
+      "detail": "approximate hand check: 1.5 Fz / (w t) vs 31.2 MPa (Z strength / sqrt(3), a conservative stand-in (datasheet Z value))",
+      "where": "12.4 mm from pad motor, width 3.8 mm",
+      "suggestion": ""
+     }
+    ],
+    "bearing": [
+     {
+      "name": "bearing at bolt1",
+      "passed": 1,
+      "sf": 25.87589637135272,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 135 N, 4.2 MPa vs 109.3 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at bolt2",
+      "passed": 1,
+      "sf": 18.889530205791292,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 185 N, 5.8 MPa vs 109.3 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at motor",
+      "passed": 1,
+      "sf": "inf",
+      "detail": "n/a (solid mount)",
+      "where": "",
+      "suggestion": ""
+     }
+    ],
+    "fail_reasons": [],
+    "notes": []
+   },
+   "pick": {
+    "status": "pass",
+    "v_pick": 0.5,
+    "v_final": 0.4563,
+    "window": [
+     0.45,
+     0.5
+    ],
+    "levels": [
+     {
+      "fill": 0.15,
+      "passed": 0,
+      "stress_pass": 0,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 0.6732648033882727,
+      "deflection_ratio": 5.832751591560174,
+      "label": ""
+     },
+     {
+      "fill": 0.2,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 5.113600747650005,
+      "deflection_ratio": 2.1977052758650664,
+      "label": ""
+     },
+     {
+      "fill": 0.25,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 7.788958253151624,
+      "deflection_ratio": 1.8204581585664237,
+      "label": ""
+     },
+     {
+      "fill": 0.3,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 9.24015757430202,
+      "deflection_ratio": 1.6090356662269663,
+      "label": ""
+     },
+     {
+      "fill": 0.35,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 10.964089523625193,
+      "deflection_ratio": 1.4726643470774283,
+      "label": ""
+     },
+     {
+      "fill": 0.4,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 8.25813981909863,
+      "deflection_ratio": 1.1924939179216132,
+      "label": ""
+     },
+     {
+      "fill": 0.45,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 10.171102084394922,
+      "deflection_ratio": 1.0039702227956349,
+      "label": ""
+     },
+     {
+      "fill": 0.5,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 10.92941565435819,
+      "deflection_ratio": 0.9322704810190571,
+      "label": ""
+     },
+     {
+      "fill": 0.55,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 11.436832706627632,
+      "deflection_ratio": 0.8764436995676775,
+      "label": ""
+     },
+     {
+      "fill": 0.6,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 11.892812069128244,
+      "deflection_ratio": 0.8222477092908663,
+      "label": ""
+     }
+    ],
+    "refinement": [
+     {
+      "fill": 0.475,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 10.927623279132673,
+      "deflection_ratio": 0.9551129034195908,
+      "label": ""
+     },
+     {
+      "fill": 0.4625,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 10.673703494870315,
+      "deflection_ratio": 0.9704110909383936,
+      "label": ""
+     },
+     {
+      "fill": 0.4563,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 10.630851115479896,
+      "deflection_ratio": 0.9779063340163703,
+      "label": ""
+     }
+    ],
+    "notes": [],
+    "reason": ""
+   },
+   "rerun": {
+    "fill": 0.4563,
+    "iterations": 179,
+    "converged": 1,
+    "seconds": 67.66659820001223,
+    "replaced": 0,
+    "note": "animation shows an independent run at the same fill level"
+   },
+   "baseline": {
+    "mass_block_g": 24.9679872,
+    "strut_width_mm": 15.81640625,
+    "mass_strut_g": 21.8769408,
+    "strut_passed": 1,
+    "note": "constant-width straight struts, sized by the same solver to the same limits",
+    "struts": [
+     [
+      "motor",
+      "bolt2"
+     ],
+     [
+      "motor",
+      "bolt1"
+     ]
+    ]
+   },
+   "geometry": {
+    "area_mm2": 1134.5558737959132,
+    "volume_mm3": 11345.558737959125,
+    "watertight": 1,
+    "volume_error": 4.809783578467624e-16,
+    "files": {
+     "stl": "pa6cf.stl",
+     "svg": "pa6cf.svg",
+     "dxf": "pa6cf.dxf"
+    }
+   },
+   "mesh_h_mm": 0.32,
+   "effective_min_wall": "fdm: 0.80 mm enforced"
+  },
+  {
+   "material": "pa12",
+   "process": "sls",
+   "status": "fail",
+   "fill": 0.6,
+   "printer_allowed": 0,
+   "converged": 1,
+   "reasons": [
+    "deflection 2.148 mm > 0.5 mm (Hard landing)"
+   ],
+   "notes": [
+    "no fill level passes with the level above it also passing"
+   ],
+   "checks": {
+    "passed": 0,
+    "passed_in_plane": 0,
+    "sf": 5.232520446211596,
+    "sf_raw": 3.860366663137427,
+    "sf_target": 2.0,
+    "stress_reported_MPa": 9.17339941495165,
+    "stress_raw_MPa": 12.434052044421362,
+    "stress_pass": 1,
+    "deflection_mm": [
+     1.3748838903618485,
+     2.148256078713296,
+     0.0
+    ],
+    "deflection_limit_mm": [
+     0.5,
+     0.5,
+     0.5
+    ],
+    "deflection_pass": 0,
+    "mass_g": 12.98303808,
+    "out_of_plane": [
+     {
+      "name": "out-of-plane bending (Side crash (out of plane))",
+      "passed": 1,
+      "sf": 3.4690865093768903,
+      "detail": "approximate hand check: beam through the thickness, XY strength 48 MPa",
+      "where": "78.7 mm from pad motor, width 10.2 mm",
+      "suggestion": ""
+     },
+     {
+      "name": "interlayer shear (Side crash (out of plane))",
+      "passed": 1,
+      "sf": 24.14093925571556,
+      "detail": "approximate hand check: 1.5 Fz / (w t) vs 24.2 MPa (Z strength / sqrt(3), a conservative stand-in (datasheet Z value))",
+      "where": "12.4 mm from pad motor, width 4.5 mm",
+      "suggestion": ""
+     }
+    ],
+    "bearing": [
+     {
+      "name": "bearing at bolt1",
+      "passed": 1,
+      "sf": 9.380670217603747,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 164 N, 5.1 MPa vs 48 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at bolt2",
+      "passed": 1,
+      "sf": 7.186318091398136,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 214 N, 6.7 MPa vs 48 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at motor",
+      "passed": 1,
+      "sf": "inf",
+      "detail": "n/a (solid mount)",
+      "where": "",
+      "suggestion": ""
+     }
+    ],
+    "fail_reasons": [
+     "deflection 2.148 mm > 0.5 mm (Hard landing)"
+    ],
+    "notes": []
+   },
+   "grid_checks": {
+    "passed": 0,
+    "passed_in_plane": 0,
+    "sf": 5.217318431150709,
+    "sf_raw": 3.848936795561172,
+    "sf_target": 2.0,
+    "stress_reported_MPa": 9.200128501532411,
+    "stress_raw_MPa": 12.470976414930096,
+    "stress_pass": 1,
+    "deflection_mm": [
+     1.3867682170205202,
+     2.1668253390998258,
+     0.0
+    ],
+    "deflection_limit_mm": [
+     0.5,
+     0.5,
+     0.5
+    ],
+    "deflection_pass": 0,
+    "mass_g": 12.918220800000002,
+    "out_of_plane": [
+     {
+      "name": "out-of-plane bending (Side crash (out of plane))",
+      "passed": 1,
+      "sf": 3.4690865093768903,
+      "detail": "approximate hand check: beam through the thickness, XY strength 48 MPa",
+      "where": "78.7 mm from pad motor, width 10.2 mm",
+      "suggestion": ""
+     },
+     {
+      "name": "interlayer shear (Side crash (out of plane))",
+      "passed": 1,
+      "sf": 24.14093925571556,
+      "detail": "approximate hand check: 1.5 Fz / (w t) vs 24.2 MPa (Z strength / sqrt(3), a conservative stand-in (datasheet Z value))",
+      "where": "12.4 mm from pad motor, width 4.5 mm",
+      "suggestion": ""
+     }
+    ],
+    "bearing": [
+     {
+      "name": "bearing at bolt1",
+      "passed": 1,
+      "sf": 9.387154537309803,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 164 N, 5.1 MPa vs 48 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at bolt2",
+      "passed": 1,
+      "sf": 7.190098103699964,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 214 N, 6.7 MPa vs 48 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at motor",
+      "passed": 1,
+      "sf": "inf",
+      "detail": "n/a (solid mount)",
+      "where": "",
+      "suggestion": ""
+     }
+    ],
+    "fail_reasons": [
+     "deflection 2.167 mm > 0.5 mm (Hard landing)"
+    ],
+    "notes": []
+   },
+   "pick": {
+    "status": "fail",
+    "v_pick": null,
+    "v_final": null,
+    "window": null,
+    "levels": [
+     {
+      "fill": 0.15,
+      "passed": 0,
+      "stress_pass": 0,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 0.29566981301589285,
+      "deflection_ratio": 30.530035830611787,
+      "label": ""
+     },
+     {
+      "fill": 0.2,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 2.24568010875755,
+      "deflection_ratio": 11.50332219091433,
+      "label": ""
+     },
+     {
+      "fill": 0.25,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 3.4205855091608233,
+      "deflection_ratio": 9.528719325126618,
+      "label": ""
+     },
+     {
+      "fill": 0.3,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 4.05789170692129,
+      "deflection_ratio": 8.42208274628436,
+      "label": ""
+     },
+     {
+      "fill": 0.35,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 4.814970696560011,
+      "deflection_ratio": 7.708282202141945,
+      "label": ""
+     },
+     {
+      "fill": 0.4,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 3.626630478652647,
+      "deflection_ratio": 6.2418022558363715,
+      "label": ""
+     },
+     {
+      "fill": 0.45,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 4.466723696715062,
+      "deflection_ratio": 5.255023532833031,
+      "label": ""
+     },
+     {
+      "fill": 0.5,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 4.799743379773039,
+      "deflection_ratio": 4.87972970261884,
+      "label": ""
+     },
+     {
+      "fill": 0.55,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 5.022579779671787,
+      "deflection_ratio": 4.587518794737119,
+      "label": ""
+     },
+     {
+      "fill": 0.6,
+      "passed": 0,
+      "stress_pass": 1,
+      "deflection_pass": 0,
+      "connected": 1,
+      "sf": 5.222826892206365,
+      "deflection_ratio": 4.303843843206404,
+      "label": ""
+     }
+    ],
+    "refinement": [],
+    "notes": [
+     "no fill level passes with the level above it also passing"
+    ],
+    "reason": "no fill level passes with the level above it also passing"
+   },
+   "rerun": {},
+   "baseline": {
+    "mass_block_g": 19.8463488,
+    "strut_width_mm": null,
+    "mass_strut_g": null,
+    "strut_passed": 0,
+    "note": "constant-width straight struts, sized by the same solver to the same limits",
+    "struts": [
+     [
+      "motor",
+      "bolt2"
+     ],
+     [
+      "motor",
+      "bolt1"
+     ]
+    ]
+   },
+   "geometry": {
+    "area_mm2": 1395.74250349176,
+    "volume_mm3": 13957.425034917587,
+    "watertight": 1,
+    "volume_error": 9.122689746114883e-16,
+    "files": {
+     "stl": "pa12.stl",
+     "svg": "pa12.svg",
+     "dxf": "pa12.dxf"
+    }
+   },
+   "mesh_h_mm": 0.32,
+   "effective_min_wall": "sls: 0.80 mm enforced"
+  },
+  {
+   "material": "alsi10mg",
+   "process": "metal",
+   "status": "pass",
+   "fill": 0.1237,
+   "printer_allowed": 0,
+   "converged": 0,
+   "reasons": [],
+   "notes": [
+    "not fully converged"
+   ],
+   "checks": {
+    "passed": 1,
+    "passed_in_plane": 1,
+    "sf": 4.422637848574236,
+    "sf_raw": 4.422637848574236,
+    "sf_target": 2.0,
+    "stress_reported_MPa": 61.049538588614546,
+    "stress_raw_MPa": 61.049538588614546,
+    "stress_pass": 1,
+    "deflection_mm": [
+     0.13474597672505664,
+     0.21054058861051364,
+     0.0
+    ],
+    "deflection_limit_mm": [
+     0.5,
+     0.5,
+     0.5
+    ],
+    "deflection_pass": 1,
+    "mass_g": 13.334565434228917,
+    "out_of_plane": [
+     {
+      "name": "out-of-plane bending (Side crash (out of plane))",
+      "passed": 1,
+      "sf": 5.005201337699642,
+      "detail": "approximate hand check: beam through the thickness, XY strength 270 MPa",
+      "where": "78.7 mm from pad motor, width 2.6 mm",
+      "suggestion": ""
+     },
+     {
+      "name": "interlayer shear (Side crash (out of plane))",
+      "passed": 1,
+      "sf": 29.06496567192644,
+      "detail": "approximate hand check: 1.5 Fz / (w t) vs 132.8 MPa (Z strength / sqrt(3), a conservative stand-in (datasheet Z value))",
+      "where": "8.3 mm from pad motor, width 1.0 mm",
+      "suggestion": ""
+     }
+    ],
+    "bearing": [
+     {
+      "name": "bearing at bolt1",
+      "passed": 1,
+      "sf": 8174622701.115996,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 0 N, 0.0 MPa vs 270 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at bolt2",
+      "passed": 1,
+      "sf": 172.79999505014268,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 50 N, 1.6 MPa vs 270 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at motor",
+      "passed": 1,
+      "sf": "inf",
+      "detail": "n/a (solid mount)",
+      "where": "",
+      "suggestion": ""
+     }
+    ],
+    "fail_reasons": [],
+    "notes": []
+   },
+   "grid_checks": {
+    "passed": 1,
+    "passed_in_plane": 1,
+    "sf": 2.969088114415796,
+    "sf_raw": 2.969088114415796,
+    "sf_target": 2.0,
+    "stress_reported_MPa": 90.93701149826796,
+    "stress_raw_MPa": 90.93701149826796,
+    "stress_pass": 1,
+    "deflection_mm": [
+     0.145131163936607,
+     0.2267674436420013,
+     0.0
+    ],
+    "deflection_limit_mm": [
+     0.5,
+     0.5,
+     0.5
+    ],
+    "deflection_pass": 1,
+    "mass_g": 13.259915899551054,
+    "out_of_plane": [
+     {
+      "name": "out-of-plane bending (Side crash (out of plane))",
+      "passed": 1,
+      "sf": 5.005201337699642,
+      "detail": "approximate hand check: beam through the thickness, XY strength 270 MPa",
+      "where": "78.7 mm from pad motor, width 2.6 mm",
+      "suggestion": ""
+     },
+     {
+      "name": "interlayer shear (Side crash (out of plane))",
+      "passed": 1,
+      "sf": 29.06496567192644,
+      "detail": "approximate hand check: 1.5 Fz / (w t) vs 132.8 MPa (Z strength / sqrt(3), a conservative stand-in (datasheet Z value))",
+      "where": "8.3 mm from pad motor, width 1.0 mm",
+      "suggestion": ""
+     }
+    ],
+    "bearing": [
+     {
+      "name": "bearing at bolt1",
+      "passed": 1,
+      "sf": 8120129630.242053,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 0 N, 0.0 MPa vs 270 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at bolt2",
+      "passed": 1,
+      "sf": 172.79999488427097,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 50 N, 1.6 MPa vs 270 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at motor",
+      "passed": 1,
+      "sf": "inf",
+      "detail": "n/a (solid mount)",
+      "where": "",
+      "suggestion": ""
+     }
+    ],
+    "fail_reasons": [],
+    "notes": [
+     "removed 136 elements in islands not connected to any pad"
+    ]
+   },
+   "pick": {
+    "status": "pass",
+    "v_pick": 0.15,
+    "v_final": 0.1237,
+    "window": [
+     0.12,
+     0.15
+    ],
+    "levels": [
+     {
+      "fill": 0.12,
+      "passed": 0,
+      "stress_pass": 0,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 1.223573113122893,
+      "deflection_ratio": 0.775300709730887,
+      "label": ""
+     },
+     {
+      "fill": 0.15,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 8.219069150734308,
+      "deflection_ratio": 0.3162443519871256,
+      "label": ""
+     },
+     {
+      "fill": 0.2,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 11.213314053901588,
+      "deflection_ratio": 0.25110991294864293,
+      "label": ""
+     },
+     {
+      "fill": 0.25,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 14.51972554752172,
+      "deflection_ratio": 0.21253809005700164,
+      "label": ""
+     },
+     {
+      "fill": 0.3,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 18.950121211962607,
+      "deflection_ratio": 0.1899653981876457,
+      "label": ""
+     },
+     {
+      "fill": 0.35,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 23.580594506416,
+      "deflection_ratio": 0.17349775676988086,
+      "label": ""
+     },
+     {
+      "fill": 0.4,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 21.38415281726706,
+      "deflection_ratio": 0.12552587834846163,
+      "label": ""
+     },
+     {
+      "fill": 0.45,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 23.743692604836248,
+      "deflection_ratio": 0.11442331442557355,
+      "label": ""
+     },
+     {
+      "fill": 0.5,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 25.862339357435665,
+      "deflection_ratio": 0.10610116062886221,
+      "label": ""
+     },
+     {
+      "fill": 0.55,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 27.604544761944044,
+      "deflection_ratio": 0.09951248325131287,
+      "label": ""
+     },
+     {
+      "fill": 0.6,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 28.78276619452703,
+      "deflection_ratio": 0.09317053481500664,
+      "label": ""
+     }
+    ],
+    "refinement": [
+     {
+      "fill": 0.135,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 10.113603672838666,
+      "deflection_ratio": 0.3346168382962432,
+      "label": ""
+     },
+     {
+      "fill": 0.1275,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 9.810766522280385,
+      "deflection_ratio": 0.3502176564642981,
+      "label": ""
+     },
+     {
+      "fill": 0.1237,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 8.645707648820238,
+      "deflection_ratio": 0.3611654111188691,
+      "label": ""
+     }
+    ],
+    "notes": [],
+    "reason": ""
+   },
+   "rerun": {
+    "fill": 0.1237,
+    "iterations": 191,
+    "converged": 1,
+    "seconds": 245.7353490999958,
+    "replaced": 1,
+    "note": ""
+   },
+   "baseline": {
+    "mass_block_g": 57.42653793970742,
+    "strut_width_mm": 7.184026590287277,
+    "mass_strut_g": 24.631828146140904,
+    "strut_passed": 1,
+    "note": "constant-width straight struts, sized by the same solver to the same limits",
+    "struts": [
+     [
+      "motor",
+      "bolt2"
+     ],
+     [
+      "motor",
+      "bolt1"
+     ]
+    ]
+   },
+   "geometry": {
+    "area_mm2": 498.5351693670231,
+    "volume_mm3": 4985.351693670241,
+    "watertight": 1,
+    "volume_error": 2.0067674928941493e-15,
+    "files": {
+     "stl": "alsi10mg.stl",
+     "svg": "alsi10mg.svg",
+     "dxf": "alsi10mg.dxf"
+    }
+   },
+   "mesh_h_mm": 0.16415868673050615,
+   "effective_min_wall": "metal: 0.41 mm enforced (process allows 0.40 mm)"
+  },
+  {
+   "material": "ti64",
+   "process": "metal",
+   "status": "pass",
+   "fill": 0.12,
+   "printer_allowed": 0,
+   "converged": 1,
+   "reasons": [],
+   "notes": [
+    "passes at the lowest level computed; limits are loose",
+    "removed 77 elements in islands not connected to any pad"
+   ],
+   "checks": {
+    "passed": 1,
+    "passed_in_plane": 1,
+    "sf": 5.980555292743158,
+    "sf_raw": 5.980555292743158,
+    "sf_target": 2.0,
+    "stress_reported_MPa": 167.20855356247708,
+    "stress_raw_MPa": 167.20855356247708,
+    "stress_pass": 1,
+    "deflection_mm": [
+     0.13701743588710497,
+     0.214089743557598,
+     0.0
+    ],
+    "deflection_limit_mm": [
+     0.5,
+     0.5,
+     0.5
+    ],
+    "deflection_pass": 1,
+    "mass_g": 21.811187343387708,
+    "out_of_plane": [
+     {
+      "name": "out-of-plane bending (Side crash (out of plane))",
+      "passed": 1,
+      "sf": 19.261914870198275,
+      "detail": "approximate hand check: beam through the thickness, XY strength 1000 MPa",
+      "where": "66.3 mm from pad motor, width 2.3 mm",
+      "suggestion": ""
+     },
+     {
+      "name": "interlayer shear (Side crash (out of plane))",
+      "passed": 1,
+      "sf": 126.36941596489756,
+      "detail": "approximate hand check: 1.5 Fz / (w t) vs 577.4 MPa (Z strength / sqrt(3), a conservative stand-in (datasheet Z value))",
+      "where": "8.3 mm from pad motor, width 1.0 mm",
+      "suggestion": ""
+     }
+    ],
+    "bearing": [
+     {
+      "name": "bearing at bolt1",
+      "passed": 1,
+      "sf": 29647513586.911892,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 0 N, 0.0 MPa vs 1000 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at bolt2",
+      "passed": 1,
+      "sf": 639.9999735788728,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 50 N, 1.6 MPa vs 1000 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at motor",
+      "passed": 1,
+      "sf": "inf",
+      "detail": "n/a (solid mount)",
+      "where": "",
+      "suggestion": ""
+     }
+    ],
+    "fail_reasons": [],
+    "notes": [
+     "removed 25 elements in islands not connected to any pad"
+    ]
+   },
+   "grid_checks": {
+    "passed": 1,
+    "passed_in_plane": 1,
+    "sf": 4.51006424158102,
+    "sf_raw": 4.51006424158102,
+    "sf_target": 2.0,
+    "stress_reported_MPa": 221.726331696208,
+    "stress_raw_MPa": 221.726331696208,
+    "stress_pass": 1,
+    "deflection_mm": [
+     0.1693025418637495,
+     0.26453522165363935,
+     0.0
+    ],
+    "deflection_limit_mm": [
+     0.5,
+     0.5,
+     0.5
+    ],
+    "deflection_pass": 1,
+    "mass_g": 21.726513125022226,
+    "out_of_plane": [
+     {
+      "name": "out-of-plane bending (Side crash (out of plane))",
+      "passed": 1,
+      "sf": 19.261914870198275,
+      "detail": "approximate hand check: beam through the thickness, XY strength 1000 MPa",
+      "where": "66.3 mm from pad motor, width 2.3 mm",
+      "suggestion": ""
+     },
+     {
+      "name": "interlayer shear (Side crash (out of plane))",
+      "passed": 1,
+      "sf": 126.36941596489756,
+      "detail": "approximate hand check: 1.5 Fz / (w t) vs 577.4 MPa (Z strength / sqrt(3), a conservative stand-in (datasheet Z value))",
+      "where": "8.3 mm from pad motor, width 1.0 mm",
+      "suggestion": ""
+     }
+    ],
+    "bearing": [
+     {
+      "name": "bearing at bolt1",
+      "passed": 1,
+      "sf": 29338104379.146893,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 0 N, 0.0 MPa vs 1000 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at bolt2",
+      "passed": 1,
+      "sf": 639.9999701173311,
+      "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+      "where": "Hard landing: FE reaction 50 N, 1.6 MPa vs 1000 MPa",
+      "suggestion": ""
+     },
+     {
+      "name": "bearing at motor",
+      "passed": 1,
+      "sf": "inf",
+      "detail": "n/a (solid mount)",
+      "where": "",
+      "suggestion": ""
+     }
+    ],
+    "fail_reasons": [],
+    "notes": [
+     "removed 77 elements in islands not connected to any pad"
+    ]
+   },
+   "pick": {
+    "status": "loose",
+    "v_pick": 0.12,
+    "v_final": 0.12,
+    "window": null,
+    "levels": [
+     {
+      "fill": 0.12,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 4.53175227082553,
+      "deflection_ratio": 0.5286141202710594,
+      "label": ""
+     },
+     {
+      "fill": 0.15,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 30.44099685457151,
+      "deflection_ratio": 0.2156211490821311,
+      "label": ""
+     },
+     {
+      "fill": 0.2,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 41.530792792228105,
+      "deflection_ratio": 0.17121130428316564,
+      "label": ""
+     },
+     {
+      "fill": 0.25,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 53.77676128711748,
+      "deflection_ratio": 0.14491233412977383,
+      "label": ""
+     },
+     {
+      "fill": 0.3,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 70.18563411838002,
+      "deflection_ratio": 0.12952186240066754,
+      "label": ""
+     },
+     {
+      "fill": 0.35,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 87.33553520894814,
+      "deflection_ratio": 0.11829392507037331,
+      "label": ""
+     },
+     {
+      "fill": 0.4,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 79.20056598987802,
+      "deflection_ratio": 0.08558582614667838,
+      "label": ""
+     },
+     {
+      "fill": 0.45,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 87.93960224013425,
+      "deflection_ratio": 0.0780158961992547,
+      "label": ""
+     },
+     {
+      "fill": 0.5,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 95.78644206457653,
+      "deflection_ratio": 0.0723417004287697,
+      "label": ""
+     },
+     {
+      "fill": 0.55,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 102.23905467386683,
+      "deflection_ratio": 0.06784942039862242,
+      "label": ""
+     },
+     {
+      "fill": 0.6,
+      "passed": 1,
+      "stress_pass": 1,
+      "deflection_pass": 1,
+      "connected": 1,
+      "sf": 106.60283775750752,
+      "deflection_ratio": 0.06352536464659544,
+      "label": ""
+     }
+    ],
+    "refinement": [],
+    "notes": [
+     "passes at the lowest level computed; limits are loose"
+    ],
+    "reason": ""
+   },
+   "rerun": {},
+   "baseline": {
+    "mass_block_g": 94.85057390041564,
+    "strut_width_mm": 6.132946092681259,
+    "mass_strut_g": 36.510334549115676,
+    "strut_passed": 1,
+    "note": "constant-width straight struts, sized by the same solver to the same limits",
+    "struts": [
+     [
+      "motor",
+      "bolt2"
+     ],
+     [
+      "motor",
+      "bolt1"
+     ]
+    ]
+   },
+   "geometry": {
+    "area_mm2": 494.1576135399463,
+    "volume_mm3": 4941.576135399473,
+    "watertight": 1,
+    "volume_error": 2.0245446888563378e-15,
+    "files": {
+     "stl": "ti64.stl",
+     "svg": "ti64.svg",
+     "dxf": "ti64.dxf"
+    }
+   },
+   "mesh_h_mm": 0.16415868673050615,
+   "effective_min_wall": "metal: 0.41 mm enforced (process allows 0.40 mm)"
+  }
+ ],
+ "ranking": {
+  "order": [
+   "pa6cf",
+   "petg",
+   "pla",
+   "alsi10mg",
+   "ti64",
+   "pa12"
+  ],
+  "cards": [
+   {
+    "material": "pa6cf",
+    "state": "ranked",
+    "rank": 1,
+    "reason": "",
+    "badges": [
+     "Lightest",
+     "Cheapest material"
+    ],
+    "material_cost_usd": 0.7029277976448,
+    "weight_saved_vs_strut": 0.39364047097480837,
+    "weight_saved_vs_block": 0.4687080134357007
+   },
+   {
+    "material": "petg",
+    "state": "failed",
+    "rank": null,
+    "reason": "deflection 2.364 mm > 0.5 mm (Hard landing)",
+    "badges": [],
+    "material_cost_usd": 0.5317084583488,
+    "weight_saved_vs_strut": null,
+    "weight_saved_vs_block": 0.3458223368522073
+   },
+   {
+    "material": "pla",
+    "state": "failed",
+    "rank": null,
+    "reason": "deflection 1.534 mm > 0.5 mm (Hard landing)",
+    "badges": [],
+    "material_cost_usd": 0.5191484160256,
+    "weight_saved_vs_strut": null,
+    "weight_saved_vs_block": 0.3458223368522072
+   },
+   {
+    "material": "alsi10mg",
+    "state": "filtered",
+    "rank": null,
+    "reason": "needs a metal printing service",
+    "badges": [],
+    "material_cost_usd": 0.5467171828033857,
+    "weight_saved_vs_strut": 0.4586449144125724,
+    "weight_saved_vs_block": 0.7677978524801724
+   },
+   {
+    "material": "ti64",
+    "state": "filtered",
+    "rank": null,
+    "reason": "needs a metal printing service",
+    "badges": [],
+    "material_cost_usd": 2.966321478700728,
+    "weight_saved_vs_strut": 0.4026023696373935,
+    "weight_saved_vs_block": 0.7700468595341612
+   },
+   {
+    "material": "pa12",
+    "state": "filtered",
+    "rank": null,
+    "reason": "needs an SLS printing service",
+    "badges": [],
+    "material_cost_usd": 0.973727856,
+    "weight_saved_vs_strut": null,
+    "weight_saved_vs_block": 0.3458223368522073
+   }
+  ],
+  "pareto": [
+   {
+    "material_id": "pa6cf",
+    "process_id": "fdm",
+    "mass_g": 13.265291519999998,
+    "cost_usd": 0.7029277976448,
+    "state": "ranked",
+    "reason": "",
+    "on_front": 1
+   },
+   {
+    "material_id": "petg",
+    "process_id": "fdm",
+    "mass_g": 17.729525119999998,
+    "cost_usd": 0.5317084583488,
+    "state": "failed",
+    "reason": "deflection 2.364 mm > 0.5 mm (Hard landing)",
+    "on_front": 0
+   },
+   {
+    "material_id": "pla",
+    "process_id": "fdm",
+    "mass_g": 17.31071744,
+    "cost_usd": 0.5191484160256,
+    "state": "failed",
+    "reason": "deflection 1.534 mm > 0.5 mm (Hard landing)",
+    "on_front": 0
+   },
+   {
+    "material_id": "alsi10mg",
+    "process_id": "metal",
+    "mass_g": 13.334565434228917,
+    "cost_usd": 0.5467171828033857,
+    "state": "filtered",
+    "reason": "needs a metal printing service",
+    "on_front": 0
+   },
+   {
+    "material_id": "ti64",
+    "process_id": "metal",
+    "mass_g": 21.811187343387708,
+    "cost_usd": 2.966321478700728,
+    "state": "filtered",
+    "reason": "needs a metal printing service",
+    "on_front": 0
+   },
+   {
+    "material_id": "pa12",
+    "process_id": "sls",
+    "mass_g": 12.98303808,
+    "cost_usd": 0.973727856,
+    "state": "filtered",
+    "reason": "needs an SLS printing service",
+    "on_front": 0
+   }
+  ],
+  "funnel": {
+   "candidates": 68,
+   "met_limits": 3,
+   "printable": 1,
+   "ranked": 1,
+   "isolated_stress_failures": 0,
+   "text": "68 candidate designs evaluated -> 3 met the limits -> 1 printable with your printer -> ranked by mass"
+  },
+  "winner": "pa6cf",
+  "messages": [
+   "Limits are loose; part size is set by the minimum wall. Results shown at the lowest fill level.",
+   "pa6cf: animation shows an independent run at the same fill level"
+  ],
+  "caption_cost": "material cost only, not print cost"
+ }
+}

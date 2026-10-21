@@ -1,0 +1,255 @@
+2026-10-21 01:01:45 [ 0.00 h] precompute start: 3 part(s), cap 80000, code 2578ddad4d5218a06aef370e41a344c3c8a37c18
+2026-10-21 01:01:45 [ 0.00 h] PART rc_arm: RC car lower suspension arm (1/10 scale buggy, rear) | cap 80000, cold per level, 10 levels | key 938e77da1ccb
+2026-10-21 01:01:49 [ 0.00 h]   fdm catalog fill 0.6000 start
+2026-10-21 01:01:49 [ 0.00 h]   fdm catalog fill 0.6000 it 1 beta 1 obj 1.4601 change 0.200
+2026-10-21 01:02:59 [ 0.02 h]   fdm catalog fill 0.5500 start
+2026-10-21 01:03:50 [ 0.03 h]   fdm catalog fill 0.5000 start
+2026-10-21 01:03:50 [ 0.03 h]   fdm catalog fill 0.5000 it 1 beta 1 obj 2.2075 change 0.200
+2026-10-21 01:04:42 [ 0.05 h]   fdm catalog fill 0.4500 start
+2026-10-21 01:05:36 [ 0.06 h]   fdm catalog fill 0.4000 start
+2026-10-21 01:05:50 [ 0.07 h]   fdm catalog fill 0.4000 it 45 beta 2 obj 1.1250 change 0.178
+2026-10-21 01:06:32 [ 0.08 h]   fdm catalog fill 0.3500 start
+2026-10-21 01:07:28 [ 0.10 h]   fdm catalog fill 0.3000 start
+2026-10-21 01:07:50 [ 0.10 h]   fdm catalog fill 0.3000 it 72 beta 2 obj 1.5432 change 0.152
+2026-10-21 01:08:24 [ 0.11 h]   fdm catalog fill 0.2500 start
+2026-10-21 01:09:18 [ 0.13 h]   fdm catalog fill 0.2000 start
+2026-10-21 01:09:50 [ 0.13 h]   fdm catalog fill 0.2000 it 109 beta 4 obj 2.4283 change 0.078
+2026-10-21 01:10:15 [ 0.14 h]   fdm catalog fill 0.1500 start
+2026-10-21 01:11:10 [ 0.16 h]   fdm catalog fill 0.1200 start
+2026-10-21 01:11:50 [ 0.17 h]   fdm catalog fill 0.1200 it 147 beta 8 obj 4.6718 change 0.039
+2026-10-21 01:12:24 [ 0.18 h]   fdm refine fill 0.1350 start
+2026-10-21 01:12:43 [ 0.18 h]   fdm refine fill 0.1425 start
+2026-10-21 01:13:03 [ 0.19 h]   fdm refine fill 0.1462 start
+2026-10-21 01:13:24 [ 0.19 h]   sls catalog fill 0.6000 start
+2026-10-21 01:13:50 [ 0.20 h]   sls catalog fill 0.6000 it 94 beta 4 obj 0.7412 change 0.043
+2026-10-21 01:14:34 [ 0.21 h]   sls catalog fill 0.5500 start
+2026-10-21 01:15:25 [ 0.23 h]   sls catalog fill 0.5000 start
+2026-10-21 01:15:50 [ 0.23 h]   sls catalog fill 0.5000 it 87 beta 4 obj 0.8701 change 0.120
+2026-10-21 01:16:18 [ 0.24 h]   sls catalog fill 0.4500 start
+2026-10-21 01:17:10 [ 0.26 h]   sls catalog fill 0.4000 start
+2026-10-21 01:17:51 [ 0.27 h]   sls catalog fill 0.4000 it 145 beta 8 obj 1.0866 change 0.062
+2026-10-21 01:18:02 [ 0.27 h]   sls catalog fill 0.3500 start
+2026-10-21 01:18:55 [ 0.29 h]   sls catalog fill 0.3000 start
+2026-10-21 01:19:48 [ 0.30 h]   sls catalog fill 0.2500 start
+2026-10-21 01:19:51 [ 0.30 h]   sls catalog fill 0.2500 it 12 beta 1 obj 2.4590 change 0.200
+2026-10-21 01:20:43 [ 0.32 h]   sls catalog fill 0.2000 start
+2026-10-21 01:21:37 [ 0.33 h]   sls catalog fill 0.1500 start
+2026-10-21 01:21:51 [ 0.34 h]   sls catalog fill 0.1500 it 51 beta 2 obj 3.6008 change 0.128
+2026-10-21 01:22:32 [ 0.35 h]   sls catalog fill 0.1200 start
+2026-10-21 01:23:47 [ 0.37 h]   sls refine fill 0.1350 start
+2026-10-21 01:23:51 [ 0.37 h]   sls refine fill 0.1350 it 16 beta 4 obj 4.0220 change 0.101
+2026-10-21 01:24:07 [ 0.37 h]   sls refine fill 0.1425 start
+2026-10-21 01:24:26 [ 0.38 h]   sls refine fill 0.1462 start
+2026-10-21 01:24:52 [ 0.39 h]   metal catalog fill 0.6000 start
+2026-10-21 01:25:52 [ 0.40 h]   metal catalog fill 0.6000 it 57 beta 2 obj 0.7382 change 0.120
+2026-10-21 01:27:53 [ 0.44 h]   metal catalog fill 0.6000 it 169 beta 16 obj 0.7254 change 0.135
+2026-10-21 01:28:05 [ 0.44 h]   metal catalog fill 0.5500 start
+2026-10-21 01:29:53 [ 0.47 h]   metal catalog fill 0.5500 it 99 beta 4 obj 0.7858 change 0.125
+2026-10-21 01:31:25 [ 0.49 h]   metal catalog fill 0.5000 start
+2026-10-21 01:31:54 [ 0.50 h]   metal catalog fill 0.5000 it 27 beta 1 obj 0.8953 change 0.200
+2026-10-21 01:33:54 [ 0.54 h]   metal catalog fill 0.5000 it 139 beta 8 obj 0.8472 change 0.080
+2026-10-21 01:34:39 [ 0.55 h]   metal catalog fill 0.4500 start
+2026-10-21 01:35:55 [ 0.57 h]   metal catalog fill 0.4500 it 72 beta 2 obj 0.9642 change 0.200
+2026-10-21 01:37:51 [ 0.60 h]   metal catalog fill 0.4000 start
+2026-10-21 01:37:55 [ 0.60 h]   metal catalog fill 0.4000 it 5 beta 1 obj 2.1489 change 0.200
+2026-10-21 01:39:56 [ 0.64 h]   metal catalog fill 0.4000 it 116 beta 4 obj 1.0837 change 0.200
+2026-10-21 01:41:04 [ 0.66 h]   metal catalog fill 0.3500 start
+2026-10-21 01:41:57 [ 0.67 h]   metal catalog fill 0.3500 it 51 beta 2 obj 1.2807 change 0.200
+2026-10-21 01:43:58 [ 0.70 h]   metal catalog fill 0.3500 it 166 beta 16 obj 1.2209 change 0.200
+2026-10-21 01:44:19 [ 0.71 h]   metal catalog fill 0.3000 start
+2026-10-21 01:45:59 [ 0.74 h]   metal catalog fill 0.3000 it 96 beta 4 obj 1.4910 change 0.200
+2026-10-21 01:47:34 [ 0.76 h]   metal catalog fill 0.2500 start
+2026-10-21 01:47:59 [ 0.77 h]   metal catalog fill 0.2500 it 25 beta 1 obj 1.9274 change 0.200
+2026-10-21 01:50:00 [ 0.80 h]   metal catalog fill 0.2500 it 138 beta 8 obj 1.7706 change 0.180
+2026-10-21 01:50:52 [ 0.82 h]   metal catalog fill 0.2000 start
+2026-10-21 01:52:01 [ 0.84 h]   metal catalog fill 0.2000 it 64 beta 2 obj 2.3307 change 0.200
+2026-10-21 01:54:01 [ 0.87 h]   metal catalog fill 0.2000 it 181 beta 16 obj 2.1918 change 0.062
+2026-10-21 01:54:09 [ 0.87 h]   metal catalog fill 0.1500 start
+2026-10-21 01:56:02 [ 0.90 h]   metal catalog fill 0.1500 it 107 beta 4 obj 3.1274 change 0.052
+2026-10-21 01:57:28 [ 0.93 h]   metal catalog fill 0.1200 start
+2026-10-21 01:58:02 [ 0.94 h]   metal catalog fill 0.1200 it 32 beta 1 obj 4.3766 change 0.200
+2026-10-21 02:00:03 [ 0.97 h]   metal catalog fill 0.1200 it 150 beta 8 obj 3.9270 change 0.055
+2026-10-21 02:00:47 [ 0.98 h]   metal catalog fill 0.1000 start
+2026-10-21 02:02:04 [ 1.01 h]   metal catalog fill 0.1000 it 73 beta 2 obj 5.2441 change 0.200
+2026-10-21 02:04:04 [ 1.04 h]   metal catalog fill 0.1000 it 186 beta 16 obj 4.7512 change 0.047
+2026-10-21 02:04:13 [ 1.04 h]   metal catalog fill 0.0800 start
+2026-10-21 02:06:05 [ 1.07 h]   metal catalog fill 0.0800 it 108 beta 4 obj 6.8360 change 0.053
+2026-10-21 02:07:40 [ 1.10 h]   fdm rerun fill 0.1200 start
+2026-10-21 02:08:05 [ 1.11 h]   fdm rerun fill 0.1200 it 88 beta 4 obj 4.8918 change 0.099
+2026-10-21 02:08:55 [ 1.12 h]   sls rerun fill 0.1500 start
+2026-10-21 02:09:54 [ 1.14 h]   metal rerun fill 0.0800 start
+2026-10-21 02:10:05 [ 1.14 h]   metal rerun fill 0.0800 it 12 beta 1 obj 20.0946 change 0.200
+2026-10-21 02:12:06 [ 1.17 h]   metal rerun fill 0.0800 it 129 beta 8 obj 6.5998 change 0.133
+2026-10-21 02:13:15 [ 1.19 h]   catalog fdm: mesh 282 x 63, 10.6 min, levels [0.12, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6], refined [0.135, 0.1425, 0.1462]
+2026-10-21 02:13:15 [ 1.19 h]   catalog sls: mesh 282 x 63, 10.4 min, levels [0.12, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6], refined [0.135, 0.1425, 0.1462]
+2026-10-21 02:13:15 [ 1.19 h]   catalog metal: mesh 563 x 125, 42.8 min, levels [0.08, 0.1, 0.12, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6], refined []
+2026-10-21 02:13:15 [ 1.19 h]   pick pla       pass fill 0.12 mass 4.57 g
+2026-10-21 02:13:15 [ 1.19 h]   pick petg      pass fill 0.15 mass 5.45 g
+2026-10-21 02:13:15 [ 1.19 h]   pick pa6cf     pass fill 0.12 mass 4.31 g | rerun 255 it, replaced=True
+2026-10-21 02:13:15 [ 1.19 h]   pick pa12      pass fill 0.15 mass 3.99 g | rerun 189 it, replaced=True
+2026-10-21 02:13:15 [ 1.19 h]   pick alsi10mg  pass fill 0.08 mass 7.45 g | rerun 189 it, replaced=True
+2026-10-21 02:13:15 [ 1.19 h]   pick ti64      pass fill 0.08 mass 12.31 g
+2026-10-21 02:13:25 [ 1.19 h]   pla       strut 6.2 mm mass 8.95 g | smoothed: pass, SF 2.57, mass 4.58 g
+2026-10-21 02:13:35 [ 1.20 h]   petg      strut 8.2 mm mass 12.01 g | smoothed: pass, SF 4.33, mass 5.45 g
+2026-10-21 02:13:45 [ 1.20 h]   pa6cf     strut 4.02 mm mass 6.4 g | smoothed: pass, SF 5.49, mass 4.32 g
+2026-10-21 02:13:55 [ 1.20 h]   pa12      strut 7.59 mm mass 8.14 g | smoothed: pass, SF 4.42, mass 3.99 g
+2026-10-21 02:14:33 [ 1.21 h]   alsi10mg  strut 2.5 mm mass 10.16 g | smoothed: pass, SF 4.82, mass 7.44 g
+2026-10-21 02:15:11 [ 1.22 h]   ti64      strut 1.62 mm mass 13.59 g | smoothed: pass, SF 17.83, mass 12.29 g
+2026-10-21 02:15:22 [ 1.23 h] PART rc_arm done in 73.6 min -> C:\Users\night\projects\morphic\examples\cache\rc_arm | winner pa6cf
+2026-10-21 02:15:23 [ 1.23 h] PART drone_arm: 5-inch FPV drone arm | cap 80000, cold per level, 10 levels | key 245e86f476e7
+2026-10-21 02:15:25 [ 1.23 h]   fdm catalog fill 0.6000 start
+2026-10-21 02:15:25 [ 1.23 h]   fdm catalog fill 0.6000 it 1 beta 1 obj 1.4457 change 0.200
+2026-10-21 02:16:33 [ 1.25 h]   fdm catalog fill 0.5500 start
+2026-10-21 02:17:25 [ 1.26 h]   fdm catalog fill 0.5500 it 139 beta 8 obj 0.6026 change 0.099
+2026-10-21 02:17:41 [ 1.27 h]   fdm catalog fill 0.5000 start
+2026-10-21 02:18:51 [ 1.29 h]   fdm catalog fill 0.4500 start
+2026-10-21 02:19:25 [ 1.29 h]   fdm catalog fill 0.4500 it 90 beta 4 obj 0.7063 change 0.145
+2026-10-21 02:20:02 [ 1.30 h]   fdm catalog fill 0.4000 start
+2026-10-21 02:21:12 [ 1.32 h]   fdm catalog fill 0.3500 start
+2026-10-21 02:21:26 [ 1.33 h]   fdm catalog fill 0.3500 it 39 beta 1 obj 1.0540 change 0.200
+2026-10-21 02:22:19 [ 1.34 h]   fdm catalog fill 0.3000 start
+2026-10-21 02:23:27 [ 1.36 h]   fdm catalog fill 0.2500 start
+2026-10-21 02:23:27 [ 1.36 h]   fdm catalog fill 0.2500 it 1 beta 1 obj 13.1591 change 0.200
+2026-10-21 02:24:37 [ 1.38 h]   fdm catalog fill 0.2000 start
+2026-10-21 02:25:27 [ 1.40 h]   fdm catalog fill 0.2000 it 134 beta 8 obj 1.6471 change 0.091
+2026-10-21 02:25:49 [ 1.40 h]   fdm catalog fill 0.1500 start
+2026-10-21 02:27:14 [ 1.42 h]   fdm refine fill 0.4750 start
+2026-10-21 02:27:27 [ 1.43 h]   fdm refine fill 0.4750 it 37 beta 4 obj 0.6713 change 0.052
+2026-10-21 02:27:38 [ 1.43 h]   fdm refine fill 0.4625 start
+2026-10-21 02:28:03 [ 1.44 h]   fdm refine fill 0.4563 start
+2026-10-21 02:28:31 [ 1.45 h]   sls catalog fill 0.6000 start
+2026-10-21 02:29:27 [ 1.46 h]   sls catalog fill 0.6000 it 167 beta 16 obj 0.5608 change 0.175
+2026-10-21 02:29:32 [ 1.46 h]   sls catalog fill 0.5500 start
+2026-10-21 02:30:35 [ 1.48 h]   sls catalog fill 0.5000 start
+2026-10-21 02:31:27 [ 1.50 h]   sls catalog fill 0.5000 it 149 beta 8 obj 0.6426 change 0.102
+2026-10-21 02:31:40 [ 1.50 h]   sls catalog fill 0.4500 start
+2026-10-21 02:32:45 [ 1.52 h]   sls catalog fill 0.4000 start
+2026-10-21 02:33:28 [ 1.53 h]   sls catalog fill 0.4000 it 119 beta 4 obj 0.8423 change 0.152
+2026-10-21 02:33:50 [ 1.53 h]   sls catalog fill 0.3500 start
+2026-10-21 02:34:55 [ 1.55 h]   sls catalog fill 0.3000 start
+2026-10-21 02:35:28 [ 1.56 h]   sls catalog fill 0.3000 it 90 beta 4 obj 1.1466 change 0.180
+2026-10-21 02:36:01 [ 1.57 h]   sls catalog fill 0.2500 start
+2026-10-21 02:37:09 [ 1.59 h]   sls catalog fill 0.2000 start
+2026-10-21 02:37:28 [ 1.60 h]   sls catalog fill 0.2000 it 55 beta 2 obj 1.7105 change 0.200
+2026-10-21 02:38:16 [ 1.61 h]   sls catalog fill 0.1500 start
+2026-10-21 02:39:28 [ 1.63 h]   sls catalog fill 0.1500 it 207 beta 16 obj 2.4132 change 0.075
+2026-10-21 02:39:43 [ 1.63 h]   metal catalog fill 0.6000 start
+2026-10-21 02:41:29 [ 1.66 h]   metal catalog fill 0.6000 it 84 beta 4 obj 0.5639 change 0.200
+2026-10-21 02:43:29 [ 1.70 h]   metal catalog fill 0.5500 start
+2026-10-21 02:43:29 [ 1.70 h]   metal catalog fill 0.5500 it 1 beta 1 obj 1.7746 change 0.200
+2026-10-21 02:45:29 [ 1.73 h]   metal catalog fill 0.5500 it 98 beta 4 obj 0.6009 change 0.200
+2026-10-21 02:47:09 [ 1.76 h]   metal catalog fill 0.5000 start
+2026-10-21 02:47:29 [ 1.76 h]   metal catalog fill 0.5000 it 17 beta 1 obj 0.7232 change 0.200
+2026-10-21 02:49:30 [ 1.80 h]   metal catalog fill 0.5000 it 114 beta 4 obj 0.6425 change 0.200
+2026-10-21 02:50:53 [ 1.82 h]   metal catalog fill 0.4500 start
+2026-10-21 02:51:30 [ 1.83 h]   metal catalog fill 0.4500 it 31 beta 1 obj 0.7223 change 0.200
+2026-10-21 02:53:31 [ 1.86 h]   metal catalog fill 0.4500 it 129 beta 8 obj 0.6905 change 0.178
+2026-10-21 02:54:37 [ 1.88 h]   metal catalog fill 0.4000 start
+2026-10-21 02:55:31 [ 1.90 h]   metal catalog fill 0.4000 it 43 beta 2 obj 0.7980 change 0.200
+2026-10-21 02:57:31 [ 1.93 h]   metal catalog fill 0.4000 it 138 beta 8 obj 0.7627 change 0.200
+2026-10-21 02:58:28 [ 1.95 h]   metal catalog fill 0.3500 start
+2026-10-21 02:59:32 [ 1.96 h]   metal catalog fill 0.3500 it 51 beta 2 obj 1.0691 change 0.200
+2026-10-21 03:01:32 [ 2.00 h]   metal catalog fill 0.3500 it 147 beta 8 obj 1.0463 change 0.200
+2026-10-21 03:02:14 [ 2.01 h]   metal catalog fill 0.3000 start
+2026-10-21 03:03:32 [ 2.03 h]   metal catalog fill 0.3000 it 63 beta 2 obj 1.1826 change 0.200
+2026-10-21 03:05:32 [ 2.06 h]   metal catalog fill 0.3000 it 159 beta 8 obj 1.1529 change 0.097
+2026-10-21 03:06:01 [ 2.07 h]   metal catalog fill 0.2500 start
+2026-10-21 03:07:33 [ 2.10 h]   metal catalog fill 0.2500 it 73 beta 2 obj 1.3395 change 0.200
+2026-10-21 03:09:33 [ 2.13 h]   metal catalog fill 0.2500 it 173 beta 16 obj 1.2801 change 0.123
+2026-10-21 03:09:45 [ 2.13 h]   metal catalog fill 0.2000 start
+2026-10-21 03:11:34 [ 2.16 h]   metal catalog fill 0.2000 it 86 beta 4 obj 1.5996 change 0.200
+2026-10-21 03:13:36 [ 2.20 h]   metal catalog fill 0.1500 start
+2026-10-21 03:13:36 [ 2.20 h]   metal catalog fill 0.1500 it 1 beta 1 obj 54.4118 change 0.200
+2026-10-21 03:15:37 [ 2.23 h]   metal catalog fill 0.1500 it 95 beta 4 obj 2.0652 change 0.141
+2026-10-21 03:17:33 [ 2.26 h]   metal catalog fill 0.1200 start
+2026-10-21 03:17:38 [ 2.26 h]   metal catalog fill 0.1200 it 5 beta 1 obj 21.7250 change 0.200
+2026-10-21 03:19:38 [ 2.30 h]   metal catalog fill 0.1200 it 102 beta 4 obj 2.6309 change 0.200
+2026-10-21 03:21:34 [ 2.33 h]   metal refine fill 0.1350 start
+2026-10-21 03:21:38 [ 2.33 h]   metal refine fill 0.1350 it 5 beta 4 obj 2.2699 change 0.200
+2026-10-21 03:22:53 [ 2.35 h]   metal refine fill 0.1275 start
+2026-10-21 03:23:39 [ 2.37 h]   metal refine fill 0.1275 it 38 beta 4 obj 2.3761 change 0.066
+2026-10-21 03:24:13 [ 2.37 h]   metal refine fill 0.1237 start
+2026-10-21 03:25:36 [ 2.40 h]   fdm rerun fill 0.4563 start
+2026-10-21 03:25:39 [ 2.40 h]   fdm rerun fill 0.4563 it 8 beta 1 obj 0.9539 change 0.200
+2026-10-21 03:26:50 [ 2.42 h]   metal rerun fill 0.1237 start
+2026-10-21 03:27:40 [ 2.43 h]   metal rerun fill 0.1237 it 39 beta 1 obj 2.7933 change 0.200
+2026-10-21 03:29:40 [ 2.47 h]   metal rerun fill 0.1237 it 133 beta 8 obj 2.4734 change 0.129
+2026-10-21 03:31:01 [ 2.49 h]   catalog fdm: mesh 375 x 56, 11.8 min, levels [0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6], refined [0.4563, 0.4625, 0.475]
+2026-10-21 03:31:01 [ 2.49 h]   catalog sls: mesh 375 x 56, 11.1 min, levels [0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6], refined []
+2026-10-21 03:31:01 [ 2.49 h]   catalog metal: mesh 731 x 110, 41.9 min, levels [0.12, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6], refined [0.1237, 0.1275, 0.135]
+2026-10-21 03:31:01 [ 2.49 h]   pick pla       fail fill 0.6 mass 17.22 g
+2026-10-21 03:31:01 [ 2.49 h]   pick petg      fail fill 0.6 mass 17.64 g
+2026-10-21 03:31:01 [ 2.49 h]   pick pa6cf     pass fill 0.4563 mass 13.28 g | rerun 179 it, replaced=False
+2026-10-21 03:31:01 [ 2.49 h]   pick pa12      fail fill 0.6 mass 12.92 g
+2026-10-21 03:31:01 [ 2.49 h]   pick alsi10mg  pass fill 0.1237 mass 13.26 g | rerun 191 it, replaced=True
+2026-10-21 03:31:01 [ 2.49 h]   pick ti64      pass fill 0.12 mass 21.73 g
+2026-10-21 03:31:03 [ 2.49 h]   pla       strut None mm mass None g | smoothed: fail, SF 5.56, mass 17.31 g
+2026-10-21 03:31:05 [ 2.49 h]   petg      strut None mm mass None g | smoothed: fail, SF 5.12, mass 17.73 g
+2026-10-21 03:31:17 [ 2.49 h]   pa6cf     strut 15.82 mm mass 21.88 g | smoothed: pass, SF 10.66, mass 13.27 g
+2026-10-21 03:31:19 [ 2.49 h]   pa12      strut None mm mass None g | smoothed: fail, SF 5.23, mass 12.98 g
+2026-10-21 03:32:02 [ 2.50 h]   alsi10mg  strut 7.18 mm mass 24.63 g | smoothed: pass, SF 4.42, mass 13.33 g
+2026-10-21 03:32:44 [ 2.52 h]   ti64      strut 6.13 mm mass 36.51 g | smoothed: pass, SF 5.98, mass 21.81 g
+2026-10-21 03:32:55 [ 2.52 h] PART drone_arm done in 77.5 min -> C:\Users\night\projects\morphic\examples\cache\drone_arm | winner pa6cf
+2026-10-21 03:32:55 [ 2.52 h] PART aero_bracket: Aerospace mounting bracket (GE jet engine bracket challenge, 2D slice) | cap 80000, cold per level, 10 levels | key fd2872728f13
+2026-10-21 03:33:03 [ 2.52 h]   fdm catalog fill 0.6000 start
+2026-10-21 03:33:03 [ 2.52 h]   fdm catalog fill 0.6000 it 1 beta 1 obj 2.1966 change 0.200
+2026-10-21 03:35:04 [ 2.56 h]   fdm catalog fill 0.6000 it 96 beta 4 obj 0.8088 change 0.059
+2026-10-21 03:36:56 [ 2.59 h]   sls catalog fill 0.6000 start
+2026-10-21 03:37:05 [ 2.59 h]   sls catalog fill 0.6000 it 8 beta 1 obj 0.8097 change 0.200
+2026-10-21 03:39:05 [ 2.62 h]   sls catalog fill 0.6000 it 103 beta 4 obj 0.8087 change 0.072
+2026-10-21 03:40:42 [ 2.65 h]   metal catalog fill 0.6000 start
+2026-10-21 03:41:06 [ 2.66 h]   metal catalog fill 0.6000 it 19 beta 1 obj 0.8090 change 0.151
+2026-10-21 03:43:06 [ 2.69 h]   metal catalog fill 0.6000 it 115 beta 4 obj 0.8087 change 0.036
+2026-10-21 03:44:21 [ 2.71 h]   metal catalog fill 0.5500 start
+2026-10-21 03:45:06 [ 2.72 h]   metal catalog fill 0.5500 it 36 beta 1 obj 0.8245 change 0.096
+2026-10-21 03:47:07 [ 2.76 h]   metal catalog fill 0.5500 it 132 beta 8 obj 0.8237 change 0.086
+2026-10-21 03:48:03 [ 2.77 h]   metal catalog fill 0.5000 start
+2026-10-21 03:49:08 [ 2.79 h]   metal catalog fill 0.5000 it 53 beta 2 obj 0.8505 change 0.060
+2026-10-21 03:51:08 [ 2.82 h]   metal catalog fill 0.5000 it 150 beta 8 obj 0.8494 change 0.044
+2026-10-21 03:51:41 [ 2.83 h]   metal catalog fill 0.4500 start
+2026-10-21 03:53:08 [ 2.86 h]   metal catalog fill 0.4500 it 70 beta 2 obj 0.8870 change 0.051
+2026-10-21 03:55:08 [ 2.89 h]   metal catalog fill 0.4500 it 170 beta 16 obj 0.8843 change 0.104
+2026-10-21 03:55:19 [ 2.89 h]   metal catalog fill 0.4000 start
+2026-10-21 03:57:09 [ 2.92 h]   metal catalog fill 0.4000 it 89 beta 4 obj 0.9294 change 0.097
+2026-10-21 03:58:59 [ 2.95 h]   metal catalog fill 0.3500 start
+2026-10-21 03:59:10 [ 2.96 h]   metal catalog fill 0.3500 it 10 beta 1 obj 0.9947 change 0.200
+2026-10-21 04:01:11 [ 2.99 h]   metal catalog fill 0.3500 it 107 beta 4 obj 0.9921 change 0.046
+2026-10-21 04:02:36 [ 3.01 h]   metal catalog fill 0.3000 start
+2026-10-21 04:03:11 [ 3.02 h]   metal catalog fill 0.3000 it 29 beta 1 obj 1.0921 change 0.088
+2026-10-21 04:05:11 [ 3.06 h]   metal catalog fill 0.3000 it 130 beta 8 obj 1.0889 change 0.096
+2026-10-21 04:06:11 [ 3.07 h]   metal catalog fill 0.2500 start
+2026-10-21 04:07:12 [ 3.09 h]   metal catalog fill 0.2500 it 50 beta 2 obj 1.2557 change 0.068
+2026-10-21 04:09:13 [ 3.12 h]   metal catalog fill 0.2500 it 151 beta 8 obj 1.2478 change 0.043
+2026-10-21 04:09:44 [ 3.13 h]   metal catalog fill 0.2000 start
+2026-10-21 04:11:14 [ 3.16 h]   metal catalog fill 0.2000 it 73 beta 2 obj 1.5306 change 0.200
+2026-10-21 04:13:21 [ 3.19 h]   metal catalog fill 0.1500 start
+2026-10-21 04:13:21 [ 3.19 h]   metal catalog fill 0.1500 it 1 beta 1 obj 75.7915 change 0.200
+2026-10-21 04:15:21 [ 3.23 h]   metal catalog fill 0.1500 it 99 beta 4 obj 2.0171 change 0.200
+2026-10-21 04:17:02 [ 3.25 h]   metal catalog fill 0.1200 start
+2026-10-21 04:17:22 [ 3.26 h]   metal catalog fill 0.1200 it 16 beta 1 obj 2.6164 change 0.200
+2026-10-21 04:19:23 [ 3.29 h]   metal catalog fill 0.1200 it 118 beta 4 obj 2.5461 change 0.157
+2026-10-21 04:20:41 [ 3.32 h]   metal refine fill 0.1350 start
+2026-10-21 04:21:24 [ 3.33 h]   metal refine fill 0.1350 it 35 beta 4 obj 2.2213 change 0.033
+2026-10-21 04:22:00 [ 3.34 h]   metal refine fill 0.1275 start
+2026-10-21 04:23:20 [ 3.36 h]   metal refine fill 0.1237 start
+2026-10-21 04:23:24 [ 3.36 h]   metal refine fill 0.1237 it 4 beta 4 obj 2.8387 change 0.200
+2026-10-21 04:24:46 [ 3.38 h]   metal rerun fill 0.1275 start
+2026-10-21 04:25:24 [ 3.39 h]   metal rerun fill 0.1275 it 32 beta 1 obj 2.4283 change 0.200
+2026-10-21 04:27:25 [ 3.43 h]   metal rerun fill 0.1275 it 131 beta 8 obj 2.3659 change 0.160
+2026-10-21 04:28:26 [ 3.44 h]   catalog fdm: mesh 469 x 171, 3.7 min, levels [0.6], refined []
+2026-10-21 04:28:26 [ 3.44 h]   catalog sls: mesh 469 x 171, 3.7 min, levels [0.6], refined []
+2026-10-21 04:28:26 [ 3.44 h]   catalog metal: mesh 469 x 171, 40.0 min, levels [0.12, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6], refined [0.1237, 0.1275, 0.135]
+2026-10-21 04:28:26 [ 3.44 h]   pick pla       fail fill 0.6 mass 210.39 g
+2026-10-21 04:28:26 [ 3.44 h]   pick petg      fail fill 0.6 mass 215.48 g
+2026-10-21 04:28:26 [ 3.44 h]   pick pa6cf     fail fill 0.6 mass 198.52 g
+2026-10-21 04:28:26 [ 3.44 h]   pick pa12      fail fill 0.6 mass 157.8 g
+2026-10-21 04:28:26 [ 3.44 h]   pick alsi10mg  pass fill 0.1275 mass 111.2 g | rerun 176 it, replaced=False
+2026-10-21 04:28:26 [ 3.44 h]   pick ti64      pass fill 0.12 mass 173.4 g
+2026-10-21 04:28:33 [ 3.45 h]   pla       strut None mm mass None g | smoothed: fail, SF 0.43, mass 210.38 g
+2026-10-21 04:28:40 [ 3.45 h]   petg      strut None mm mass None g | smoothed: fail, SF 0.40, mass 215.47 g
+2026-10-21 04:28:47 [ 3.45 h]   pa6cf     strut None mm mass None g | smoothed: fail, SF 0.92, mass 198.50 g
+2026-10-21 04:28:54 [ 3.45 h]   pa12      strut None mm mass None g | smoothed: fail, SF 0.41, mass 157.78 g
+2026-10-21 04:29:35 [ 3.46 h]   alsi10mg  strut 28.09 mm mass 245.18 g | smoothed: pass, SF 1.72, mass 111.12 g
+2026-10-21 04:30:16 [ 3.48 h]   ti64      strut 17.72 mm mass 233.26 g | smoothed: pass, SF 5.66, mass 174.02 g
+2026-10-21 04:30:21 [ 3.48 h] PART aero_bracket done in 57.4 min -> C:\Users\night\projects\morphic\examples\cache\aero_bracket | winner alsi10mg
+2026-10-21 04:30:21 [ 3.48 h] precompute finished: 3 ok, 0 failed
