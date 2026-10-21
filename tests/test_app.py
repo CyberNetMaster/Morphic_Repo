@@ -56,6 +56,56 @@ def test_ui_pieces():
     assert ui.fmt(float("inf")) == "∞" and ui.pct(0.386) == "39%"
 
 
+def test_readout_and_load_case_pill():
+    r = ui.readout("safety factor", "2", "", "required", frac=0.5, scale=("0", "4"))
+    assert "mx-readout" in r and r.count("<i ") == theme.READOUT_TICKS
+    assert r.count('class="on') == theme.READOUT_TICKS // 2 and r.count("tip") == 1 and "mx-scale" in r
+    assert "mx-ticks" not in ui.readout("run time", "instant")
+    pill = ui.lc_pill("Hard landing · 80 N", theme.LOAD_CASE_COLORS[0])
+    assert "mx-lc" in pill and theme.LOAD_CASE_COLORS[0] in pill and "rgba(255,90,78,0.14)" in pill
+
+
+def test_dark_everywhere():
+    import tomllib
+    from pathlib import Path
+
+    cfg = tomllib.loads((Path(__file__).resolve().parents[1] / ".streamlit" / "config.toml").read_text(encoding="utf-8"))
+    assert cfg["theme"]["base"] == "dark"
+    assert cfg["theme"]["backgroundColor"] == theme.DARK["bg"] and cfg["theme"]["primaryColor"] == theme.ACCENT
+    assert cfg["theme"]["secondaryBackgroundColor"] == theme.DARK["card"] and cfg["theme"]["textColor"] == theme.DARK["text"]
+    css = theme.css(True)
+    assert theme.DARK["bg"] in css and theme.DARK["amber_text"] in css and "#B7791F" not in css
+    brief = (Path(__file__).resolve().parents[1] / "design-refs" / "brief.md").read_text(encoding="utf-8")
+    assert "Dark everywhere" in brief and "Near-white is used" not in brief
+
+
+def test_demo_preview_matches_cache():
+    for stem in PARTS:
+        pv = data.demo_preview(stem)
+        r = data.load_results(CACHE_DIR / stem)
+        win = r["ranking"]["winner"]
+        d = next(x for x in r["designs"] if x["material"] == win)
+        c = next(x for x in r["ranking"]["cards"] if x["material"] == win)
+        assert pv["material"] == win and pv["process"] == d["process"]
+        assert pv["mass_g"] == d["checks"]["mass_g"] and pv["saved_vs_strut"] == c["weight_saved_vs_strut"]
+        dens = data.load_npz(CACHE_DIR / stem, "densities.npz")
+        assert pv["density_key"] in dens and dens[pv["density_key"]].size == pv["nelx"] * pv["nely"]
+    assert data.demo_preview("no_such_part") is None
+
+
+def test_dark_drawing_glows():
+    p = data.demo_problem(PARTS[0])
+    fig = maps.problem_drawing(p, dark=True)
+    glows = [t for t in fig.data if t.hoverinfo == "skip"]
+    assert len(glows) == len(p.pads) * len(theme.PAD_GLOW_RINGS)
+    arrows = [a for a in fig.layout.annotations if a.showarrow]
+    crisp = [a for a in arrows if a.arrowwidth == 2.2]  # the load arrows
+    soft = [a for a in arrows if a.arrowwidth == theme.ARROW_GLOW_WIDTH and a.opacity == theme.ARROW_GLOW_OPACITY]
+    assert crisp and len(soft) == len(crisp)  # one glow stroke under every load arrow
+    light = maps.problem_drawing(p, dark=False)
+    assert not [a for a in light.layout.annotations if a.opacity is not None and a.opacity < 1]
+
+
 @pytest.mark.parametrize("state", [{}, {"demo": PARTS[0], "step": "1"}, {"demo": PARTS[0], "step": "2"},
                                    {"demo": PARTS[0], "step": "3"}, {"tab": "validation"}])
 def test_app_runs_headless(state, monkeypatch):

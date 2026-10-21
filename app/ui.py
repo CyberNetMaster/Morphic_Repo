@@ -100,6 +100,29 @@ def gauge(value: float, target: float, label: str, unit: str = "", passed: bool 
     return f'<div class="mx-gauge" style="color:var(--mx-text)">{svg}{txt}</div>'
 
 
+def lc_pill(text: str, color: str) -> str:
+    """A load-case pill in that case's arrow color: a lit dot and the name, force and limit."""
+    return f'<span class="mx-lc" style="color:{color};background:{theme.rgba(color, 0.14)}"><i></i>{esc(text)}</span>'
+
+
+def readout(label: str, value: str, unit: str = "", sub: str = "", frac: float | None = None,
+            scale: tuple[str, str] | None = None, color: str | None = None, extra_html: str = "") -> str:
+    """Instrument-style readout: eyebrow label, one hero number, its context in words, and a strip of
+    ticks lit up to the value on a stated scale (so the number has a place, not just a size)."""
+    ticks = ""
+    if frac is not None and math.isfinite(frac):
+        n = theme.READOUT_TICKS
+        lit = int(round(max(0.0, min(1.0, frac)) * n))
+        ticks = (f'<div class="mx-ticks" style="color:{color or "var(--mx-text)"}">'
+                 + "".join(f'<i class="{("on tip" if i == lit - 1 else "on") if i < lit else ""}"></i>' for i in range(n))
+                 + "</div>")
+        if scale:
+            ticks += f'<div class="mx-scale"><span>{esc(scale[0])}</span><span>{esc(scale[1])}</span></div>'
+    return (f'<div class="mx-readout"><div class="mx-eyebrow">{esc(label)}</div>'
+            f'<div class="mx-hero">{esc(value)}<small>{esc(unit)}</small></div>'
+            f'<div class="mx-sub2">{esc(sub)}{extra_html}</div>{ticks}</div>')
+
+
 def check_icon(ok: bool) -> str:
     if ok:
         return (f'<svg class="mx-check" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" fill="{theme.PASS_SOFT}"/>'

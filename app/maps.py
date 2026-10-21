@@ -91,15 +91,24 @@ def _circle(cx, cy, r, n=48):
     return cx + r * np.cos(t), cy + r * np.sin(t)
 
 
-def problem_drawing(problem: Problem, dark: bool = False, height: int = 420) -> go.Figure:
+def problem_drawing(problem: Problem, dark: bool = True, height: int = 420) -> go.Figure:
     """Spec 11, step 2: pads, supports (pins as triangles, slides as rollers with the free direction),
     loads as arrows scaled by size with one color per case, keep-in solid, keep-out hatched, dimensions.
-    Defaults are drawn in the amber tint."""
+    Defaults are drawn in the amber tint. On the dark stage every pad carries a soft glow and each
+    load arrow a faint wide stroke beneath it, so the drawing reads like a lit instrument panel."""
     s = theme.surface(dark)
     W, H = problem.design_space.width_mm, problem.design_space.height_mm
     fig = go.Figure()
     fig.add_shape(type="rect", x0=0, y0=0, x1=W, y1=H, line=dict(color=s["text_2"], width=1.2),
                   fillcolor=s["card_alt"], layer="below")
+    # pad glows first so everything else draws on top of them
+    for i, p in enumerate(problem.pads):
+        ring_default = problem.source_of(f"pads[{i}].ring_r_mm").source == "default"
+        base = theme.DEFAULT_AMBER if ring_default else s["text"]
+        for k, alpha in theme.PAD_GLOW_RINGS:
+            x, y = _circle(p.cx, p.cy, p.ring_r_mm * k, 40)
+            fig.add_trace(go.Scatter(x=x, y=y, fill="toself", mode="lines", line=dict(width=0),
+                                     fillcolor=theme.rgba(base, alpha), hoverinfo="skip", showlegend=False))
     for z in problem.zones:
         if z.shape == "circle":
             x, y = _circle(z.circle.cx, z.circle.cy, z.circle.r)
@@ -123,13 +132,13 @@ def problem_drawing(problem: Problem, dark: bool = False, height: int = 420) -> 
         x, y = _circle(p.cx, p.cy, p.ring_r_mm)
         fig.add_trace(go.Scatter(x=x, y=y, fill="toself", mode="lines",
                                  line=dict(color=theme.DEFAULT_AMBER if ring_default else s["text_2"], width=1),
-                                 fillcolor=theme.DEFAULT_AMBER_SOFT if ring_default else "rgba(120,120,128,0.30)",
+                                 fillcolor=theme.DEFAULT_AMBER_SOFT if ring_default else s["pad_fill"],
                                  name=f"pad {p.id}: ring r {p.ring_r_mm:g} mm", hoverinfo="name"))
         if p.hole_r_mm > 0:
             x, y = _circle(p.cx, p.cy, p.hole_r_mm)
             fig.add_trace(go.Scatter(x=x, y=y, fill="toself", mode="lines",
                                      line=dict(color=theme.DEFAULT_AMBER if hole_default else s["text_2"], width=1),
-                                     fillcolor=theme.DEFAULT_AMBER_SOFT if hole_default else s["card"],
+                                     fillcolor=theme.DEFAULT_AMBER_SOFT if hole_default else s["bg"],
                                      name=f"pad {p.id}: hole r {p.hole_r_mm:g} mm" + (" (default)" if hole_default else ""),
                                      hoverinfo="name"))
         fig.add_annotation(x=p.cx, y=p.cy, text=p.id, showarrow=False,
@@ -169,9 +178,12 @@ def problem_drawing(problem: Problem, dark: bool = False, height: int = 420) -> 
                 L = 0.12 * scale * (0.35 + 0.65 * mag / fmax)
                 ux, uy = ld.fx_N / mag, ld.fy_N / mag
                 x0, y0 = p.cx - ux * (L + p.ring_r_mm), p.cy - uy * (L + p.ring_r_mm)
-                fig.add_annotation(x=p.cx - ux * p.ring_r_mm, y=p.cy - uy * p.ring_r_mm, ax=x0, ay=y0,
-                                   xref="x", yref="y", axref="x", ayref="y", showarrow=True, arrowhead=2,
-                                   arrowsize=1.2, arrowwidth=2.2, arrowcolor=col, text="")
+                tip = dict(x=p.cx - ux * p.ring_r_mm, y=p.cy - uy * p.ring_r_mm, ax=x0, ay=y0,
+                           xref="x", yref="y", axref="x", ayref="y", showarrow=True, text="")
+                if dark:  # the glow: a wide, faint stroke under the crisp arrow
+                    fig.add_annotation(**tip, arrowhead=0, arrowwidth=theme.ARROW_GLOW_WIDTH, arrowcolor=col,
+                                       opacity=theme.ARROW_GLOW_OPACITY)
+                fig.add_annotation(**tip, arrowhead=2, arrowsize=1.2, arrowwidth=2.2, arrowcolor=col)
                 # label beyond the arrow tail, on the side the arrow comes from
                 fig.add_annotation(x=x0, y=y0, text=f"{lc.name}: {mag:g} N", showarrow=False,
                                    font=dict(size=theme.TEXT_XS, color=col),

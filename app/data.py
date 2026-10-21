@@ -65,6 +65,28 @@ def demo_text(stem: str) -> str:
     return (EXAMPLES / f"{stem}.txt").read_text(encoding="utf-8")
 
 
+def demo_preview(stem: str) -> dict | None:
+    """Headline numbers of a cached demo part for the Describe step (the winning design, its mass,
+    the weight saved, and where its shape lives), read straight from results.json. None without a cache."""
+    folder = CACHE_DIR / stem
+    if not (folder / "results.json").exists():
+        return None
+    r = load_results(folder)
+    win = r["ranking"].get("winner")
+    if not win:
+        return None
+    d = next(x for x in r["designs"] if x["material"] == win)
+    c = next(x for x in r["ranking"]["cards"] if x["material"] == win)
+    nelx, nely = r["catalogs"][d["process"]]["mesh"]
+    p = r["problem"]
+    return {"stem": stem, "folder": str(folder), "name": p["name"], "material": win, "process": d["process"],
+            "mass_g": d["checks"]["mass_g"], "fill": d.get("fill"), "density_key": f"design/{win}",
+            "saved_vs_strut": c.get("weight_saved_vs_strut"), "saved_vs_block": c.get("weight_saved_vs_block"),
+            "nelx": nelx, "nely": nely, "width_mm": p["design_space"]["width_mm"],
+            "height_mm": p["design_space"]["height_mm"], "thickness_mm": p["thickness_mm"],
+            "cases": len(p["load_cases"]), "safety_factor": p["safety_factor"]}
+
+
 def match_demo(problem: Problem) -> str | None:
     """The cached demo part whose solved problem equals this one (numbers within display rounding),
     or None. Lets a parsed or hand-entered demo load instantly (spec 4.4 step 5)."""
