@@ -1,0 +1,15 @@
+# Base theme values; everything visible is styled from app/theme.py.
+[theme]
+base = "light"
+primaryColor = "#0A84FF"
+backgroundColor = "#F5F5F7"
+secondaryBackgroundColor = "#FFFFFF"
+textColor = "#1D1D1F"
+font = "sans serif"
+
+[server]
+headless = true
+runOnSave = false
+
+[browser]
+gatherUsageStats = false

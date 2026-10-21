@@ -13,3 +13,5 @@ design-refs/*.webp
 design-refs/images/
 .plans/s13/
 examples/cache/runs/
+.plans/live_runs/
+.plans/reports/streamlit.log
