@@ -1,0 +1,902 @@
+{
+  "format_version": 1,
+  "key": "68fecebc9fa49780c3963c7a2a0865a851b2dd9df55e26d401cff911cdf26d30",
+  "code_version": "9f5b2ff655238f07bc0f95db19b225d4eacaf22a",
+  "materials_hash": "406e95fe4e949ea5",
+  "solver_settings": {
+    "LLM_PROVIDER": "gemini",
+    "LLM_MODELS": {
+      "gemini": "gemini-3.8-flash",
+      "claude": "claude-opus-5-5"
+    },
+    "LLM_TIMEOUT_S": 45.0,
+    "LLM_RETRIES": 1,
+    "ELEMENT_CAP_LIVE": 40000,
+    "ELEMENT_CAP_QUICK": 10000,
+    "ELEMENT_CAP_CACHED": 80000,
+    "ELEMENT_CAP_CACHED_SWEEP": "cold",
+    "MIN_WALL_TO_ELEMENT_RATIO": 2.5,
+    "SIMP_PENALTY": 3.0,
+    "E_MIN_RATIO": 1e-09,
+    "FILTER_RADIUS_MIN_ELEMENTS": 1.5,
+    "BETA_SCHEDULE_COLD": [
+      1,
+      2,
+      4,
+      8,
+      16
+    ],
+    "BETA_SCHEDULE_WARM": [
+      4,
+      8,
+      16
+    ],
+    "BETA_STEP_ITERS": 40,
+    "CHANGE_TOL": 0.01,
+    "PLATEAU_WINDOW": 10,
+    "PLATEAU_RTOL": 0.001,
+    "MAX_ITERS_COLD": 300,
+    "MAX_ITERS_WARM": 100,
+    "MAX_ITERS_REFINE": 60,
+    "OC_MOVE": 0.2,
+    "CATALOG_REFERENCE_E": 1.0,
+    "CATALOG_REFERENCE_NU": 0.33,
+    "SNAPSHOT_EVERY_CATALOG": 2,
+    "SNAPSHOT_EVERY_COLD_RERUN": 1,
+    "FILL_LEVELS": [
+      0.6,
+      0.55,
+      0.5,
+      0.45,
+      0.4,
+      0.35,
+      0.3,
+      0.25,
+      0.2,
+      0.15
+    ],
+    "FILL_LEVELS_LIVE_SHORT": [
+      0.6,
+      0.5,
+      0.4,
+      0.3,
+      0.25,
+      0.2,
+      0.15
+    ],
+    "FILL_LEVELS_LIVE": [
+      0.6,
+      0.5,
+      0.4,
+      0.3,
+      0.25,
+      0.2,
+      0.15
+    ],
+    "FILL_LEVELS_EXTRA_LOW": [
+      0.12,
+      0.1,
+      0.08
+    ],
+    "NORMALIZATION_FILL": 0.6,
+    "REFINE_BISECTION_STEPS": 3,
+    "SOLID_THRESHOLD": 0.5,
+    "EXCLUSION_RING_WIDTHS": 1.0,
+    "REACTION_SUM_RTOL": 1e-06,
+    "OUT_OF_PLANE_SECTIONS": 20,
+    "RECHECK_SUPERSAMPLE": 4,
+    "DEFAULT_SAFETY_FACTOR": 2.0,
+    "DEFAULT_THICKNESS_MM": 6.0,
+    "DEFAULT_DEFLECTION_SPAN_RATIO": 100.0,
+    "DEFAULT_PRINTER": "any",
+    "DEFAULT_HOLE_R_MM": 1.6,
+    "DEFAULT_RING_WIDTH_MIN_MM": 2.0,
+    "DEFAULT_RING_WIDTH_WALLS": 2.0,
+    "SIZE_MIN_MM": 5.0,
+    "SIZE_MAX_MM": 2000.0,
+    "FORCE_MAX_N": 1000000.0,
+    "THIN_SPAN_RATIO": 20.0,
+    "KEEP_IN_MAX_FRACTION": 0.9,
+    "VALIDATION_TOL_BEAM": 0.03,
+    "VALIDATION_TOL_MBB": 0.02,
+    "VALIDATION_TOL_SCALING": 1e-06,
+    "SMOOTH_MAX_MOVE_ELEMENTS": 0.5,
+    "VOLUME_CHECK_RTOL": 0.01,
+    "RERUN_STRICT_RTOL": 0.005,
+    "RERUN_LOOSE_MASS_RTOL": 0.02,
+    "cap_used": 80000,
+    "sweep_mode_used": "cold",
+    "levels_used": [
+      0.6,
+      0.55,
+      0.5,
+      0.45,
+      0.4,
+      0.35,
+      0.3,
+      0.25,
+      0.2,
+      0.15
+    ],
+    "format_version": 1
+  },
+  "problem": {
+    "name": "5-inch FPV drone arm",
+    "design_space": {
+      "width_mm": 120.0,
+      "height_mm": 22.5
+    },
+    "thickness_mm": 10.0,
+    "zones": [],
+    "pads": [
+      {
+        "id": "bolt1",
+        "cx": 5.0,
+        "cy": 11.25,
+        "hole_r_mm": 1.6,
+        "ring_r_mm": 3.6
+      },
+      {
+        "id": "bolt2",
+        "cx": 25.0,
+        "cy": 11.25,
+        "hole_r_mm": 1.6,
+        "ring_r_mm": 3.6
+      },
+      {
+        "id": "motor",
+        "cx": 112.0,
+        "cy": 11.25,
+        "hole_r_mm": 0.0,
+        "ring_r_mm": 8.0
+      }
+    ],
+    "supports": [
+      {
+        "pad_id": "bolt1",
+        "type": "pin"
+      },
+      {
+        "pad_id": "bolt2",
+        "type": "pin"
+      }
+    ],
+    "load_cases": [
+      {
+        "id": "thrust",
+        "name": "Full thrust",
+        "reason": "~1.6 kgf max static thrust for a 2306 motor on 6S with a 5-inch prop (to cite from a motor thrust table) x 2 for dynamic loads",
+        "loads": [
+          {
+            "pad_id": "motor",
+            "fx_N": 0.0,
+            "fy_N": 32.0,
+            "fz_N_out_of_plane": 0.0
+          }
+        ],
+        "max_deflection_mm": 0.5
+      },
+      {
+        "id": "landing",
+        "name": "Hard landing",
+        "reason": "arm hits the ground first (impact factor to cite)",
+        "loads": [
+          {
+            "pad_id": "motor",
+            "fx_N": 0.0,
+            "fy_N": -50.0,
+            "fz_N_out_of_plane": 0.0
+          }
+        ],
+        "max_deflection_mm": 0.5
+      },
+      {
+        "id": "side_crash",
+        "name": "Side crash (out of plane)",
+        "reason": "hand checks only",
+        "loads": [
+          {
+            "pad_id": "motor",
+            "fx_N": 0.0,
+            "fy_N": 0.0,
+            "fz_N_out_of_plane": 30.0
+          }
+        ],
+        "max_deflection_mm": 0.5
+      }
+    ],
+    "safety_factor": 2.0,
+    "printer": "desktop_fdm",
+    "materials": [
+      "pa6cf"
+    ],
+    "warnings": [],
+    "provenance": {},
+    "notes": [
+      "Side view along the arm: thrust is in-plane. The motor mount is a solid keep-in disc (no hole).",
+      "Deflection limit 0.5 mm: arm stiffness affects motor vibration seen by the flight controller.",
+      "Design space enlarged from 120 x 15 mm to 120 x 18 mm and pads recentred at y = 9 mm (2026-10-21), so the 8 mm motor ring fits inside the design area (spec 14.2).",
+      "design agent: design space 120 x 18 mm -> 120 x 22.5 mm, pads and zones shifted by (0, 2.25) mm to stay centred"
+    ],
+    "references": [
+      "Spec section 14.2 (approved 2026-10-20); thrust table and impact factor citations still to add"
+    ]
+  },
+  "seconds": 692.4530218,
+  "created": "2026-10-21 13:59:03",
+  "catalogs": {
+    "fdm": {
+      "process": "fdm",
+      "mesh": [
+        375,
+        70
+      ],
+      "elements": 26250,
+      "h_mm": 0.32,
+      "effective_min_wall_mm": 0.8,
+      "min_wall_text": "fdm: 0.80 mm enforced",
+      "weights": [
+        6.7534871514368686e-06,
+        2.7662283370798965e-06,
+        0.0
+      ],
+      "sweep_mode": "cold",
+      "early_stopped": 0,
+      "notes": [],
+      "seconds": 627.3241141000035,
+      "reused_from": "",
+      "main_levels": [
+        0.6,
+        0.55,
+        0.5,
+        0.45,
+        0.4,
+        0.35,
+        0.3,
+        0.25,
+        0.2,
+        0.15
+      ],
+      "levels": [
+        {
+          "fill": 0.15,
+          "kind": "catalog",
+          "mode": "cold",
+          "iterations": 193,
+          "converged": 1,
+          "converged_by": "plateau",
+          "seconds": 34.3698635000037,
+          "ref_deflection_dE": [
+            5480.916272034992,
+            8563.931675134838,
+            0.0
+          ],
+          "ref_stress_MPa": [
+            12.220834495493786,
+            19.095053899252203,
+            0.0
+          ],
+          "connected": 1
+        },
+        {
+          "fill": 0.2,
+          "kind": "catalog",
+          "mode": "cold",
+          "iterations": 184,
+          "converged": 1,
+          "converged_by": "plateau",
+          "seconds": 45.12872829999833,
+          "ref_deflection_dE": [
+            4254.870582556871,
+            6648.23528517905,
+            0.0
+          ],
+          "ref_stress_MPa": [
+            7.528359974768986,
+            11.76306246043836,
+            0.0
+          ],
+          "connected": 1
+        },
+        {
+          "fill": 0.25,
+          "kind": "catalog",
+          "mode": "cold",
+          "iterations": 178,
+          "converged": 1,
+          "converged_by": "plateau",
+          "seconds": 37.029851799990865,
+          "ref_deflection_dE": [
+            3675.621824383068,
+            5743.159100612704,
+            0.0
+          ],
+          "ref_stress_MPa": [
+            6.717734460413764,
+            10.496460094437849,
+            0.0
+          ],
+          "connected": 1
+        },
+        {
+          "fill": 0.2562,
+          "kind": "refine",
+          "mode": "refine",
+          "iterations": 60,
+          "converged": 0,
+          "converged_by": null,
+          "seconds": 8.428435699999682,
+          "ref_deflection_dE": [
+            2557.1203372695204,
+            3995.500527013033,
+            0.0
+          ],
+          "ref_stress_MPa": [
+            7.47888500011306,
+            11.685757812784882,
+            0.0
+          ],
+          "connected": 1
+        },
+        {
+          "fill": 0.2625,
+          "kind": "refine",
+          "mode": "refine",
+          "iterations": 60,
+          "converged": 0,
+          "converged_by": null,
+          "seconds": 8.063304499999504,
+          "ref_deflection_dE": [
+            2501.620283273844,
+            3908.781692633392,
+            0.0
+          ],
+          "ref_stress_MPa": [
+            6.603449821695311,
+            10.317890346452282,
+            0.0
+          ],
+          "connected": 1
+        },
+        {
+          "fill": 0.275,
+          "kind": "refine",
+          "mode": "refine",
+          "iterations": 60,
+          "converged": 0,
+          "converged_by": null,
+          "seconds": 7.900843600000371,
+          "ref_deflection_dE": [
+            2404.9686120844244,
+            3757.7634563898214,
+            0.0
+          ],
+          "ref_stress_MPa": [
+            6.268985518631864,
+            9.795289872880042,
+            0.0
+          ],
+          "connected": 1
+        },
+        {
+          "fill": 0.3,
+          "kind": "catalog",
+          "mode": "cold",
+          "iterations": 182,
+          "converged": 1,
+          "converged_by": "plateau",
+          "seconds": 49.16484029999992,
+          "ref_deflection_dE": [
+            2307.2774938562006,
+            3605.121084177652,
+            0.0
+          ],
+          "ref_stress_MPa": [
+            6.531951785544601,
+            10.206174664997363,
+            0.0
+          ],
+          "connected": 1
+        },
+        {
+          "fill": 0.35,
+          "kind": "catalog",
+          "mode": "cold",
+          "iterations": 180,
+          "converged": 1,
+          "converged_by": "plateau",
+          "seconds": 79.27460999999312,
+          "ref_deflection_dE": [
+            1980.2439720411178,
+            3094.1312063253213,
+            0.0
+          ],
+          "ref_stress_MPa": [
+            5.407588923487092,
+            8.449357692979845,
+            0.0
+          ],
+          "connected": 1
+        },
+        {
+          "fill": 0.4,
+          "kind": "catalog",
+          "mode": "cold",
+          "iterations": 178,
+          "converged": 1,
+          "converged_by": "plateau",
+          "seconds": 88.35632979999355,
+          "ref_deflection_dE": [
+            1766.1658607675056,
+            2759.634157450884,
+            0.0
+          ],
+          "ref_stress_MPa": [
+            4.616583275522446,
+            7.213411368008171,
+            0.0
+          ],
+          "connected": 1
+        },
+        {
+          "fill": 0.45,
+          "kind": "catalog",
+          "mode": "cold",
+          "iterations": 177,
+          "converged": 1,
+          "converged_by": "plateau",
+          "seconds": 79.67424750000646,
+          "ref_deflection_dE": [
+            1612.0601883413449,
+            2518.8440442763667,
+            0.0
+          ],
+          "ref_stress_MPa": [
+            4.763651906585228,
+            7.443206104019775,
+            0.0
+          ],
+          "connected": 1
+        },
+        {
+          "fill": 0.5,
+          "kind": "catalog",
+          "mode": "cold",
+          "iterations": 177,
+          "converged": 1,
+          "converged_by": "plateau",
+          "seconds": 79.03766910001286,
+          "ref_deflection_dE": [
+            1483.186184102858,
+            2317.478412680708,
+            0.0
+          ],
+          "ref_stress_MPa": [
+            4.311455232859509,
+            6.736648801409039,
+            0.0
+          ],
+          "connected": 1
+        },
+        {
+          "fill": 0.55,
+          "kind": "catalog",
+          "mode": "cold",
+          "iterations": 175,
+          "converged": 1,
+          "converged_by": "plateau",
+          "seconds": 77.36983179999515,
+          "ref_deflection_dE": [
+            1383.7550891429921,
+            2162.1173267895047,
+            0.0
+          ],
+          "ref_stress_MPa": [
+            4.050017458263012,
+            6.328152278540318,
+            0.0
+          ],
+          "connected": 1
+        },
+        {
+          "fill": 0.6,
+          "kind": "catalog",
+          "mode": "cold",
+          "iterations": 175,
+          "converged": 1,
+          "converged_by": "plateau",
+          "seconds": 35.373451800012845,
+          "ref_deflection_dE": [
+            1298.9528388964122,
+            2029.6138107719248,
+            0.0
+          ],
+          "ref_stress_MPa": [
+            3.9183221642697403,
+            6.122378381662682,
+            0.0
+          ],
+          "connected": 1
+        }
+      ]
+    }
+  },
+  "designs": [
+    {
+      "material": "pa6cf",
+      "process": "fdm",
+      "status": "pass",
+      "fill": 0.2562,
+      "printer_allowed": 1,
+      "converged": 0,
+      "reasons": [],
+      "notes": [
+        "not fully converged",
+        "animation shows an independent run at the same fill level"
+      ],
+      "checks": {
+        "passed": 1,
+        "passed_in_plane": 1,
+        "sf": 10.456105858483525,
+        "sf_raw": 8.16340487869203,
+        "sf_target": 2.0,
+        "stress_reported_MPa": 10.453222402231116,
+        "stress_raw_MPa": 13.389021079340665,
+        "stress_pass": 1,
+        "deflection_mm": [
+          0.2921022003815391,
+          0.4564096880992231,
+          0.0
+        ],
+        "deflection_limit_mm": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "deflection_pass": 1,
+        "mass_g": 10.490687999999999,
+        "out_of_plane": [
+          {
+            "name": "out-of-plane bending (Side crash (out of plane))",
+            "passed": 1,
+            "sf": 5.5696934865900385,
+            "detail": "approximate hand check: beam through the thickness, XY strength 109.3 MPa",
+            "where": "66.3 mm from pad motor, width 6.1 mm",
+            "suggestion": ""
+          },
+          {
+            "name": "interlayer shear (Side crash (out of plane))",
+            "passed": 1,
+            "sf": 19.953225303193463,
+            "detail": "approximate hand check: 1.5 Fz / (w t) vs 31.2 MPa (Z strength / sqrt(3), a conservative stand-in (datasheet Z value))",
+            "where": "12.4 mm from pad motor, width 2.9 mm",
+            "suggestion": ""
+          }
+        ],
+        "bearing": [
+          {
+            "name": "bearing at bolt1",
+            "passed": 1,
+            "sf": 25.132687461553594,
+            "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+            "where": "Hard landing: FE reaction 139 N, 4.3 MPa vs 109.3 MPa",
+            "suggestion": ""
+          },
+          {
+            "name": "bearing at bolt2",
+            "passed": 1,
+            "sf": 18.49194635111948,
+            "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+            "where": "Hard landing: FE reaction 189 N, 5.9 MPa vs 109.3 MPa",
+            "suggestion": ""
+          },
+          {
+            "name": "bearing at motor",
+            "passed": 1,
+            "sf": "inf",
+            "detail": "n/a (solid mount)",
+            "where": "",
+            "suggestion": ""
+          }
+        ],
+        "fail_reasons": [],
+        "notes": []
+      },
+      "grid_checks": {
+        "passed": 1,
+        "passed_in_plane": 1,
+        "sf": 9.382904511791155,
+        "sf_raw": 8.193350899503079,
+        "sf_target": 2.0,
+        "stress_reported_MPa": 11.648844967211023,
+        "stress_raw_MPa": 13.340085313156669,
+        "stress_pass": 1,
+        "deflection_mm": [
+          0.29748082037218815,
+          0.464813781833361,
+          0.0
+        ],
+        "deflection_limit_mm": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "deflection_pass": 1,
+        "mass_g": 10.544302080000001,
+        "out_of_plane": [
+          {
+            "name": "out-of-plane bending (Side crash (out of plane))",
+            "passed": 1,
+            "sf": 5.5696934865900385,
+            "detail": "approximate hand check: beam through the thickness, XY strength 109.3 MPa",
+            "where": "66.3 mm from pad motor, width 6.1 mm",
+            "suggestion": ""
+          },
+          {
+            "name": "interlayer shear (Side crash (out of plane))",
+            "passed": 1,
+            "sf": 19.953225303193463,
+            "detail": "approximate hand check: 1.5 Fz / (w t) vs 31.2 MPa (Z strength / sqrt(3), a conservative stand-in (datasheet Z value))",
+            "where": "12.4 mm from pad motor, width 2.9 mm",
+            "suggestion": ""
+          }
+        ],
+        "bearing": [
+          {
+            "name": "bearing at bolt1",
+            "passed": 1,
+            "sf": 25.091911075734995,
+            "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+            "where": "Hard landing: FE reaction 139 N, 4.4 MPa vs 109.3 MPa",
+            "suggestion": ""
+          },
+          {
+            "name": "bearing at bolt2",
+            "passed": 1,
+            "sf": 18.470026933302133,
+            "detail": "full XY strength used as an approximation; bearing allowables are often higher, so this errs on the safe side",
+            "where": "Hard landing: FE reaction 189 N, 5.9 MPa vs 109.3 MPa",
+            "suggestion": ""
+          },
+          {
+            "name": "bearing at motor",
+            "passed": 1,
+            "sf": "inf",
+            "detail": "n/a (solid mount)",
+            "where": "",
+            "suggestion": ""
+          }
+        ],
+        "fail_reasons": [],
+        "notes": []
+      },
+      "pick": {
+        "status": "pass",
+        "v_pick": 0.3,
+        "v_final": 0.2562,
+        "window": [
+          0.25,
+          0.3
+        ],
+        "levels": [
+          {
+            "fill": 0.15,
+            "passed": 0,
+            "stress_pass": 1,
+            "deflection_pass": 0,
+            "connected": 1,
+            "sf": 5.723995364280191,
+            "deflection_ratio": 1.98319496905803,
+            "label": ""
+          },
+          {
+            "fill": 0.2,
+            "passed": 0,
+            "stress_pass": 1,
+            "deflection_pass": 0,
+            "connected": 1,
+            "sf": 9.291797979276126,
+            "deflection_ratio": 1.5395670202464078,
+            "label": ""
+          },
+          {
+            "fill": 0.25,
+            "passed": 0,
+            "stress_pass": 1,
+            "deflection_pass": 0,
+            "connected": 1,
+            "sf": 10.413034396035943,
+            "deflection_ratio": 1.329973739503897,
+            "label": ""
+          },
+          {
+            "fill": 0.3,
+            "passed": 1,
+            "stress_pass": 1,
+            "deflection_pass": 1,
+            "connected": 1,
+            "sf": 10.709203358516914,
+            "deflection_ratio": 0.8348569638575006,
+            "label": ""
+          },
+          {
+            "fill": 0.35,
+            "passed": 1,
+            "stress_pass": 1,
+            "deflection_pass": 1,
+            "connected": 1,
+            "sf": 12.935894534422657,
+            "deflection_ratio": 0.7165243342384812,
+            "label": ""
+          },
+          {
+            "fill": 0.4,
+            "passed": 1,
+            "stress_pass": 1,
+            "deflection_pass": 1,
+            "connected": 1,
+            "sf": 15.152331459252524,
+            "deflection_ratio": 0.6390630828346863,
+            "label": ""
+          },
+          {
+            "fill": 0.45,
+            "passed": 1,
+            "stress_pass": 1,
+            "deflection_pass": 1,
+            "connected": 1,
+            "sf": 14.684532239537406,
+            "deflection_ratio": 0.5833020423264903,
+            "label": ""
+          },
+          {
+            "fill": 0.5,
+            "passed": 1,
+            "stress_pass": 1,
+            "deflection_pass": 1,
+            "connected": 1,
+            "sf": 16.224684293641488,
+            "deflection_ratio": 0.5366707376091491,
+            "label": ""
+          },
+          {
+            "fill": 0.55,
+            "passed": 1,
+            "stress_pass": 1,
+            "deflection_pass": 1,
+            "connected": 1,
+            "sf": 17.272024311212,
+            "deflection_ratio": 0.5006929489467967,
+            "label": ""
+          },
+          {
+            "fill": 0.6,
+            "passed": 1,
+            "stress_pass": 1,
+            "deflection_pass": 1,
+            "connected": 1,
+            "sf": 17.85253919087518,
+            "deflection_ratio": 0.47000840867757193,
+            "label": ""
+          }
+        ],
+        "refinement": [
+          {
+            "fill": 0.275,
+            "passed": 1,
+            "stress_pass": 1,
+            "deflection_pass": 1,
+            "connected": 1,
+            "sf": 11.15842424455615,
+            "deflection_ratio": 0.8702051656087122,
+            "label": ""
+          },
+          {
+            "fill": 0.2625,
+            "passed": 1,
+            "stress_pass": 1,
+            "deflection_pass": 1,
+            "connected": 1,
+            "sf": 10.593250783827322,
+            "deflection_ratio": 0.9051772576005077,
+            "label": ""
+          },
+          {
+            "fill": 0.2562,
+            "passed": 1,
+            "stress_pass": 1,
+            "deflection_pass": 1,
+            "connected": 1,
+            "sf": 9.35326589435386,
+            "deflection_ratio": 0.9252591968999093,
+            "label": ""
+          }
+        ],
+        "notes": [],
+        "reason": ""
+      },
+      "rerun": {
+        "fill": 0.2562,
+        "iterations": 179,
+        "converged": 1,
+        "seconds": 26.721811499999603,
+        "replaced": 0,
+        "note": "animation shows an independent run at the same fill level"
+      },
+      "baseline": {
+        "mass_block_g": 31.25910528,
+        "strut_width_mm": 15.81640625,
+        "mass_strut_g": 21.87813888,
+        "strut_passed": 1,
+        "note": "constant-width straight struts, sized by the same solver to the same limits",
+        "struts": [
+          [
+            "motor",
+            "bolt2"
+          ],
+          [
+            "motor",
+            "bolt1"
+          ]
+        ]
+      },
+      "geometry": {
+        "area_mm2": 898.260858411735,
+        "volume_mm3": 8982.608584117348,
+        "watertight": 1,
+        "volume_error": 2.025012429865989e-16,
+        "files": {
+          "stl": "pa6cf.stl",
+          "svg": "pa6cf.svg",
+          "dxf": "pa6cf.dxf"
+        }
+      },
+      "mesh_h_mm": 0.32,
+      "effective_min_wall": "fdm: 0.80 mm enforced"
+    }
+  ],
+  "ranking": {
+    "order": [
+      "pa6cf"
+    ],
+    "cards": [
+      {
+        "material": "pa6cf",
+        "state": "ranked",
+        "rank": 1,
+        "reason": "",
+        "badges": [
+          "Lightest",
+          "Cheapest material"
+        ],
+        "material_cost_usd": 0.5559015571199999,
+        "weight_saved_vs_strut": 0.5204944964678825,
+        "weight_saved_vs_block": 0.6643957686558584
+      }
+    ],
+    "pareto": [
+      {
+        "material_id": "pa6cf",
+        "process_id": "fdm",
+        "mass_g": 10.490687999999999,
+        "cost_usd": 0.5559015571199999,
+        "state": "ranked",
+        "reason": "",
+        "on_front": 1
+      }
+    ],
+    "funnel": {
+      "candidates": 13,
+      "met_limits": 1,
+      "printable": 1,
+      "ranked": 1,
+      "isolated_stress_failures": 0,
+      "text": "13 candidate designs evaluated -> 1 met the limits -> 1 printable with your printer -> ranked by mass"
+    },
+    "winner": "pa6cf",
+    "messages": [
+      "pa6cf: animation shows an independent run at the same fill level"
+    ],
+    "caption_cost": "material cost only, not print cost"
+  }
+}

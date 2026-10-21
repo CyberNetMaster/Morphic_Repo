@@ -1,0 +1,122 @@
+[
+  {
+    "attempt": 1,
+    "elapsed_s": 151.10899999999674
+  },
+  {
+    "attempt": 2,
+    "elapsed_s": 158.5
+  },
+  {
+    "attempt": 3,
+    "elapsed_s": 167.35899999999674
+  },
+  {
+    "attempt": 4,
+    "elapsed_s": 183.85899999999674
+  },
+  {
+    "attempt": 5,
+    "elapsed_s": 216.35899999999674
+  },
+  {
+    "attempt": 6,
+    "elapsed_s": 293.6719999999914
+  },
+  {
+    "attempt": 7,
+    "elapsed_s": 301.6719999999914
+  },
+  {
+    "attempt": 8,
+    "elapsed_s": 310.1399999999994
+  },
+  {
+    "attempt": 9,
+    "elapsed_s": 326.98399999999674
+  },
+  {
+    "attempt": 10,
+    "elapsed_s": 359.4689999999973
+  },
+  {
+    "attempt": 11,
+    "elapsed_s": 402.4219999999914
+  },
+  {
+    "attempt": 12,
+    "elapsed_s": 407.0619999999908
+  },
+  {
+    "attempt": 13,
+    "elapsed_s": 415.85899999999674
+  },
+  {
+    "attempt": 14,
+    "elapsed_s": 432.2969999999914
+  },
+  {
+    "attempt": 15,
+    "elapsed_s": 464.9060000000027
+  },
+  {
+    "attempt": 16,
+    "elapsed_s": 577.9839999999967
+  },
+  {
+    "attempt": 17,
+    "elapsed_s": 582.4529999999941
+  },
+  {
+    "attempt": 18,
+    "elapsed_s": 590.9689999999973
+  },
+  {
+    "attempt": 19,
+    "elapsed_s": 607.4529999999941
+  },
+  {
+    "attempt": 20,
+    "elapsed_s": 639.8899999999994
+  },
+  {
+    "attempt": 21,
+    "elapsed_s": 695.7649999999994
+  },
+  {
+    "attempt": 22,
+    "elapsed_s": 700.0779999999941
+  },
+  {
+    "attempt": 23,
+    "elapsed_s": 708.5469999999914
+  },
+  {
+    "attempt": 24,
+    "elapsed_s": 724.9839999999967
+  },
+  {
+    "attempt": 25,
+    "elapsed_s": 757.5149999999994
+  },
+  {
+    "attempt": 26,
+    "elapsed_s": 761.5149999999994
+  },
+  {
+    "attempt": 27,
+    "elapsed_s": 765.9219999999914
+  },
+  {
+    "attempt": 28,
+    "elapsed_s": 774.3589999999967
+  },
+  {
+    "attempt": 29,
+    "elapsed_s": 790.7649999999994
+  },
+  {
+    "attempt": 30,
+    "elapsed_s": 823.1869999999908
+  }
+]

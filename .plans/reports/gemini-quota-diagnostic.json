@@ -1,0 +1,58 @@
+{
+  "provider": "gemini",
+  "model": "gemini-3.8-flash",
+  "attempts": [
+    {
+      "status": 429,
+      "quota_limits": [
+        {
+          "per_day": true,
+          "per_minute": false,
+          "free_tier": true,
+          "limit": 20
+        }
+      ],
+      "retry_after_s": 46942.0
+    },
+    {
+      "status": 429,
+      "quota_limits": [
+        {
+          "per_day": true,
+          "per_minute": false,
+          "free_tier": true,
+          "limit": 20
+        }
+      ],
+      "retry_after_s": 46936.0
+    },
+    {
+      "status": 503,
+      "quota_limits": []
+    },
+    {
+      "status": 429,
+      "quota_limits": [
+        {
+          "per_day": true,
+          "per_minute": false,
+          "free_tier": true,
+          "limit": 20
+        }
+      ],
+      "retry_after_s": 46910.0
+    },
+    {
+      "status": 429,
+      "quota_limits": [
+        {
+          "per_day": true,
+          "per_minute": false,
+          "free_tier": true,
+          "limit": 20
+        }
+      ],
+      "retry_after_s": 46878.0
+    }
+  ]
+}

@@ -1,0 +1,206 @@
+{
+  "completed_utc": "2026-10-21T18:06:42.135728+00:00",
+  "implementation_commit": "e9f8b57ecbb0b1e7aeb42628c563c60b3ddfbdd6",
+  "retry_policy": {
+    "status_codes": [
+      429,
+      503
+    ],
+    "max_retries": 4,
+    "delays_s": [
+      4,
+      8,
+      16,
+      32
+    ],
+    "sdk_retries_disabled": true,
+    "agent_min_interval_s": 4,
+    "shared_across_worker_processes": true
+  },
+  "tests": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "tests": "152",
+    "time": "249.385",
+    "timestamp": "2026-10-21T13:53:40.989324-04:00",
+    "hostname": "LAPTOP-NDC171IK",
+    "includes_slow": true
+  },
+  "live_agent": {
+    "completed": true,
+    "live_recommendation_confirmed": false,
+    "provider": {
+      "provider": "gemini",
+      "model": "gemini-3.8-flash"
+    },
+    "round_count": 5,
+    "seconds": 823.7823557000083,
+    "proposal_sources": [
+      "fallback",
+      "fallback",
+      "fallback",
+      "fallback"
+    ],
+    "recommendation_source": "template",
+    "recommendation_attempts": [
+      {
+        "attempt": 1,
+        "error": "LLMError: gemini request failed (ClientError, status 429; 5 attempts)",
+        "seconds": 65.87963709999167
+      }
+    ],
+    "best_design": {
+      "material": "pa6cf",
+      "process": "fdm",
+      "status": "pass",
+      "printer_allowed": true,
+      "ranked": true,
+      "fill_pct": 30.0,
+      "reasons": [],
+      "notes": [
+        "quick mode: catalog level reported without refinement",
+        "removed 2 elements in islands not connected to any pad",
+        "not fully converged"
+      ],
+      "mass_g": 11.77,
+      "sf": 11.21,
+      "sf_target": 2.0,
+      "stress_MPa": 9.8,
+      "deflection_mm": [
+        0.275,
+        0.43,
+        0.0
+      ],
+      "deflection_limit_mm": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "load_cases": [
+        "Full thrust",
+        "Hard landing",
+        "Side crash (out of plane)"
+      ],
+      "worst_deflection_mm": 0.43,
+      "worst_deflection_limit_mm": 0.5,
+      "worst_case": "Hard landing",
+      "hand_checks_failed": [],
+      "material_cost_usd": 0.62
+    },
+    "http_attempt_count": 30,
+    "minimum_observed_request_spacing_s": 4.0,
+    "log": "drone-agent-backoff.json",
+    "quota_diagnostic": {
+      "provider": "gemini",
+      "model": "gemini-3.8-flash",
+      "attempts": [
+        {
+          "status": 429,
+          "quota_limits": [
+            {
+              "per_day": true,
+              "per_minute": false,
+              "free_tier": true,
+              "limit": 20
+            }
+          ],
+          "retry_after_s": 46942.0
+        },
+        {
+          "status": 429,
+          "quota_limits": [
+            {
+              "per_day": true,
+              "per_minute": false,
+              "free_tier": true,
+              "limit": 20
+            }
+          ],
+          "retry_after_s": 46936.0
+        },
+        {
+          "status": 503,
+          "quota_limits": []
+        },
+        {
+          "status": 429,
+          "quota_limits": [
+            {
+              "per_day": true,
+              "per_minute": false,
+              "free_tier": true,
+              "limit": 20
+            }
+          ],
+          "retry_after_s": 46910.0
+        },
+        {
+          "status": 429,
+          "quota_limits": [
+            {
+              "per_day": true,
+              "per_minute": false,
+              "free_tier": true,
+              "limit": 20
+            }
+          ],
+          "retry_after_s": 46878.0
+        }
+      ]
+    },
+    "blocker": "Configured Gemini model's daily free-tier quota is exhausted (20 requests/day)."
+  },
+  "full_resolution": {
+    "source": "drone-agent-live.json, recommended round 1; source quick mass 11.77 g",
+    "problem": "drone_best_pa6cf.json",
+    "material": "pa6cf",
+    "design_space_mm": [
+      120,
+      22.5
+    ],
+    "thickness_mm": 10,
+    "element_cap": 80000,
+    "actual_mesh": [
+      375,
+      70
+    ],
+    "actual_elements": 26250,
+    "element_size_mm": 0.32,
+    "minimum_wall": "fdm: 0.80 mm enforced",
+    "workflow": "10 cold density levels, refinement, independent cold rerun, smoothing and recheck",
+    "seconds": 692.4530218,
+    "status": "pass",
+    "mass_g": 10.490687999999999,
+    "fill": 0.2562,
+    "safety_factor": 10.456105858483525,
+    "safety_factor_target": 2.0,
+    "worst_deflection_mm": 0.4564096880992231,
+    "deflection_limit_mm": 0.5,
+    "all_hand_checks_pass": true,
+    "watertight": true,
+    "selected_design_converged": false,
+    "notes": [
+      "not fully converged",
+      "animation shows an independent run at the same fill level"
+    ],
+    "independent_cold_rerun": {
+      "fill": 0.2562,
+      "iterations": 179,
+      "converged": 1,
+      "seconds": 26.721811499999603,
+      "replaced": 0,
+      "note": "animation shows an independent run at the same fill level"
+    },
+    "independent_cold_rerun_passed": false,
+    "qualification": "The retained refined geometry passes the smoothed FE and hand checks, but its optimization stopped before convergence. The separate cold rerun converged but failed checks, so the production pipeline retained the refinement.",
+    "results": "drone-full-results.json",
+    "artifacts": ".plans/live_runs/full-resolution/drone_best_pa6cf"
+  },
+  "application": {
+    "url": "http://127.0.0.1:8765",
+    "health_status": 200,
+    "restarted_with_new_adapter": true
+  }
+}

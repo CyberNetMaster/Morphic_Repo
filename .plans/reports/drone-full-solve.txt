@@ -1,0 +1,25 @@
+PART drone_best_pa6cf: 5-inch FPV drone arm | cap 80000, cold per level, 10 levels | key 68fecebc9fa4
+  fdm catalog fill 0.6000 start
+  fdm catalog fill 0.6000 it 1 beta 1 obj 1.4448 change 0.200
+  fdm catalog fill 0.5500 start
+  fdm catalog fill 0.5000 start
+  fdm catalog fill 0.5000 it 3 beta 1 obj 1.2585 change 0.200
+  fdm catalog fill 0.4500 start
+  fdm catalog fill 0.4500 it 84 beta 4 obj 0.7264 change 0.188
+  fdm catalog fill 0.4000 start
+  fdm catalog fill 0.4000 it 161 beta 16 obj 0.7574 change 0.200
+  fdm catalog fill 0.3500 start
+  fdm catalog fill 0.3000 start
+  fdm catalog fill 0.3000 it 59 beta 2 obj 1.0994 change 0.200
+  fdm catalog fill 0.2500 start
+  fdm catalog fill 0.2000 start
+  fdm catalog fill 0.1500 start
+  fdm catalog fill 0.1500 it 65 beta 2 obj 2.7697 change 0.141
+  fdm refine fill 0.2750 start
+  fdm refine fill 0.2625 start
+  fdm refine fill 0.2562 start
+  fdm rerun fill 0.2562 start
+  catalog fdm: mesh 375 x 70, 10.5 min, levels [0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6], refined [0.2562, 0.2625, 0.275]
+  pick pa6cf     pass fill 0.2562 mass 10.54 g | rerun 179 it, replaced=False
+  pa6cf     strut 15.82 mm mass 21.88 g | smoothed: pass, SF 10.46, mass 10.49 g
+PART drone_best_pa6cf done in 11.5 min -> C:\Users\night\projects\morphic\.plans\live_runs\full-resolution\drone_best_pa6cf | winner pa6cf
