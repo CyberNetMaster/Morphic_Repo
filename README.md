@@ -109,3 +109,15 @@ The cache key hashes the solved problem, combined material/process hash, solver 
 version. `RunCache` writes entries atomically and verifies artifact checksums on load. Existing named
 S14 caches remain compatible. `render` provides a local 2D snapshot GIF; the cinematic 3D MP4 renderer
 is the separate S15 stretch task.
+
+## Design agent
+
+`uv run morphic explore examples/drone_arm.json` runs the design agent (`morphic/agent.py`). It reads the
+results of a quick-mode run, proposes one change per round (thickness, materials, printer group, or
+design-space size; never the safety factor, a limit, a load or a support), runs the engine again in
+quick mode (10k-element cap, 7 warm levels, no refinement, no cold re-run), and repeats for at most
+5 rounds. It then recommends the lightest passing round. Every number in its reasons and in the
+recommendation is checked against the engine results the same way as the explanation (spec section 10);
+text that fails the check is replaced by a template. The structured log of every round goes to
+`.plans/agent/<part>.json`. `--no-llm` uses the built-in fallback rule only; `--rounds` and `--cap`
+change the round count and the element cap.

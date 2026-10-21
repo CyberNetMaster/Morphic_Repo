@@ -236,6 +236,40 @@ def cmd_render(args) -> int:
     return 0
 
 
+def cmd_explore(args) -> int:
+    """Design agent: up to N rounds of one change + a quick-mode run, then a checked recommendation."""
+    from . import agent
+
+    if args.rerecommend:  # redo only the recommendation from a saved log (no engine run)
+        path = Path(args.rerecommend)
+        log = agent.rerecommend(agent.log_from_dict(json.loads(path.read_text(encoding="utf-8"))))
+        agent.write_log(log, Path(args.out) if args.out else path)
+        rec = log.recommendation
+        print(f"RECOMMENDATION (round {rec['round']}, text from {rec['source']}):\n{rec['text']}")
+        for a in rec["attempts"]:
+            print(f"  attempt {a['attempt']}: " + (a.get("error") or f"bad numbers {a.get('bad_numbers')}"))
+        return 0
+    problem = _load_problem(args.problem)
+    out = Path(args.out) if args.out else Path(".plans") / "agent" / f"{Path(args.problem).stem}.json"
+    use_llm = not args.no_llm
+    print(f"part {problem.name!r}; LLM {config.LLM_PROVIDER} / {config.LLM_MODELS[config.LLM_PROVIDER]}"
+          if use_llm else f"part {problem.name!r}; no LLM (fallback rule only)", flush=True)
+    log = agent.explore(problem, max_rounds=args.rounds, source=args.problem, cap=args.cap, use_llm=use_llm,
+                        status=lambda s: print(f"  {s}", flush=True))
+    agent.write_log(log, out)
+    print()
+    for r in log.rounds:
+        b = r.results.get("best")
+        res = (f"best {b['material']} {b['mass_g']} g at {b['fill_pct']}% fill" if b
+               else f"nothing passes (shortfall {r.results.get('shortfall')})")
+        why = f"\n      reason: {r.proposal.reason}" if r.proposal else ""
+        print(f"round {r.index}: {r.change} -> {res} ({r.seconds:.0f} s){why}")
+    rec = log.recommendation
+    print(f"\nRECOMMENDATION (round {rec['round']}, text from {rec['source']}):\n{rec['text']}")
+    print(f"\nlog written to {out} ({log.seconds / 60:.1f} min)")
+    return 0
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(prog="morphic")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -297,6 +331,14 @@ def main(argv=None) -> int:
     re.add_argument("--out", required=True)
     re.add_argument("--fps", type=int, default=15)
     re.set_defaults(fn=cmd_render)
+    ex = sub.add_parser("explore", help="design agent: propose changes, run quick mode, recommend (at most 5 rounds)")
+    ex.add_argument("problem", nargs="?", default="")
+    ex.add_argument("--rerecommend", default="", help="redo only the recommendation from this saved log")
+    ex.add_argument("--rounds", type=int, default=5)
+    ex.add_argument("--cap", type=int, default=config.ELEMENT_CAP_QUICK)
+    ex.add_argument("--out", default="", help="log JSON (default .plans/agent/<part>.json)")
+    ex.add_argument("--no-llm", action="store_true", help="use the fallback rule only (no API call)")
+    ex.set_defaults(fn=cmd_explore)
     args = ap.parse_args(argv)
     try:
         return args.fn(args)
