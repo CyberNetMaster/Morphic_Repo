@@ -40,5 +40,6 @@ packages = ["morphic"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["."]
 addopts = "-q"
 markers = ["slow: long-running end-to-end runs"]

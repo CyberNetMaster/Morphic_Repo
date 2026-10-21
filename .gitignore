@@ -11,3 +11,5 @@ design-refs/*.jpg
 design-refs/*.jpeg
 design-refs/*.webp
 design-refs/images/
+.plans/live_runs/
+.plans/reports/streamlit.log
