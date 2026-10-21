@@ -6,7 +6,7 @@ Inspiration: the reference images in design-refs. Take the design language only,
 - Cards are the unit: every result, metric and control lives in a rounded card (16-28 px radius) with generous padding. No hard borders or visible gridlines; depth comes from soft shadows, frosted layers and gentle glows.
 - One hero number per card: large, confident numerals with a small muted label. Safety factor, deflection and mass are shown as instrument-style readouts (gauges, dials, meters), not table cells.
 - Two text tiers: primary text plus a soft grey secondary tone. Small uppercase tracked eyebrow labels for context (e.g. "FDM - PA6-CF").
-- Dark stage by default: the Compare step, shape viewer and growth animation live on a deep near-black canvas so stress colors glow. Near-white is used for the Describe and Check steps and the Validation tab.
+- Dark everywhere: every step (Describe, Check, Compare, Export) and the Validation tab live on the same deep near-black canvas with one dark palette, so shapes and stress colors glow on every screen. There is no light step.
 - Monochrome plus one accent: screens are black, white and grey with a single accent color for the one action or status that matters. Stress gradients and process tints are the only other color, confined to shapes and cards.
 - Process identity: FDM, SLS and metal each get a consistent soft gradient tint on their cards.
 - Pills for status: rounded chips for deltas and states ("-33% vs strut", "Passes", "Fails: bearing").
@@ -35,5 +35,5 @@ Inspiration: the reference images in design-refs. Take the design language only,
 
 ## Constraints
 - All colors, radii, shadows and fonts are defined once in the central theme file.
-- Readability first: numbers and limits legible at a glance; contrast holds on light and dark areas.
+- Readability first: numbers and limits legible at a glance; contrast holds on the stage, on raised cards and in inset readouts.
 - Streamlit: reach this look with custom CSS and HTML components; where Streamlit cannot match it, choose clean and reliable over fragile.

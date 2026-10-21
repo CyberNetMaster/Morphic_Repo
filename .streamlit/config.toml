@@ -1,10 +1,12 @@
-# Base theme values; everything visible is styled from app/theme.py.
+# Base theme: dark everywhere. These values mirror app/theme.py (DARK and ACCENT); Streamlit reads
+# them at start-up for its own widgets (data editors, dropdowns, dialogs). Everything else is styled
+# from app/theme.py.
 [theme]
-base = "light"
+base = "dark"
 primaryColor = "#0A84FF"
-backgroundColor = "#F5F5F7"
-secondaryBackgroundColor = "#FFFFFF"
-textColor = "#1D1D1F"
+backgroundColor = "#050506"
+secondaryBackgroundColor = "#141416"
+textColor = "#F5F5F7"
 font = "sans serif"
 
 [server]

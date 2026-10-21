@@ -152,46 +152,76 @@ def go(step: int) -> None:
 
 
 # ----------------------------------------------------------------------------- step 1: describe
+@st.cache_data(show_spinner=False)
+def demo_preview(stem: str) -> dict | None:
+    return data.demo_preview(stem)
+
+
+def demo_preview_card(label: str, stem: str) -> None:
+    """One demo part: its cached optimized shape on a small dark stage and the headline numbers
+    (winning material, mass, weight saved), all read from the precomputed results."""
+    pv = demo_preview(stem)
+    with st.container(key=f"preview_{stem}"):
+        if pv is None:
+            st.markdown(ui.eyebrow("Demo part") + f'<div class="mx-preview-title">{ui.esc(label)}</div>'
+                        '<div class="mx-note">No cached results for this part yet (run morphic precompute).</div>',
+                        unsafe_allow_html=True)
+        else:
+            pid = pv["process"]
+            pills = ""
+            if pv["saved_vs_strut"] is not None:
+                pills += ui.pill(f"{pv['saved_vs_strut'] * -100:+.0f}% vs strut", "pass" if pv["saved_vs_strut"] > 0 else "amber")
+            if pv["saved_vs_block"] is not None:
+                pills += ui.pill(f"{pv['saved_vs_block'] * -100:+.0f}% vs block", "")
+            fill_txt = f" · {pv['fill']:.0%} fill" if pv.get("fill") is not None else ""
+            shape = img(png_density(pv["folder"], pv["density_key"], pv["nelx"], pv["nely"], True, 900), "")
+            st.markdown(f'<div class="mx-eyebrow" style="color:{theme.PROCESS[pid]["color"]}">{proc_label(pid)} · '
+                        f'{ui.esc(material_name(pv["material"]))}</div>'
+                        f'<div class="mx-preview-title">{ui.esc(label)}</div>'
+                        f'<div class="mx-shape-box">{shape}</div>'
+                        f'{ui.hero(f"{pv['mass_g']:.1f}", "g", "lightest passing design" + fill_txt)}'
+                        f'<div style="margin:10px 0 0">{pills}</div>'
+                        f'<div class="mx-note" style="margin-top:8px">{pv["width_mm"]:g} × {pv["height_mm"]:g} × '
+                        f'{pv["thickness_mm"]:g} mm · {pv["cases"]} load cases · safety factor {pv["safety_factor"]:g} · '
+                        f'precomputed, loads without the network</div>', unsafe_allow_html=True)
+        if st.button(f"Open {label}", key=f"demo_{stem}", use_container_width=True):
+            load_demo(stem)
+            go(1)
+
+
 def page_describe() -> None:
     ui.title("Describe your part",
              "Say where it is held, where the loads act, the size limits, and the limits on stress and bending. "
              "Morphic turns the text into a problem you check on a drawing before anything runs.")
-    left, right = st.columns([3, 2], gap="large")
-    with left:
-        with st.container(key="card_describe"):
+    # the three demo parts first: real optimized shapes on the stage, each one click from the Check step
+    cols = st.columns(3, gap="medium")
+    for col, (label, stem) in zip(cols, data.DEMOS.items()):
+        with col:
+            demo_preview_card(label, stem)
+    with st.container(key="card_describe"):
+        left, right = st.columns([2.3, 1], gap="large")
+        with left:
             st.markdown(ui.eyebrow("Plain English"), unsafe_allow_html=True)
-            S.text = st.text_area("Description", value=S.text, height=320, label_visibility="collapsed",
+            S.text = st.text_area("Description", value=S.text, height=330, label_visibility="collapsed",
                                   placeholder="A bracket 120 mm long and 40 mm tall, 8 mm thick. Two M4 bolts hold "
                                               "the left end at (10, 10) and (10, 30). A 200 N downward load at (110, 20). "
                                               "Safety factor 2, deflection under 0.5 mm. Desktop FDM printer.")
-            c1, c2 = st.columns([2, 1])
-            with c1:
-                S.printer_choice = st.selectbox("Printer", [FROM_TEXT] + list(PRINTERS),
-                                                index=([FROM_TEXT] + list(PRINTERS)).index(S.printer_choice),
-                                                format_func=lambda k: PRINTER_LABELS.get(k, k),
-                                                help="The selector wins over the text if you change it.")
-            with c2:
-                S.quick = st.toggle("Quick mode", value=S.quick,
-                                    help="One process, 10k elements, no refinement or re-run. About a minute.")
-            if st.button("Read my description", type="primary", disabled=not S.text.strip(), key="read_btn"):
+        with right:
+            st.markdown(ui.eyebrow("Run"), unsafe_allow_html=True)
+            S.printer_choice = st.selectbox("Printer", [FROM_TEXT] + list(PRINTERS),
+                                            index=([FROM_TEXT] + list(PRINTERS)).index(S.printer_choice),
+                                            format_func=lambda k: PRINTER_LABELS.get(k, k),
+                                            help="The selector wins over the text if you change it.")
+            S.quick = st.toggle("Quick mode", value=S.quick,
+                                help="One process, 10k elements, no refinement or re-run. About a minute.")
+            st.markdown('<div class="mx-note" style="margin:4px 0 14px">Quick mode runs one process at a coarse mesh '
+                        'for a first look. The full run covers FDM, SLS and metal.</div>', unsafe_allow_html=True)
+            if st.button("Read my description", type="primary", disabled=not S.text.strip(), key="read_btn",
+                         use_container_width=True):
                 read_description()
-    with right:
-        with st.container(key="card_examples"):
-            st.markdown(ui.eyebrow("Demo parts") + '<div class="mx-sub" style="margin-bottom:12px">Three checked '
-                        'problems with precomputed results. They load without the network.</div>',
-                        unsafe_allow_html=True)
-            for label, stem in data.DEMOS.items():
-                if st.button(label, key=f"demo_{stem}", use_container_width=True):
-                    load_demo(stem)
-                    go(1)
-        with st.container(key="card_how"):
-            st.markdown(ui.eyebrow("What happens next") + """
-<div class="mx-kv" style="margin-top:10px">
-<span>1</span><span>The text becomes a structured problem. Defaults are marked in amber.</span>
-<span>2</span><span>You check supports, loads and limits on a drawing and fix anything wrong.</span>
-<span>3</span><span>Morphic optimizes a shape for six cited materials across FDM, SLS and metal.</span>
-<span>4</span><span>Results rank by mass. Export STL, SVG and DXF.</span>
-</div>""", unsafe_allow_html=True)
+        st.markdown('<div class="mx-next"><b>What happens next</b>Morphic reads your text into a problem, you check '
+                    'it on a drawing, then it optimizes a shape for six cited materials and ranks them by mass.</div>',
+                    unsafe_allow_html=True)
 
 
 def read_description() -> None:
@@ -348,6 +378,62 @@ def editors(p: Problem | None, f: dict) -> dict:
     return f
 
 
+def load_case_pills(p: Problem) -> str:
+    """One pill per load case in its arrow color: name, in-plane force, out-of-plane force, deflection limit."""
+    out = ""
+    for i, lc in enumerate(p.load_cases):
+        col = theme.LOAD_CASE_COLORS[i % len(theme.LOAD_CASE_COLORS)]
+        inplane = sum(float(np.hypot(ld.fx_N, ld.fy_N)) for ld in lc.loads)
+        fz = sum(abs(ld.fz_N_out_of_plane) for ld in lc.loads)
+        parts = [lc.name]
+        if inplane > 0:
+            parts.append(f"{inplane:g} N")
+        if fz > 0:
+            parts.append(f"{fz:g} N out of plane · hand check")
+        if inplane > 0:
+            parts.append(f"≤ {lc.max_deflection_mm:g} mm")
+        out += ui.lc_pill(" · ".join(parts), col)
+    return f'<div style="margin:{theme.SPACE_3}px 0 {theme.SPACE_2}px">{out}</div>'
+
+
+def readouts(p: Problem, est: dict, stem: str | None) -> None:
+    """Four instrument readouts: safety factor, deflection limit, effective min wall, estimated run time."""
+    c = st.columns(4, gap="medium")
+    sf = p.safety_factor
+    c[0].markdown(ui.readout("safety factor", f"{sf:g}", "", "required on the filtered stress",
+                             frac=sf / 4, scale=("0", "4"), extra_html="<br>" + _default_pill(p, "safety_factor")),
+                  unsafe_allow_html=True)
+    # deflection is checked for the in-plane cases only (out-of-plane cases get a hand check), as on the cards
+    cases = [lc for lc in p.load_cases if any(ld.fx_N or ld.fy_N for ld in lc.loads)] or list(p.load_cases)
+    lim = min(lc.max_deflection_mm for lc in cases)
+    tight = [lc for lc in cases if lc.max_deflection_mm == lim]
+    which = ("every in-plane load case" if len(tight) == len(cases) and len(cases) > 1
+             else "tightest · " + ", ".join(lc.name for lc in tight))
+    i0 = p.load_cases.index(tight[0])
+    c[1].markdown(ui.readout("deflection limit", f"{lim:g}", "mm", which, frac=lim / 2, scale=("0", "2 mm"),
+                             extra_html="<br>" + _default_pill(p, f"load_cases[{i0}].max_deflection_mm")),
+                  unsafe_allow_html=True)
+    rows = est["rows"]
+    # the hero is the wall for your printer's process; with "any process" it is the largest one enforced
+    mine = next((r for r in rows if p.printer != "any" and r["process"] == data.quick_process(p)), None)
+    wall = mine["effective_min_wall_mm"] if mine else (max(r["effective_min_wall_mm"] for r in rows) if rows else 0.0)
+    per = " · ".join(f'{proc_label(r["process"])} {r["effective_min_wall_mm"]:.2f}'
+                     + (f' (process {r["min_wall_mm"]:.2f})' if r["effective_min_wall_mm"] > r["min_wall_mm"] + 1e-9 else "")
+                     for r in rows)
+    head = f"{proc_label(mine['process'])}, your printer · " if mine else "largest enforced · "
+    c[2].markdown(ui.readout("effective min wall", f"{wall:.2f}", "mm", head + (per or "no process selected"),
+                             frac=wall / 2, scale=("0", "2 mm")), unsafe_allow_html=True)
+    mins = est["seconds"] / 60
+    if stem:
+        c[3].markdown(ui.readout("run time", "instant", "", f"precomputed demo part · a live run would take about {mins:.0f} min",
+                                 frac=mins / 30, scale=("0", "30 min"), color=theme.ACCENT), unsafe_allow_html=True)
+    else:
+        c[3].markdown(ui.readout("estimated run time", f"~{mins:.0f}", "min",
+                                 f'{len(rows)} process{"es" if len(rows) != 1 else ""} · cap {est["cap"]:,} elements'
+                                 + (" · quick mode" if est["quick"] else "") + " · from the S9b timing model",
+                                 frac=mins / 30, scale=("0", "30 min")), unsafe_allow_html=True)
+
+
 def page_check() -> None:
     materials, processes = libs()
     ui.title("Check the problem", "Everything below came from your text or a default. Fix anything wrong; "
@@ -363,6 +449,8 @@ def page_check() -> None:
     if S.form is None:
         S.form = formmod.blank_form()
 
+    # the readouts row sits under the title but is filled after the editors run (their values drive it)
+    readout_slot = st.container(key="card_readouts")
     # editors first (their values drive the drawing), shown to the right of the drawing
     left, right = st.columns([1.1, 1], gap="large")
     with right:
@@ -377,7 +465,7 @@ def page_check() -> None:
                 S.form = new_form
     p = S.problem
     with left:
-        with st.container(key="card_drawing"):
+        with st.container(key="stage_drawing"):
             st.markdown(ui.eyebrow("Drawing"), unsafe_allow_html=True)
             if p is None:
                 for e in errors:
@@ -390,15 +478,20 @@ def page_check() -> None:
                            "Stops the run" if (m.level == "red" and m.blocking) else ("Note" if m.level == "red" else "Check"))
                 if not msgs:
                     ui.msg("All sanity checks pass.", "ok", "✓")
-                st.plotly_chart(maps.problem_drawing(p, dark=False), config=theme.PLOTLY_CONFIG, width="stretch",
+                st.plotly_chart(maps.problem_drawing(p, dark=True), config=theme.PLOTLY_CONFIG, width="stretch",
                                 key="drawing")
+                st.markdown(load_case_pills(p), unsafe_allow_html=True)
                 st.markdown('<div class="mx-note">Pins are filled triangles; slides are rollers with the free direction '
                             'drawn. Arrow length scales with force; one color per load case. Amber marks a default.</div>',
                             unsafe_allow_html=True)
         if p is not None:
+            # the toggle below has already stored its new value when it triggers this rerun
+            est = data.estimate_runtime(p, S.get("quick_check", S.quick), processes)
+            stem = data.match_demo(p)
+            with readout_slot:
+                st.markdown(ui.eyebrow("Limits and plan"), unsafe_allow_html=True)
+                readouts(p, est, stem)
             with st.container(key="card_runplan"):
-                est = data.estimate_runtime(p, S.quick, processes)
-                stem = data.match_demo(p)
                 st.markdown(ui.eyebrow("Run plan"), unsafe_allow_html=True)
                 rows = [[r["process"], f'{r["effective_min_wall_mm"]:.2f} mm enforced' +
                          (f' (process allows {r["min_wall_mm"]:.2f} mm)' if r["effective_min_wall_mm"] > r["min_wall_mm"] + 1e-9 else ""),
@@ -409,7 +502,7 @@ def page_check() -> None:
                     st.markdown(ui.pill("precomputed demo part: results load instantly", "accent"), unsafe_allow_html=True)
                 else:
                     mins = est["seconds"] / 60
-                    st.markdown(ui.pill(f"estimated run time ~{mins:.0f} min" + (" (quick mode)" if S.quick else ""), "accent")
+                    st.markdown(ui.pill(f"estimated run time ~{mins:.0f} min" + (" (quick mode)" if est["quick"] else ""), "accent")
                                 + f'<span class="mx-note">From the timing model measured in step S9b '
                                   f'(0.37 s per iteration at 40k elements).</span>', unsafe_allow_html=True)
                 S.quick = st.toggle("Quick mode", value=S.quick, key="quick_check",
@@ -941,7 +1034,7 @@ def page_validation() -> None:
     with m1:
         with st.container(key="card_mesh"):
             st.markdown(ui.eyebrow("13.2 Mesh refinement · error vs elements through the depth"), unsafe_allow_html=True)
-            st.plotly_chart(maps.mesh_refinement_plot(v["mesh"], False), config=theme.PLOTLY_CONFIG, width="stretch", key="meshplot")
+            st.plotly_chart(maps.mesh_refinement_plot(v["mesh"], True), config=theme.PLOTLY_CONFIG, width="stretch", key="meshplot")
             errs = [r["delta_error"] for r in v["mesh"]]
             shrinks = all(b < a for a, b in zip(errs, errs[1:]))
             st.markdown(f'{ok_pill(shrinks)} <span class="mx-note">deflection error shrinks steadily: '
@@ -962,7 +1055,7 @@ def page_validation() -> None:
             st.markdown(ui.eyebrow("13.3 MBB benchmark (paper mode)") + f'<div style="margin:6px 0">{ok_pill(ok)}</div>',
                         unsafe_allow_html=True)
             grid = np.asarray(mb["density_grid"])
-            st.markdown(img(maps.density_png(grid.ravel(), grid.shape[0], grid.shape[1], False, 700),
+            st.markdown(img(maps.density_png(grid.ravel(), grid.shape[0], grid.shape[1], True, 700),
                             "width:100%;max-width:420px;display:block;border-radius:8px"), unsafe_allow_html=True)
             st.markdown(ui.table(["", "value"], [["call", ui.esc(mb["call"])], ["our compliance", f"{mb['compliance']:.2f}"],
                                                  ["published compliance", f"{mb['published_compliance']:.2f}"],
@@ -992,7 +1085,7 @@ def page_validation() -> None:
                       f'({h8["error_with_recovery"]:.1%}) is the remaining stress error at a smooth edge at the live mesh, and the '
                       f'Limits note on every card says so.</div>', unsafe_allow_html=True)
         with c2:
-            st.plotly_chart(maps.hole_plot(hs, False), config=theme.PLOTLY_CONFIG, width="stretch", key="holeplot")
+            st.plotly_chart(maps.hole_plot(hs, True), config=theme.PLOTLY_CONFIG, width="stretch", key="holeplot")
     ui.foot(f"Checks run {v['when']} on this machine. The same element, assembly and solver serve every design.")
 
 
@@ -1000,8 +1093,7 @@ def page_validation() -> None:
 def main() -> None:
     init_state()
     apply_query_params()
-    dark = S.tab == "Design" and S.step == 2
-    ui.inject_css(dark)
+    ui.inject_css(dark=True)  # dark everywhere: every step and the Validation tab share one palette
     head = st.columns([5, 1])
     with head[0]:
         ui.topbar(S.step if S.tab == "Design" else None, S.tab)
