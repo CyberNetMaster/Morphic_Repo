@@ -113,7 +113,28 @@ uv run morphic render examples/cache/rc_arm --process fdm --out output/growth.gi
 The cache key hashes the solved problem, combined material/process hash, solver settings, and code
 version. `RunCache` writes entries atomically and verifies artifact checksums on load. Existing named
 S14 caches remain compatible. `render` provides a local 2D snapshot GIF; the cinematic 3D MP4 renderer
-is the separate S15 stretch task.
+is `render/cinematic.py` (next section).
+
+## Cinematic renders (S15)
+
+`render/cinematic.py` turns the recorded cold re-run snapshots in `examples/cache` into 1080p, 30 fps
+MP4 clips, offline, with PyVista. Each clip shows the winning design growing from the first saved
+snapshot to the checked design as an extruded slab: low densities translucent, converged cells opaque,
+recovered nodal utilization colors on the final frames, soft lighting, a slow camera orbit, on the dark
+stage of the design brief. Every frame is a saved field; nothing is interpolated between snapshots.
+
+```bash
+uv sync --extra render                                        # pyvista + bundled ffmpeg
+uv run python -m render.cinematic --all                       # three winners + the side-by-side clip
+uv run python -m render.cinematic --part drone_arm            # one part, the winner's cold re-run
+uv run python -m render.cinematic --part rc_arm --side-by-side   # FDM, SLS and metal growing in lockstep
+uv run python -m render.cinematic --part rc_arm --preview     # 960 x 540, every 6th snapshot, quick look
+```
+
+Output goes to `renders/` (ignored by git). When the cold re-run did not replace the catalog result
+(spec 6.7), the clip ends on the checked design after a short picture dissolve from the last snapshot
+and says so in a footnote; `--cut` makes that a hard cut. `--caption` adds one quiet line, for example
+the bone remodeling note from the storyboard.
 
 ## Design agent
 
