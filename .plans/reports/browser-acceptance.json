@@ -1,0 +1,19 @@
+{
+  "live_proposals": 0,
+  "recommendation_source": "template",
+  "provider": {
+    "provider": "gemini",
+    "model": "gemini-3.8-flash"
+  },
+  "review_matches_recommendation": true,
+  "screens": [
+    "1-describe",
+    "2-check",
+    "3-compare",
+    "4-export",
+    "5-validation"
+  ],
+  "explanation": "WHY THIS WINS\nPolymaker Fiberon PA6-CF20 is lightest among the passing designs allowed by your printer selection, at 3.93 g. It requires Desktop FDM, 0.4 mm nozzle. Its material cost is 0.21 USD, excluding print cost. The ranking favors lower mass; material cost does not determine the winner.\n\nTemplate fallback \u00b7 the LLM was unavailable or its response failed validation\n\nkeyboard_arrow_right\n\nFacts used in the explanation\n\npa6cf: animation shows an independent run at the same fill level",
+  "pdf_matches_bundle": true,
+  "bundle_checksums_pass": true
+}

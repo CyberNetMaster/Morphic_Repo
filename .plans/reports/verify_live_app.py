@@ -17,7 +17,14 @@ PORT = sys.argv[1] if len(sys.argv) > 1 else "8765"
 
 def ready(page):
     page.wait_for_selector(".mx-title", timeout=180_000)
+    if "tab=validation" in page.url:
+        page.locator('.st-key-card_hole').wait_for(timeout=180_000)
+    elif "step=3" in page.url:
+        page.get_by_role("button", name="Run bundle (zip)", exact=True).wait_for(timeout=180_000)
+    elif "step=2" in page.url:
+        page.get_by_role("button", name="Export →", exact=True).wait_for(timeout=180_000)
     page.locator('[data-testid="stSpinner"]').wait_for(state="hidden", timeout=180_000)
+    page.locator('[data-testid="stStatusWidget"]').wait_for(state="hidden", timeout=180_000)
     assert page.locator('[data-testid="stException"]').count() == 0
 
 

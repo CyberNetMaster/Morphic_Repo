@@ -1,0 +1,174 @@
+{
+  "completed_utc": "2026-10-21T16:37:43.723452+00:00",
+  "branch": "master",
+  "integration_commit": "08d477b58af0a78c821a12160776cff023e68344",
+  "merge_order": [
+    {
+      "agent": "C",
+      "commit": "c34f096",
+      "tests": {
+        "file": "merge-c-tests.xml",
+        "tests": "98",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0",
+        "time": "26.447"
+      }
+    },
+    {
+      "agent": "D",
+      "commit": "0e1a2c8",
+      "tests": {
+        "file": "merge-d-tests.xml",
+        "tests": "105",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0",
+        "time": "45.168"
+      }
+    },
+    {
+      "agent": "B",
+      "commit": "91755ab",
+      "tests": {
+        "file": "merge-b-tests.xml",
+        "tests": "120",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0",
+        "time": "48.910"
+      }
+    },
+    {
+      "agent": "A",
+      "commit": "999bcaa",
+      "tests": {
+        "file": "merge-a-tests.xml",
+        "tests": "129",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0",
+        "time": "111.377"
+      }
+    }
+  ],
+  "final_tests": {
+    "file": "final-tests.xml",
+    "tests": "139",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "116.357"
+  },
+  "slow_tests_included": true,
+  "integrations": [
+    "Live-provider grounded explanations with fallback",
+    "Design agent in isolated local worker, progress, log download and review on Check",
+    "PDF and bundle downloads from the displayed saved run"
+  ],
+  "live_run": {
+    "file": "drone-agent-live.json",
+    "provider": {
+      "provider": "gemini",
+      "model": "gemini-3.8-flash"
+    },
+    "seconds": 214.80879739999364,
+    "rounds_including_baseline": 5,
+    "live_provider_attempted": true,
+    "successful_llm_proposals": 0,
+    "provider_errors": [
+      "503 unavailable",
+      "429 rate/quota error"
+    ],
+    "recommendation_source": "template",
+    "best_round": 1,
+    "best_design": {
+      "material": "pa6cf",
+      "process": "fdm",
+      "status": "pass",
+      "printer_allowed": true,
+      "ranked": true,
+      "fill_pct": 30.0,
+      "reasons": [],
+      "notes": [
+        "quick mode: catalog level reported without refinement",
+        "removed 2 elements in islands not connected to any pad",
+        "not fully converged"
+      ],
+      "mass_g": 11.77,
+      "sf": 11.21,
+      "sf_target": 2.0,
+      "stress_MPa": 9.8,
+      "deflection_mm": [
+        0.275,
+        0.43,
+        0.0
+      ],
+      "deflection_limit_mm": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "load_cases": [
+        "Full thrust",
+        "Hard landing",
+        "Side crash (out of plane)"
+      ],
+      "worst_deflection_mm": 0.43,
+      "worst_deflection_limit_mm": 0.5,
+      "worst_case": "Hard landing",
+      "hand_checks_failed": [],
+      "material_cost_usd": 0.62
+    },
+    "baseline_mass_g": 14.23,
+    "recommendation_retry": "drone-agent-rerecommend.json: 429; template retained",
+    "limitation": "Quick-mode catalog estimates; the best round is not fully converged and needs a full solve."
+  },
+  "browser_acceptance": {
+    "live_proposals": 0,
+    "recommendation_source": "template",
+    "provider": {
+      "provider": "gemini",
+      "model": "gemini-3.8-flash"
+    },
+    "review_matches_recommendation": true,
+    "screens": [
+      "1-describe",
+      "2-check",
+      "3-compare",
+      "4-export",
+      "5-validation"
+    ],
+    "explanation": "WHY THIS WINS\nPolymaker Fiberon PA6-CF20 is lightest among the passing designs allowed by your printer selection, at 3.93 g. It requires Desktop FDM, 0.4 mm nozzle. Its material cost is 0.21 USD, excluding print cost. The ranking favors lower mass; material cost does not determine the winner.\n\nTemplate fallback \u00b7 the LLM was unavailable or its response failed validation\n\nkeyboard_arrow_right\n\nFacts used in the explanation\n\npa6cf: animation shows an independent run at the same fill level",
+    "pdf_matches_bundle": true,
+    "bundle_checksums_pass": true
+  },
+  "screenshots_visually_reviewed": [
+    "1-describe.png",
+    "2-check.png",
+    "3-compare.png",
+    "4-export.png",
+    "5-validation.png",
+    "6-drone-agent-panel.png",
+    "6-drone-agent.png",
+    "7-agent-review.png"
+  ],
+  "validation_screenshot": "Recaptured after all validation calculations finished; all displayed checks pass.",
+  "corrected_during_live_testing": [
+    "Stopped an initially stalled in-process baseline; numerical work now uses a separate local process.",
+    "Disabled file watching and paused-animation polling that repeatedly scanned imported modules."
+  ],
+  "app": {
+    "url": "http://127.0.0.1:8765",
+    "health": "200 ok",
+    "left_running": true
+  },
+  "local_only": {
+    "pushes": 0,
+    "remote_changes": 0,
+    "pull_requests": 0,
+    "uploads": 0,
+    "credential_source": ".env only",
+    "external_requests": "Configured Gemini adapter only"
+  }
+}
