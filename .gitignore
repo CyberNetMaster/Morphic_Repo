@@ -11,3 +11,5 @@ design-refs/*.jpg
 design-refs/*.jpeg
 design-refs/*.webp
 design-refs/images/
+.plans/s13/
+examples/cache/runs/

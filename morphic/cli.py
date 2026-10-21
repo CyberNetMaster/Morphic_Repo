@@ -152,6 +152,90 @@ def cmd_precompute(args) -> int:
                           Path(args.out) if args.out else CACHE_DIR, levels=levels, recompute=recompute or None)
 
 
+def cmd_report(args) -> int:
+    from .report import write_report
+    print(write_report(args.cache, args.out, material=args.material))
+    return 0
+
+
+def cmd_bundle(args) -> int:
+    from .bundle import create_bundle
+    print(create_bundle(args.cache, args.out))
+    return 0
+
+
+def cmd_rerun(args) -> int:
+    from .bundle import rerun_bundle
+    result = rerun_bundle(args.bundle, args.mode)
+    for name, outcome in result["modes"].items():
+        print(f"{name}: {'PASS' if outcome['passed'] else 'FAIL'}; tolerance {outcome['rtol']:.1%}")
+        for row in outcome["comparisons"]:
+            if args.failures_only and row["passed"]:
+                continue
+            print(f"  {'PASS' if row['passed'] else 'FAIL'} {row['path']}: "
+                  f"{row['expected']} -> {row['actual']} (relative diff {row['relative_error']})")
+    if args.out:
+        path = Path(args.out)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(result, indent=2, allow_nan=False), encoding="utf-8")
+    return 0 if result["passed"] else 1
+
+
+def cmd_cache(args) -> int:
+    from .cache import RunCache, DEFAULT_ROOT
+    cache = RunCache(args.root or DEFAULT_ROOT)
+    if args.key:
+        data = cache.get(args.key)
+        if data is None:
+            print("cache miss")
+            return 1
+        print(cache.path(args.key))
+    else:
+        print(cache.put(args.source))
+    return 0
+
+
+def cmd_render(args) -> int:
+    """Offline GIF of actual saved iterations; the cinematic MP4 renderer is S15."""
+    from matplotlib.figure import Figure
+    from matplotlib.backends.backend_agg import FigureCanvasAgg
+    from matplotlib.animation import FuncAnimation, PillowWriter
+    from .cache import load_results
+    directory = Path(args.cache)
+    data = load_results(directory)
+    if args.fps <= 0:
+        raise ValueError("fps must be positive")
+    output = Path(args.out)
+    if output.suffix.lower() != ".gif":
+        raise ValueError("snapshot render output must be .gif (cinematic MP4 is step S15)")
+    with np.load(directory / f"rerun_{args.process}.npz", allow_pickle=False) as z:
+        iterations = z["iterations"].tolist()
+        snapshots = [np.array(z[f"it{i}"]) for i in iterations]
+        material = str(z["material"])
+    if not snapshots:
+        raise ValueError("no recorded snapshots")
+    nx, ny = data["catalogs"][args.process]["mesh"]
+    h = data["catalogs"][args.process]["h_mm"]
+    fig = Figure(figsize=(10, 4), layout="constrained")
+    FigureCanvasAgg(fig)
+    ax = fig.subplots()
+    im = ax.imshow(snapshots[0].reshape(nx, ny).T, origin="lower", cmap="gray_r", vmin=0, vmax=255,
+                   extent=(0, nx*h, 0, ny*h))
+    ax.set(xlabel="x (mm)", ylabel="y (mm)")
+    title = ax.set_title("")
+    fig.text(.5, .01, "Recorded cold run; may be independent of the exported design. No interpolated shapes.",
+             ha="center", fontsize=8)
+    def update(index):
+        im.set_data(snapshots[index].reshape(nx, ny).T)
+        title.set_text(f"{data['problem']['name']} / {material} / iteration {iterations[index]}")
+        return im, title
+    animation = FuncAnimation(fig, update, frames=len(iterations), blit=False)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    animation.save(str(output), writer=PillowWriter(fps=args.fps))
+    print(output)
+    return 0
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(prog="morphic")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -186,11 +270,39 @@ def main(argv=None) -> int:
                     help="partial update PART:PROC[,PROC] (e.g. rc_arm:fdm); the other catalogs of PART are "
                          "restored from its cache; PART: restores every catalog")
     pc.set_defaults(fn=cmd_precompute)
-    for name in ("rerun", "render"):
-        s = sub.add_parser(name, help=f"{name} (built in a later step)")
-        s.set_defaults(fn=lambda a, n=name: print(f"{n}: not built yet") or 1)
+    rp = sub.add_parser("report", help="one-page PDF per design from a cached run")
+    rp.add_argument("cache")
+    rp.add_argument("--out", required=True)
+    rp.add_argument("--material", default=None)
+    rp.set_defaults(fn=cmd_report)
+    bu = sub.add_parser("bundle", help="package a cached run locally with report and checksums")
+    bu.add_argument("cache")
+    bu.add_argument("--out", required=True)
+    bu.set_defaults(fn=cmd_bundle)
+    rr = sub.add_parser("rerun", help="strict evaluation and fresh optimization of a run bundle")
+    rr.add_argument("bundle")
+    rr.add_argument("--mode", choices=("both", "evaluation", "optimization"), default="both")
+    rr.add_argument("--out", default="", help="write the complete machine-readable diff")
+    rr.add_argument("--failures-only", action="store_true", help="print only failed individual comparisons")
+    rr.set_defaults(fn=cmd_rerun)
+    ca = sub.add_parser("cache", help="import or look up a content-addressed local run")
+    group = ca.add_mutually_exclusive_group(required=True)
+    group.add_argument("--source")
+    group.add_argument("--key")
+    ca.add_argument("--root", default="")
+    ca.set_defaults(fn=cmd_cache)
+    re = sub.add_parser("render", help="render saved cold-run snapshots to a local GIF")
+    re.add_argument("cache")
+    re.add_argument("--process", choices=("fdm", "sls", "metal"), default="fdm")
+    re.add_argument("--out", required=True)
+    re.add_argument("--fps", type=int, default=15)
+    re.set_defaults(fn=cmd_render)
     args = ap.parse_args(argv)
-    return args.fn(args)
+    try:
+        return args.fn(args)
+    except (ValueError, OSError, RuntimeError) as exc:
+        print(f"morphic {args.cmd}: {exc}", file=sys.stderr)
+        return 2
 
 
 if __name__ == "__main__":
