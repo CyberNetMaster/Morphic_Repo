@@ -1,0 +1,187 @@
+{
+  "provider": "gemini",
+  "model": "gemini-3.5-flash",
+  "seconds": 14.604019299993524,
+  "attempts": [
+    {
+      "attempt": 1,
+      "seconds": 14.603094400001282,
+      "raw": "{\"name\": \"Aerospace engine mounting bracket\", \"design_space\": {\"width_mm\": 178.0, \"height_mm\": 65.0}, \"thickness_mm\": 25.0, \"zones\": [], \"pads\": [{\"id\": \"pad_base1\", \"cx\": 40.0, \"cy\": 12.0, \"hole_r_mm\": 4.7625, \"ring_r_mm\": null, \"solid\": false}, {\"id\": \"pad_base2\", \"cx\": 138.0, \"cy\": 12.0, \"hole_r_mm\": 4.7625, \"ring_r_mm\": null, \"solid\": false}, {\"id\": \"pad_clevis\", \"cx\": 89.0, \"cy\": 52.0, \"hole_r_mm\": 9.525, \"ring_r_mm\": null, \"solid\": false}], \"supports\": [{\"pad_id\": \"pad_base1\", \"type\": \"pin\"}, {\"pad_id\": \"pad_base2\", \"type\": \"pin\"}], \"load_cases\": [{\"id\": \"lc1\", \"name\": \"Vertical\", \"reason\": \"Vertical load case\", \"loads\": [{\"pad_id\": \"pad_clevis\", \"fx_N\": 0.0, \"fy_N\": 35585.76, \"fz_N_out_of_plane\": 0.0}], \"max_deflection_mm\": null}, {\"id\": \"lc2\", \"name\": \"Horizontal\", \"reason\": \"Horizontal load case\", \"loads\": [{\"pad_id\": \"pad_clevis\", \"fx_N\": 37809.87, \"fy_N\": 0.0, \"fz_N_out_of_plane\": 0.0}], \"max_deflection_mm\": null}, {\"id\": \"lc3\", \"name\": \"Angled\", \"reason\": \"Angled load case at 42 degrees\", \"loads\": [{\"pad_id\": \"pad_clevis\", \"fx_N\": 28276.18, \"fy_N\": 31403.88, \"fz_N_out_of_plane\": 0.0}], \"max_deflection_mm\": null}], \"deflection_span_ratio\": 200.0, \"safety_factor\": 1.5, \"printer\": \"any\", \"materials\": null, \"original_text\": {\"thickness_mm\": \"25 mm thick\", \"pads[0].hole_r_mm\": \"3/8 inch\", \"pads[1].hole_r_mm\": \"3/8 inch\", \"pads[2].hole_r_mm\": \"0.75 inch\", \"load_cases[0].loads[0].fy_N\": \"8,000 lbf straight up\", \"load_cases[1].loads[0].fx_N\": \"8,500 lbf in the plus x direction\", \"load_cases[2].loads[0].fx_N\": \"9,500 lbf at 42 degrees from vertical, pointing up and toward plus x\", \"load_cases[2].loads[0].fy_N\": \"9,500 lbf at 42 degrees from vertical, pointing up and toward plus x\", \"safety_factor\": \"1.5 (the aerospace ultimate factor)\", \"deflection_span_ratio\": \"span / 200\", \"printer\": \"Any printing process is allowed\"}, \"warnings\": []}",
+      "provider": "gemini",
+      "model": "gemini-3.5-flash"
+    }
+  ],
+  "problem": {
+    "name": "Aerospace engine mounting bracket",
+    "design_space": {
+      "width_mm": 178.0,
+      "height_mm": 65.0
+    },
+    "thickness_mm": 25.0,
+    "zones": [],
+    "pads": [
+      {
+        "id": "pad_base1",
+        "cx": 40.0,
+        "cy": 12.0,
+        "hole_r_mm": 4.7625,
+        "ring_r_mm": 6.7625
+      },
+      {
+        "id": "pad_base2",
+        "cx": 138.0,
+        "cy": 12.0,
+        "hole_r_mm": 4.7625,
+        "ring_r_mm": 6.7625
+      },
+      {
+        "id": "pad_clevis",
+        "cx": 89.0,
+        "cy": 52.0,
+        "hole_r_mm": 9.525,
+        "ring_r_mm": 11.525
+      }
+    ],
+    "supports": [
+      {
+        "pad_id": "pad_base1",
+        "type": "pin"
+      },
+      {
+        "pad_id": "pad_base2",
+        "type": "pin"
+      }
+    ],
+    "load_cases": [
+      {
+        "id": "lc1",
+        "name": "Vertical",
+        "reason": "Vertical load case",
+        "loads": [
+          {
+            "pad_id": "pad_clevis",
+            "fx_N": 0.0,
+            "fy_N": 35585.76,
+            "fz_N_out_of_plane": 0.0
+          }
+        ],
+        "max_deflection_mm": 0.3162672920173694
+      },
+      {
+        "id": "lc2",
+        "name": "Horizontal",
+        "reason": "Horizontal load case",
+        "loads": [
+          {
+            "pad_id": "pad_clevis",
+            "fx_N": 37809.87,
+            "fy_N": 0.0,
+            "fz_N_out_of_plane": 0.0
+          }
+        ],
+        "max_deflection_mm": 0.3162672920173694
+      },
+      {
+        "id": "lc3",
+        "name": "Angled",
+        "reason": "Angled load case at 42 degrees",
+        "loads": [
+          {
+            "pad_id": "pad_clevis",
+            "fx_N": 28276.18,
+            "fy_N": 31403.88,
+            "fz_N_out_of_plane": 0.0
+          }
+        ],
+        "max_deflection_mm": 0.3162672920173694
+      }
+    ],
+    "safety_factor": 1.5,
+    "printer": "any",
+    "materials": [
+      "pla",
+      "petg",
+      "pa6cf",
+      "pa12",
+      "alsi10mg",
+      "ti64"
+    ],
+    "warnings": [],
+    "provenance": {
+      "pads[0].hole_r_mm": {
+        "source": "user",
+        "original_text": "3/8 inch"
+      },
+      "pads[0].ring_r_mm": {
+        "source": "default",
+        "original_text": "default: ring width max(2 mm, 2 x min wall) = 2 mm"
+      },
+      "pads[1].hole_r_mm": {
+        "source": "user",
+        "original_text": "3/8 inch"
+      },
+      "pads[1].ring_r_mm": {
+        "source": "default",
+        "original_text": "default: ring width max(2 mm, 2 x min wall) = 2 mm"
+      },
+      "pads[2].hole_r_mm": {
+        "source": "user",
+        "original_text": "0.75 inch"
+      },
+      "pads[2].ring_r_mm": {
+        "source": "default",
+        "original_text": "default: ring width max(2 mm, 2 x min wall) = 2 mm"
+      },
+      "thickness_mm": {
+        "source": "user",
+        "original_text": "25 mm thick"
+      },
+      "safety_factor": {
+        "source": "user",
+        "original_text": "1.5 (the aerospace ultimate factor)"
+      },
+      "printer": {
+        "source": "user",
+        "original_text": "Any printing process is allowed"
+      },
+      "materials": {
+        "source": "default",
+        "original_text": "default: all 6"
+      },
+      "load_cases[0].max_deflection_mm": {
+        "source": "user",
+        "original_text": "span / 200"
+      },
+      "load_cases[1].max_deflection_mm": {
+        "source": "user",
+        "original_text": "span / 200"
+      },
+      "load_cases[2].max_deflection_mm": {
+        "source": "user",
+        "original_text": "span / 200"
+      },
+      "load_cases[0].loads[0].fy_N": {
+        "source": "user",
+        "original_text": "8,000 lbf straight up"
+      },
+      "load_cases[1].loads[0].fx_N": {
+        "source": "user",
+        "original_text": "8,500 lbf in the plus x direction"
+      },
+      "load_cases[2].loads[0].fx_N": {
+        "source": "user",
+        "original_text": "9,500 lbf at 42 degrees from vertical, pointing up and toward plus x"
+      },
+      "load_cases[2].loads[0].fy_N": {
+        "source": "user",
+        "original_text": "9,500 lbf at 42 degrees from vertical, pointing up and toward plus x"
+      },
+      "deflection_span_ratio": {
+        "source": "user",
+        "original_text": "span / 200"
+      }
+    },
+    "notes": [],
+    "references": []
+  }
+}

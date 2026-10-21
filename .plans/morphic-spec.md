@@ -565,8 +565,8 @@ The values below are approved. Sources marked "to cite" must still be confirmed 
 
 ### 14.2 5-inch FPV drone arm
 - View: side view along the arm, so thrust is in-plane.
-- Design space: 120 mm × 15 mm. Thickness (width): 10 mm.
-- Pads: two frame bolts at (5, 7.5) and (25, 7.5), both **pin** (clamped between frame plates). Motor mount keep-in pad at (112, 7.5), ring r = 8 mm, `hole_r_mm = 0` (solid), load pad.
+- Design space: **120 mm × 18 mm**. Thickness (width): 10 mm. (Changed 2026-10-21 from 120 × 15 mm: the 8 mm motor ring at mid-height did not fit the 15 mm height, and the sanity check "pad fully inside the design space" blocked the solve. The design space was enlarged and the pads recentred at y = 9 mm; the 8 mm ring is kept.)
+- Pads: two frame bolts at (5, 9) and (25, 9), both **pin** (clamped between frame plates). Motor mount keep-in pad at (112, 9), ring r = 8 mm, `hole_r_mm = 0` (solid), load pad.
 - Load case 1 "Full thrust": fy = +32 N. Reason: ~1.6 kgf max static thrust for a 2306 motor on 6S with a 5-inch prop (to cite from a motor thrust table) × 2 for dynamic loads.
 - Load case 2 "Hard landing": fy = −50 N. Reason: arm hits the ground first (impact factor to cite).
 - Out-of-plane case 3 "Side crash": fz = 30 N (hand checks only).
