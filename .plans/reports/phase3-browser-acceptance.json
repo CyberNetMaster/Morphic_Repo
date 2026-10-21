@@ -1,18 +1,18 @@
 {
-  "captured_utc": "2026-10-21T19:06:09.898093+00:00",
+  "captured_utc": "2026-10-21T21:51:01.941107+00:00",
   "url": "http://127.0.0.1:8765",
   "screens": [
     {
       "file": ".plans\\reports\\screens\\1-describe.png",
-      "sha256": "d5ea8204819911cad05808981ca84f7446705eb960773a6e3f26a069ddd7ca21",
+      "sha256": "8c08c60af67d96fd43bdf8f21e938616be63dec6337be018e2eef7c236686d4d",
       "viewport": {
         "width": 1440,
-        "height": 1401
+        "height": 1537
       }
     },
     {
       "file": ".plans\\reports\\screens\\2-check.png",
-      "sha256": "4e453e7f478c229dd762cc439d2d2e56b6b341d59dce79fb4c328d96d65ab3e4",
+      "sha256": "78417af8f1a65af44fb1bd615d633621c650b6ea1f4a22deeddf585ae8eaf2ef",
       "viewport": {
         "width": 1440,
         "height": 1916
@@ -20,7 +20,7 @@
     },
     {
       "file": ".plans\\reports\\screens\\3-compare.png",
-      "sha256": "710db619ebe908f33604f9621bab6b1f3e2d42cace2820eca6c854020b83ba3f",
+      "sha256": "2a3d968a3cb74b9cfded42e338f2cd55e40fdf6733871c01ce1aeaf8e9367468",
       "viewport": {
         "width": 1440,
         "height": 6282
@@ -28,7 +28,7 @@
     },
     {
       "file": ".plans\\reports\\screens\\4-export.png",
-      "sha256": "e38f79456f597586e9b6034431ad6444e3f865128f38bb328f728a338bcaa6c4",
+      "sha256": "7f1677cb6fa34a19216ed0df869919a8d13f21f84b4446193378d57f9f79539d",
       "viewport": {
         "width": 1440,
         "height": 1234
@@ -36,15 +36,15 @@
     },
     {
       "file": ".plans\\reports\\screens\\5-validation.png",
-      "sha256": "9b5309b93df67b154c6addcf9b49a11c5b9157eac076330dce5b407fb3752a6d",
+      "sha256": "65e4e2638723a60138e77b8b4a173781f812f93459485e7afc8829ed21482b1f",
       "viewport": {
         "width": 1440,
         "height": 2083
       }
     }
   ],
-  "source_commit": "3f9190b5d275db65719360fb7c968d0e0beb3ed8",
-  "describe_upload_controls": 0,
+  "source_commit": "c693b9304b2e2f7e9ff214ad5466e9db08c82d09",
+  "describe_upload_controls": 1,
   "explanation": "WHY THIS WINS\nPolymaker Fiberon PA6-CF20 is lightest among the passing designs allowed by your printer selection, at 3.93 g. It requires Desktop FDM, 0.4 mm nozzle. Its material cost is 0.21 USD, excluding print cost. The ranking favors lower mass; material cost does not determine the winner.\n\nTemplate fallback \u00b7 the LLM was unavailable or its response failed validation\n\nkeyboard_arrow_right\n\nFacts used in the explanation\n\npa6cf: animation shows an independent run at the same fill level",
   "pdf_matches_bundle": true,
   "bundle_checksums_pass": true

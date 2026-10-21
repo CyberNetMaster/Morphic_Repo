@@ -1,0 +1,40 @@
+{
+  "captured_utc": "2026-10-21T21:53:56.491137+00:00",
+  "screens": [
+    {
+      "file": ".plans\\reports\\screens\\sketch-1-describe.png",
+      "sha256": "fd8b645120e100cb119eae38bdfdb6098b95c5e6db34d99f6bb3f9b8162d6594"
+    },
+    {
+      "file": ".plans\\reports\\screens\\sketch-2-control.png",
+      "sha256": "11cc2eb522c39bdf0c2bb5c35db6ab07ba116ef48d0bc5caf1b111f437ab591c"
+    },
+    {
+      "file": ".plans\\reports\\screens\\sketch-3-chosen.png",
+      "sha256": "27d11543bc90200bf33f41360c64973a428242bcc53da4386fa0578e658afcf0"
+    },
+    {
+      "file": ".plans\\reports\\screens\\sketch-4-hover.png",
+      "sha256": "c6e0a473869fbbf18ea68d512bda00e9ac02115ed7980747404aeb20aef68342"
+    },
+    {
+      "file": ".plans\\reports\\screens\\sketch-5-check.png",
+      "sha256": "093f1a2e141a7af165e392657bca0df7201054e799cb49ff246c12e435f01c08"
+    },
+    {
+      "file": ".plans\\reports\\screens\\6-drone-agent.png",
+      "sha256": "cb18b4d6f720a9f4f38d3216d6d884e4a278b9e72646a3ec1e0a984c4e9b3b9a"
+    },
+    {
+      "file": ".plans\\reports\\screens\\6-drone-agent-panel.png",
+      "sha256": "cb9358d1fb9d6c1935e3b7d999a7c4af431e0389c88921163e200e9dc604063b"
+    },
+    {
+      "file": ".plans\\reports\\screens\\7-agent-review.png",
+      "sha256": "a87f573c2af1e85fd0b4b3bcb22f0cbf90762be6c1fa7d50a03e7b9ce20f45c2"
+    }
+  ],
+  "sketch": "Fixed test-provider interpretation; not a live vision result",
+  "agent": "Replay of drone-agent-backoff.json; not a new agent run",
+  "warnings": "INTERPRETATION WARNINGS\n\nCheck these assumptions against your sketch or description before generating designs.\n\nReview\nPad L height scaled from the drawing: y = 20 mm.\nReview\nKeep-out circle height scaled from the drawing: y = 20 mm."
+}

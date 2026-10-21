@@ -2,11 +2,11 @@ Morphic consolidated digest - 2026-10-21
 
 Scope and current master
 This digest consolidates workspace reports, saved test evidence, integration runs and the latest status check.
-Master before this documentation commit: ed06259. The working tree was clean.
-A, B, C, D and E are merged. F and G are finished and committed locally, but remain unmerged.
-The app is running on localhost port 8765; its health endpoint returned 200 during this digest check.
-Latest full master suite: 156 passed, zero failures/errors/skips, including slow tests, after merging E.
-No tests were rerun for this documentation-only change. Counts below reflect different branch baselines.
+Master source commit: c693b93, following F merge 731b582. Final evidence is committed separately.
+All seven workspaces A through G are merged locally, in the approved order.
+The integrated app was relaunched on localhost port 8765 after F and G.
+Latest full master suite: 194 passed, zero failures/errors/skips, including slow tests and renderer tests.
+F's merge passed 183 tests before G was merged. Historical branch counts use different baselines.
 All Git work remains local: no pushes, remote changes, pull requests or uploads.
 Configured LLM calls remain enabled; credentials are read only from .env and are never included in reports.
 
@@ -58,34 +58,35 @@ Describe now has three real cached-shape preview cards, computed headline values
 Check gained instrument readouts, load-case pills and pad/arrow glows; Validation plots use the same palette.
 Tests: 156 passed on the branch; 156 passed again after merge, including slow tests, with zero failures/skips.
 Remaining visual issues: pad labels can overlap support symbols; Validation tables retain thin cell borders.
-Describe's redesign must be retained when integrating F's upload control.
+Describe's redesign is retained, with F's theme-token upload control below the text area.
 
-Workspace F - emdash/f-sketch-0l68c - finished, not merged
+Workspace F - emdash/f-sketch-0l68c - merged
 Commits: fedb7c4 and f01eb92. Worktree is clean, with no uncommitted changes.
-Report: .plans/reports/sketch.md in F's worktree, not yet present in master.
+Report: .plans/reports/sketch.md, now present in master.
 Built a theme-token upload control, image preparation, Gemini/Claude vision requests and sketch-to-draft parsing.
 Reuses the text parser's schema, defaults and provenance; routes successful readings into the existing Check screen.
 Includes a sample sketch, approved problem, fake-provider browser checks and 27 new tests.
 Saved full-suite XML confirms 179 passed with zero failures/errors/skips. No live vision call was tested.
 Its Claude Code transcript ends with a completion message at 15:27 EDT, not approval/error/usage-limit blockage.
-Open: show sketch interpretation warnings on Check; use sketch-specific failure wording; validate live readings.
+Check now shows interpretation warnings and preserves them after edits; layout/handoff regression tests pass.
+Open: sketch-specific parse-failure wording and live vision validation.
 Sketch attempts allow 90 seconds, versus text's 45; all transport retries can extend the wait to 515 seconds.
 HEIC is unsupported. Provider-specific image assumptions/detail settings and Claude text token limits need live validation.
-Recommendation: merge the completed branch, preserving E's Describe layout and the existing retry/throttle behavior.
+Merged as 731b582, retaining E's layout and existing retry/throttle behavior; 183 full-suite tests passed.
 
-Workspace G - emdash/g-renders-us52v - finished, not merged
+Workspace G - emdash/g-renders-us52v - merged
 Commit: 35185c1. Worktree is clean, with no uncommitted changes.
-Report: .plans/reports/renders.md in G's worktree, not yet present in master.
+Report: .plans/reports/renders.md, now present in master.
 Built an off-screen PyVista renderer, H.264 writer, optional render dependencies and 11 rendering tests.
 Reads saved density/utilization fields and cold-run snapshots; never invokes the solver or invents intermediate shapes.
 Four finished local clips: RC arm, drone arm, aerospace bracket and RC arm FDM/SLS/metal side-by-side.
 All four were read back as 1920 x 1080, 30 fps H.264; durations are about 17-19 seconds.
-Tests reported: 21 targeted tests and 162 fast-suite tests passed. The full suite including slow tests was not run.
+Branch tests: 21 targeted and 162 fast tests passed. Integrated full suite: 194 passed, including slow tests.
 Its Claude Code transcript ends with a completion message at 15:34 EDT, not approval/error/usage-limit blockage.
-Clips live in the worktree's ignored renders directory; Git merges will not copy those MP4s into master.
+All four clips were copied to master's ignored renders directory and SHA-256 checked against G's originals.
 Limits: stair-stepped FE-grid walls; growth begins at saved iteration 1; only RC has all three process reruns.
 Winners' growth runs differ from checked designs; a labelled picture dissolve ends on the checked design.
-Recommendation: merge, ensure rendering dependencies are available, run the full suite, and copy videos locally.
+Merged as c693b93; optional rendering dependencies installed from local cache; no skipped tests.
 
 Integration and validation history
 Merged C, D, B, A in that order: c34f096, 0e1a2c8, 91755ab, 999bcaa.
@@ -115,16 +116,16 @@ The pipeline therefore kept the passing refinement; this is not an unqualified c
 Evidence: .plans/reports/drone-full-results.json and retry-and-full-solve-summary.json.
 Geometry and arrays: .plans/live_runs/full-resolution/drone_best_pa6cf, ignored by Git.
 
-Remaining integration work and evidence status
-Phase 3 is incomplete: merge F, run/fix the full suite, then merge G and run/fix the full suite again.
-Keep E's redesign, place F's upload control using theme tokens, and review the shared adapter/state handoff.
-Copy G's ignored MP4s locally if they are needed beside master; retain their provenance footnotes.
-Then launch the final app, exercise upload-to-Check and exports, and retake the final integrated screenshots.
-Current screenshots 1-describe through 5-validation show master with E, without F/G; export checks passed again.
-Older screenshots 6-drone-agent, 6-drone-agent-panel and 7-agent-review were not retaken after E.
-Phase 3 evidence commit: ed06259. phase3-progress.json predates F/G completion; this digest supersedes that readiness status.
+Integration evidence and remaining follow-ups
+Phase 3 source integration is complete; full-suite XML is saved for both F and G merges.
+Final app screenshots and browser results are in .plans/reports/screens and phase3-browser-acceptance.json.
+Upload-to-Check screenshots use a labelled fixed test-provider fixture, not a live vision interpretation.
+Agent-result/review screenshots replay the genuine saved drone exploration, labelled as a replay.
+No new design exploration was requested or run for this screenshot refresh; production live calls remain enabled.
+Video-copy hashes are recorded in phase3-video-copies.json; MP4s remain ignored and local.
+phase3-progress.json and phase3-extra-screens.json record final scope and screenshot provenance.
 Recover provider quota before validating live vision and a fresh live recommendation; do not disable live calls.
 Investigate/refine the unconverged drone candidate before claiming a converged final optimization.
 Shared physics limits remain: static linear-elastic 2D plane stress, constant extrusion and approximate hand checks.
 Fatigue, impact toughness, buckling and physical print testing are not validated; printed-material assumptions still apply.
-No merges or runtime changes were performed while writing this digest.
+No pushes, remote changes, pull requests or uploads were performed.

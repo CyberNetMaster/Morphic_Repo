@@ -1,59 +1,97 @@
 {
   "phase": 3,
-  "status": "incomplete: awaiting completed F and G commits",
+  "status": "complete",
   "date": "2026-10-21",
-  "merge_order": ["E", "F", "G"],
-  "completed": {
-    "branch": "emdash/e-design-fr4sx",
-    "branch_commit": "308e9e1",
-    "merge_commit": "3f9190b",
-    "changes": [
-      "Dark theme throughout the application and native Streamlit controls",
-      "Describe: three cached design preview cards and a larger description input",
-      "Check: instrument readouts, load-case pills, pad and arrow glows",
-      "Validation charts use the dark palette"
-    ],
-    "tests": {
-      "suite": "full, including slow tests",
-      "passed": 156,
-      "failures": 0,
-      "errors": 0,
-      "skipped": 0,
-      "seconds": 112.675,
-      "evidence": "phase3-merge-e-tests.xml"
-    }
-  },
-  "pending": [
+  "merge_order": [
+    "E",
+    "F",
+    "G"
+  ],
+  "completed": [
+    {
+      "branch": "emdash/e-design-fr4sx",
+      "branch_commit": "308e9e1",
+      "merge_commit": "3f9190b",
+      "changes": [
+        "Dark theme throughout the application and native Streamlit controls",
+        "Describe: three cached design preview cards and a larger description input",
+        "Check: instrument readouts, load-case pills, pad and arrow glows",
+        "Validation charts use the dark palette"
+      ],
+      "tests": {
+        "suite": "full, including slow tests",
+        "passed": 156,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "seconds": 112.675,
+        "evidence": "phase3-merge-e-tests.xml"
+      }
+    },
     {
       "branch": "emdash/f-sketch-0l68c",
-      "head_at_check": "6c7b152",
-      "new_commits": 0,
-      "worktree_has_uncommitted_changes": true,
-      "remaining": "Merge completed F work; integrate its upload control into E's Describe layout using theme tokens; run the full suite."
+      "branch_commit": "f01eb92",
+      "merge_commit": "731b582",
+      "tests": {
+        "suite": "full, including slow tests",
+        "passed": 183,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "seconds": 75.635,
+        "evidence": "phase3-merge-f-tests.xml"
+      }
     },
     {
       "branch": "emdash/g-renders-us52v",
-      "head_at_check": "6c7b152",
-      "new_commits": 0,
-      "worktree_has_uncommitted_changes": false,
-      "remaining": "Merge completed G work after F passes; run the full suite; refresh final screenshots."
+      "branch_commit": "35185c1",
+      "merge_commit": "c693b93",
+      "tests": {
+        "suite": "full, including slow tests",
+        "passed": 194,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "seconds": 88.484,
+        "evidence": "phase3-merge-g-tests.xml"
+      }
     }
+  ],
+  "pending": [],
+  "integration": [
+    "E Describe layout retained; F upload uses shared theme tokens below the description.",
+    "Interpretation warnings displayed on Check and preserved after edits.",
+    "G optional render dependencies installed from local cache; all renderer tests exercised."
   ],
   "browser": {
     "url": "http://127.0.0.1:8765",
-    "scope": "E merged into master; F and G are not integrated",
-    "screens_1_to_5_refreshed": true,
-    "older_agent_run_screens_retaken": false,
+    "health_status": 200,
+    "scope": "All A-G merged",
+    "all_13_screens_refreshed": true,
+    "agent_screens": "Labelled replay of saved drone-agent-backoff.json; no new exploration",
+    "sketch_screens": "Labelled fixed test-provider interpretation; not a live vision result",
     "exceptions": 0,
     "pdf_matches_bundle": true,
     "bundle_checksums_pass": true,
-    "evidence": "phase3-browser-acceptance.json",
-    "screens": "screens/",
-    "capture_script": "phase3_browser.py"
+    "evidence": [
+      "phase3-browser-acceptance.json",
+      "phase3-extra-screens.json"
+    ],
+    "screens": "screens/"
   },
-  "known_remaining_visual_issues_from_E": [
-    "Check: pad labels can overlap support symbols.",
-    "Validation: tables still show thin cell borders."
+  "videos": {
+    "count": 4,
+    "destination": "renders/",
+    "git_ignored": true,
+    "source_hashes_match": true,
+    "evidence": "phase3-video-copies.json"
+  },
+  "known_followups": [
+    "Live vision remains unvalidated; screenshot interpretation uses a test fixture.",
+    "The app explanation used its template fallback in the browser check; configured live calls remain enabled.",
+    "Saved drone recommendation was quota-blocked and used fallback; no new live recommendation was requested.",
+    "Sketch parse failures retain generic description wording.",
+    "Existing pad/support label overlaps, Pareto-label crowding, Validation cell borders and Streamlit width deprecations remain."
   ],
   "local_only": true,
   "other_agent_worktrees_modified_by_coordinator": false

@@ -26,6 +26,8 @@ SHOTS = {
 
 def ready(page, name):
     page.wait_for_selector(".mx-title", timeout=180_000)
+    if name == "1-describe":
+        page.locator(".st-key-sketch_upload").wait_for(timeout=180_000)
     if name == "5-validation":
         page.locator(".st-key-card_hole").wait_for(timeout=180_000)
     if name == "4-export":
@@ -75,6 +77,7 @@ with sync_playwright() as playwright:
             for stem in ("rc_arm", "drone_arm", "aero_bracket"):
                 assert page.locator(f".st-key-preview_{stem}").count() > 0
             evidence["describe_upload_controls"] = page.locator('input[type="file"]').count()
+            assert evidence["describe_upload_controls"] == 1
         if name == "3-compare":
             evidence["explanation"] = page.locator(".st-key-card_explain").inner_text()
         if name == "4-export":

@@ -1,0 +1,26 @@
+﻿[
+    {
+        "file":  "rc_arm_fdm_pa6cf_growth.mp4",
+        "bytes":  4009677,
+        "sha256":  "C73F9011853318B277F31CC71181CAFA4559C2C6701622ED1C3F201E41062C4F",
+        "matches_source":  true
+    },
+    {
+        "file":  "drone_arm_fdm_pa6cf_growth.mp4",
+        "bytes":  3031578,
+        "sha256":  "171B85B6A08DA9719A76AAC383BDA65E5217294E0C5AC181E525D7CC5EDE8E43",
+        "matches_source":  true
+    },
+    {
+        "file":  "aero_bracket_metal_alsi10mg_growth.mp4",
+        "bytes":  2206494,
+        "sha256":  "64B9FC08B15ECF7E8FA962F582C9CABE7AC8D24D0EB6586E6DB7EEAF9F854A04",
+        "matches_source":  true
+    },
+    {
+        "file":  "rc_arm_side_by_side.mp4",
+        "bytes":  4570160,
+        "sha256":  "5D3000E88E747108CB1AE272CB24AED2D5E29A6F1E7C4F26EBC69EF9B2574450",
+        "matches_source":  true
+    }
+]
