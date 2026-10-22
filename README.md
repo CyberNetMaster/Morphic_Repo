@@ -87,9 +87,10 @@ uv run morphic explore examples/drone_arm.json --no-llm
 
 Omit `--no-llm` to use the configured provider. Quick trials use a 10,000-element cap,
 warm fill-level sweeps, no refinement and no cold rerun; they need a full solve before
-treating the recommendation as a final result. Provider HTTP 429/503 errors get up to
-four retries with 4, 8, 16 and 32 second delays. Design-agent requests, including retries,
-start at least four seconds apart across local workers. Template explanations and
+treating the recommendation as a final result. Provider HTTP 429/503 errors are retried
+`LLM_HTTP_RETRIES` times (`morphic/config.py`; default 0 for demo use, so a failed call falls
+back within seconds; set 4 for 4, 8, 16 and 32 second delays on long agent runs). Design-agent
+requests, including retries, start at least four seconds apart across local workers. Template explanations and
 deterministic proposals remain fallbacks; numeric grounding does not verify every prose claim.
 
 ## Validate
@@ -234,7 +235,9 @@ remain stair-stepped, and only the RC demo has all three process reruns for a co
 - **LLM/UI evidence:** numeric grounding can reject unsupported numbers, not every misleading
   statement. Earlier agent runs obtained live recommendations, but the later retry acceptance
   run exhausted provider quota and completed with fallbacks. Live vision remains unvalidated.
-  Some pad/support and Pareto labels overlap; Streamlit width deprecations remain.
+  Pad, support and Pareto label overlaps and the Streamlit width deprecations were fixed on
+  2026-10-22. Typing a demo text verbatim loads its saved, checked parse from
+  `examples/parsed/` with no LLM call (spec 4.4 step 5).
 
 ## Relation to existing tools
 

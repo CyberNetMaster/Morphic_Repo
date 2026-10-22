@@ -86,5 +86,6 @@ def _read(data: bytes, note: str, printer: str | None) -> None:
         p.printer = printer
         p.provenance["printer"] = Provenance(source="user", original_text="printer selector")
     S.problem, S.form, S.parse_fail, S.results = p, formmod.problem_to_form(p), None, None
+    S.parse_source = None
     S.step = 1
     st.rerun()

@@ -506,6 +506,7 @@ div[data-testid="stVerticalBlockBorderWrapper"][data-mx-card], .st-key-mxcard {{
 .mx-pill.accent {{ background: var(--mx-accent-soft); color: {ACCENT}; }}
 .mx-pill.amber {{ background: var(--mx-amber-soft); color: {s['amber_text']}; }}
 .mx-pill.win {{ background: {ACCENT}; color: #fff; box-shadow: 0 0 18px rgba(10,132,255,0.55); }}
+.mx-pill.wrap {{ white-space: normal; text-align: left; line-height: 1.35; border-radius: {RADIUS_SM}px; }}
 .mx-msg {{ border-radius: {RADIUS_MD}px; padding: {SPACE_3}px {SPACE_4}px; font-size: {TEXT_SM + 1}px;
   margin-bottom: {SPACE_2}px; display: flex; gap: {SPACE_3}px; align-items: baseline; }}
 .mx-msg.red {{ background: var(--mx-fail-soft); color: {s['text']}; }}

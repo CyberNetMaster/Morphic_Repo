@@ -168,6 +168,9 @@ def test_provider_override_keeps_the_text_call_signature(monkeypatch):
 
 
 def test_transport_retry_resends_the_image(monkeypatch):
+    from morphic import config
+
+    monkeypatch.setattr(config, "LLM_HTTP_RETRIES", 4)  # the ladder for long runs; the demo default is no retry
     monkeypatch.setattr(llm.time, "sleep", lambda s: None)
     seen = []
 
@@ -281,6 +284,9 @@ def test_default_call_goes_through_the_adapter_with_the_chosen_provider(monkeypa
 
 
 def test_reader_waits_for_the_adapter_retry_budget(monkeypatch, png):
+    from morphic import config
+
+    monkeypatch.setattr(config, "LLM_HTTP_RETRIES", 4)  # the ladder for long runs; the demo default is no retry
     waits = []
 
     class Future:

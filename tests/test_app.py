@@ -228,3 +228,52 @@ def test_example_pill_fills_the_description():
     assert not at.exception, at.exception
     assert at.session_state["text"] == data.demo_text(PARTS[0]) and at.session_state["step"] == 0
 
+
+def test_force_labels_plan_and_saved_parse():
+    from morphic import parse
+
+    assert maps.sig(42271.1) == "42,300" and maps.sig(32) == "32" and maps.sig(0.5) == "0.5"
+    assert maps.sig(35600) == "35,600" and maps.sig(0) == "0"
+    p = data.demo_problem("drone_arm")
+    fig = maps.problem_drawing(p)
+    xr, yr = fig.layout.xaxis.range, fig.layout.yaxis.range
+    motor = next(a for a in fig.layout.annotations if a.text == "motor")
+    assert motor.xanchor == "left" and motor.x + 12 <= xr[1]  # room for the name beyond the ring, never clipped
+    forces = {a.text: a for a in fig.layout.annotations if a.text and a.text.endswith(" N")}
+    assert set(forces) == {"32 N", "50 N"}
+    # the thrust arrow comes from below the part: its label sits beside the tail, clear of the dimension texts
+    assert forces["32 N"].xanchor == "left" and forces["32 N"].yanchor == "middle"
+    thick = next(a for a in fig.layout.annotations if a.text and a.text.startswith("thickness"))
+    assert thick.xanchor == "center" and thick.x == p.design_space.width_mm / 2
+    assert yr[0] <= -0.06 * 120 - 42 * (120 + 1.6 * 0.12 * 120) / 520  # room for both dimension lines
+    bracket = maps.problem_drawing(data.demo_problem("aero_bracket"))
+    assert {a.text for a in bracket.layout.annotations if a.text and a.text.endswith(" N")} == {"35,600 N", "37,800 N", "42,300 N"}
+    # every demo text maps to its stem and loads a checked parse without the network
+    for stem in data.DEMOS.values():
+        assert data.match_demo_text(data.demo_text(stem)) == stem and data.saved_parse(stem) is not None
+    assert data.match_demo_text("a bracket 120 mm long") is None and data.match_demo_text("") is None
+    saved = data.saved_parse("drone_arm")
+    assert parse.compare_problems(saved, data.demo_problem("drone_arm")) == [] and data.match_demo(saved) == "drone_arm"
+    assert "wrap" in ui.pill("refinement stopped", "amber", wrap=True) and "wrap" not in ui.pill("passes", "pass")
+
+
+def test_demo_text_loads_saved_parse_without_llm(monkeypatch):
+    from pathlib import Path
+
+    from streamlit.testing.v1 import AppTest
+    from morphic import llm
+
+    def no_call(*a, **k):
+        raise AssertionError("the demo text must not call the LLM")
+
+    monkeypatch.setattr(llm, "complete", no_call)
+    monkeypatch.setattr(llm, "complete_json", no_call)
+    at = AppTest.from_file(str(Path(__file__).resolve().parents[1] / "app" / "streamlit_app.py"), default_timeout=120)
+    at.run()
+    at.button(key="ex_drone_arm").click().run()
+    at.button(key="read_btn").click().run()
+    assert not at.exception, at.exception
+    assert at.session_state["step"] == 1 and at.session_state["parse_source"] == "saved parse"
+    assert data.match_demo(at.session_state["problem"]) == "drone_arm"
+    assert any("saved parse" in m.value for m in at.markdown)
+

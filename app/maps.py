@@ -4,6 +4,7 @@ the 3D view and the validation plots. Colors and fonts come from theme.py."""
 from __future__ import annotations
 
 import io
+import math
 
 import numpy as np
 import plotly.graph_objects as go
@@ -21,6 +22,16 @@ def _hex(c: str) -> tuple[float, float, float, float]:
         return r, g, b, a * 255
     c = c.lstrip("#")
     return int(c[0:2], 16), int(c[2:4], 16), int(c[4:6], 16), 255.0
+
+
+def sig(x: float, n: int = 3) -> str:
+    """A number to ``n`` significant figures with thousands separators: 42271.1 -> '42,300', 32 -> '32', 0.5 -> '0.5'."""
+    x = float(x)
+    if x == 0 or not math.isfinite(x):
+        return f"{x:g}"
+    d = n - int(math.floor(math.log10(abs(x)))) - 1
+    s = f"{round(x, d):,.{max(d, 0)}f}"
+    return s.rstrip("0").rstrip(".") if "." in s else s
 
 
 def _lut(scale: list, n: int = 256) -> np.ndarray:
@@ -127,9 +138,17 @@ def problem_drawing(problem: Problem, dark: bool = True, height: int = 420) -> g
     fig.add_shape(type="rect", x0=0, y0=0, x1=W, y1=H, line=dict(color=s["text_2"], width=1.2),
                   fillcolor=s["card_alt"], layer="below")
     scale = max(W, H)
+    pad = 0.12 * scale
+    # the drawing is about 520 px wide at the default layout: labels need this much room in mm
+    mm_per_px = (W + 1.6 * pad) / 520
+
+    def room(text: str) -> float:
+        return (0.62 * (theme.TEXT_XS + 1) * len(text) + 10) * mm_per_px
+
     # the load arrows as geometry first: their tails decide where pad names go and how wide the axes are
     fmax = max((abs(ld.fx_N) + abs(ld.fy_N)) for lc in problem.load_cases for ld in lc.loads) or 1.0
     arrows, out_of_plane, busy = [], [], {}
+    lab_x, lab_y = [], []  # where labels need the axes to reach
     for ci, lc in enumerate(problem.load_cases):
         col = theme.LOAD_CASE_COLORS[ci % len(theme.LOAD_CASE_COLORS)]
         for ld in lc.loads:
@@ -191,8 +210,17 @@ def problem_drawing(problem: Problem, dark: bool = True, height: int = 420) -> g
                                      name=f"pad {p.id}: hole r {p.hole_r_mm:g} mm" + (" (default)" if hole_default else ""),
                                      hoverinfo="name"))
         t = sup.get(p.id)
-        fig.add_annotation(**_pad_label(p, pad_label_side(t, busy.get(p.id, set()))), text=p.id, showarrow=False,
+        side = pad_label_side(t, busy.get(p.id, set()))
+        fig.add_annotation(**_pad_label(p, side), text=p.id, showarrow=False,
                            font=dict(size=theme.TEXT_XS + 1, color=s["text"]))
+        if side == "right":
+            lab_x.append(p.cx + p.ring_r_mm + room(p.id))
+        elif side == "left":
+            lab_x.append(p.cx - p.ring_r_mm - room(p.id))
+        elif side == "above":
+            lab_y.append(p.cy + p.ring_r_mm + 18 * mm_per_px)
+        else:
+            lab_y.append(p.cy - p.ring_r_mm - 18 * mm_per_px)
         if t == "pin":
             a = 0.05 * scale
             fig.add_trace(go.Scatter(x=[p.cx, p.cx - a / 2, p.cx + a / 2, p.cx], y=[p.cy, p.cy - a, p.cy - a, p.cy],
@@ -218,7 +246,6 @@ def problem_drawing(problem: Problem, dark: bool = True, height: int = 420) -> g
                                startarrowhead=3, text="")
     # loads: one color per case, arrow length scaled by force; the force sits at the tail, the case name
     # and limit are in the pill of the same color under the drawing
-    lab_x, lab_y = [], []
     for p, col, ux, uy, x0, y0, mag in arrows:
         tip = dict(x=p.cx - ux * p.ring_r_mm, y=p.cy - uy * p.ring_r_mm, ax=x0, ay=y0,
                    xref="x", yref="y", axref="x", ayref="y", showarrow=True, text="")
@@ -226,15 +253,20 @@ def problem_drawing(problem: Problem, dark: bool = True, height: int = 420) -> g
             fig.add_annotation(**tip, arrowhead=0, arrowwidth=theme.ARROW_GLOW_WIDTH, arrowcolor=col,
                                opacity=theme.ARROW_GLOW_OPACITY)
         fig.add_annotation(**tip, arrowhead=2, arrowsize=1.2, arrowwidth=2.2, arrowcolor=col)
-        fig.add_annotation(x=x0, y=y0, text=f"{mag:g} N", showarrow=False,
-                           font=dict(family=theme.FONT_MONO, size=theme.TEXT_XS + 1, color=col),
-                           xanchor="right" if ux > 0.3 else ("left" if ux < -0.3 else "center"),
-                           yanchor="top" if uy > 0.3 else ("bottom" if uy < -0.3 else "middle"),
-                           xshift=-6 if ux > 0.3 else (6 if ux < -0.3 else 0),
-                           yshift=-4 if uy > 0.3 else (4 if uy < -0.3 else 0))
-        # the room the label needs beyond the tail (about 40 px wide, 14 px tall at this scale)
-        lab_x += [x0 - (0.10 if ux > 0.3 else 0.05) * scale, x0 + (0.10 if ux < -0.3 else 0.05) * scale]
-        lab_y += [y0 - (0.06 if uy > 0.3 else 0.03) * scale, y0 + (0.06 if uy < -0.3 else 0.03) * scale]
+        text = f"{sig(mag)} N"
+        if uy > 0.3 and y0 < 0:  # the tail hangs below the part, where the dimension texts are: label beside it
+            xa, ya, xs, ys = "left", "middle", 8, 0
+        else:
+            xa = "right" if ux > 0.3 else ("left" if ux < -0.3 else "center")
+            ya = "top" if uy > 0.3 else ("bottom" if uy < -0.3 else "middle")
+            xs = -6 if ux > 0.3 else (6 if ux < -0.3 else 0)
+            ys = -4 if uy > 0.3 else (4 if uy < -0.3 else 0)
+        fig.add_annotation(x=x0, y=y0, text=text, showarrow=False, xanchor=xa, yanchor=ya, xshift=xs, yshift=ys,
+                           font=dict(family=theme.FONT_MONO, size=theme.TEXT_XS + 1, color=col))
+        # the room the label needs around the tail
+        w = room(text)
+        lab_x += [x0 - (w if xa == "right" else w / 2), x0 + (w if xa == "left" else w / 2)]
+        lab_y += [y0 - (18 if ya == "top" else 9) * mm_per_px, y0 + (18 if ya == "bottom" else 9) * mm_per_px]
     for p, col, lc, ld in out_of_plane:
         fig.add_trace(go.Scatter(x=[p.cx], y=[p.cy], mode="markers",
                                  marker=dict(symbol="circle-open-dot", size=16, color=col, line=dict(width=2)),
@@ -246,11 +278,11 @@ def problem_drawing(problem: Problem, dark: bool = True, height: int = 420) -> g
         fig.add_shape(type="line", x0=x0, y0=y0, x1=x1, y1=y1, line=dict(color=s["text_2"], width=1))
         fig.add_annotation(x=(x0 + x1) / 2, y=(y0 + y1) / 2, text=text, showarrow=False, xshift=xs, yshift=ys,
                            font=dict(family=theme.FONT_MONO, size=theme.TEXT_XS, color=s["text_2"]), textangle=0 if ys else -90)
-    fig.add_annotation(x=W, y=-off, text=f"thickness {problem.thickness_mm:g} mm (extruded)", showarrow=False,
-                       xanchor="right", yshift=-16, font=dict(family=theme.FONT_MONO, size=theme.TEXT_XS, color=s["text_2"]))
-    pad = 0.12 * scale
+    # the thickness note sits under the width, centred, so the bottom-right corner stays free for arrow labels
+    fig.add_annotation(x=W / 2, y=-off, text=f"thickness {problem.thickness_mm:g} mm (extruded)", showarrow=False,
+                       xanchor="center", yshift=-31, font=dict(family=theme.FONT_MONO, size=theme.TEXT_XS, color=s["text_2"]))
     x_lo, x_hi = min([-pad] + lab_x), max([W + pad * 0.5] + lab_x)
-    y_lo, y_hi = min([-pad] + lab_y), max([H + pad * 0.5] + lab_y)
+    y_lo, y_hi = min([-pad, -off - 42 * mm_per_px] + lab_y), max([H + pad * 0.5] + lab_y)
     # fit the height to the part's aspect so a long thin part does not sit in empty space
     height = int(max(240, min(height, 700 * (y_hi - y_lo) / (x_hi - x_lo))))
     fig.update_layout(**theme.plotly_layout(dark, height=height, margin=dict(l=4, r=4, t=4, b=4)))

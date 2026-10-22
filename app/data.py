@@ -65,6 +65,35 @@ def demo_text(stem: str) -> str:
     return (EXAMPLES / f"{stem}.txt").read_text(encoding="utf-8")
 
 
+PARSED_DIR = EXAMPLES / "parsed"
+
+
+def _squash(text: str) -> str:
+    return " ".join((text or "").split())
+
+
+def match_demo_text(text: str) -> str | None:
+    """The demo part whose description text equals ``text`` (whitespace aside), or None."""
+    t = _squash(text)
+    if not t:
+        return None
+    for stem in DEMOS.values():
+        f = EXAMPLES / f"{stem}.txt"
+        if f.exists() and _squash(f.read_text(encoding="utf-8")) == t:
+            return stem
+    return None
+
+
+def saved_parse(stem: str) -> Problem | None:
+    """The saved, checked parse of a demo text (examples/parsed/<stem>.parsed.json), or None without one.
+    Spec 4.4 step 5: the demo parts load from saved JSON, so the demo never depends on the network."""
+    f = PARSED_DIR / f"{stem}.parsed.json"
+    if not f.exists():
+        return None
+    with open(f, encoding="utf-8") as fh:
+        return problem_from_dict(json.load(fh)["problem"])
+
+
 def demo_preview(stem: str) -> dict | None:
     """Headline numbers of a cached demo part for the Describe step (the winning design, its mass,
     the weight saved, and where its shape lives), read straight from results.json. None without a cache."""

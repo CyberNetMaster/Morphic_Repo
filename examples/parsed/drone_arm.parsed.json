@@ -1,0 +1,113 @@
+{
+  "provider": "approved",
+  "model": "examples/drone_arm.json",
+  "seconds": 0.0,
+  "attempts": [],
+  "note": "Generated on 2026-10-22 from the approved JSON (spec 4.4 step 5); no LLM call was made. The problem equals examples/drone_arm.json, so the Check step matches the cached results.",
+  "problem": {
+    "name": "5-inch FPV drone arm",
+    "design_space": {
+      "width_mm": 120,
+      "height_mm": 18
+    },
+    "thickness_mm": 10,
+    "zones": [],
+    "pads": [
+      {
+        "id": "bolt1",
+        "cx": 5,
+        "cy": 9,
+        "hole_r_mm": 1.6,
+        "ring_r_mm": 3.6
+      },
+      {
+        "id": "bolt2",
+        "cx": 25,
+        "cy": 9,
+        "hole_r_mm": 1.6,
+        "ring_r_mm": 3.6
+      },
+      {
+        "id": "motor",
+        "cx": 112,
+        "cy": 9,
+        "hole_r_mm": 0,
+        "ring_r_mm": 8
+      }
+    ],
+    "supports": [
+      {
+        "pad_id": "bolt1",
+        "type": "pin"
+      },
+      {
+        "pad_id": "bolt2",
+        "type": "pin"
+      }
+    ],
+    "load_cases": [
+      {
+        "id": "thrust",
+        "name": "Full thrust",
+        "reason": "~1.6 kgf max static thrust for a 2306 motor on 6S with a 5-inch prop (to cite from a motor thrust table) x 2 for dynamic loads",
+        "loads": [
+          {
+            "pad_id": "motor",
+            "fx_N": 0,
+            "fy_N": 32,
+            "fz_N_out_of_plane": 0
+          }
+        ],
+        "max_deflection_mm": 0.5
+      },
+      {
+        "id": "landing",
+        "name": "Hard landing",
+        "reason": "arm hits the ground first (impact factor to cite)",
+        "loads": [
+          {
+            "pad_id": "motor",
+            "fx_N": 0,
+            "fy_N": -50,
+            "fz_N_out_of_plane": 0
+          }
+        ],
+        "max_deflection_mm": 0.5
+      },
+      {
+        "id": "side_crash",
+        "name": "Side crash (out of plane)",
+        "reason": "hand checks only",
+        "loads": [
+          {
+            "pad_id": "motor",
+            "fx_N": 0,
+            "fy_N": 0,
+            "fz_N_out_of_plane": 30
+          }
+        ],
+        "max_deflection_mm": 0.5
+      }
+    ],
+    "safety_factor": 2.0,
+    "printer": "desktop_fdm",
+    "materials": [
+      "pla",
+      "petg",
+      "pa6cf",
+      "pa12",
+      "alsi10mg",
+      "ti64"
+    ],
+    "warnings": [],
+    "provenance": {},
+    "notes": [
+      "Side view along the arm: thrust is in-plane. The motor mount is a solid keep-in disc (no hole).",
+      "Deflection limit 0.5 mm: arm stiffness affects motor vibration seen by the flight controller.",
+      "Design space enlarged from 120 x 15 mm to 120 x 18 mm and pads recentred at y = 9 mm (2026-10-21), so the 8 mm motor ring fits inside the design area (spec 14.2)."
+    ],
+    "references": [
+      "Spec section 14.2 (approved 2026-10-20); thrust table and impact factor citations still to add"
+    ]
+  }
+}

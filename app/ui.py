@@ -65,9 +65,10 @@ def eyebrow(text: str, top: bool = False) -> str:
     return f'<div class="mx-eyebrow{" mx-top" if top else ""}">{esc(text)}</div>'
 
 
-def pill(text: str, kind: str = "") -> str:
+def pill(text: str, kind: str = "", wrap: bool = False) -> str:
+    """A status chip. ``wrap`` lets a long sentence pill break into lines instead of overflowing its card."""
     num = " mx-num" if is_numeric(text) else ""
-    return f'<span class="mx-pill {kind}{num}">{esc(text)}</span>'
+    return f'<span class="mx-pill {kind}{num}{" wrap" if wrap else ""}">{esc(text)}</span>'
 
 
 def msg(text: str, level: str = "info", label: str = "") -> None:

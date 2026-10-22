@@ -17,8 +17,11 @@ LLM_MODELS = {
 }
 LLM_TIMEOUT_S = 45.0
 LLM_RETRIES = 1
-LLM_HTTP_RETRIES = 4  # in addition to the initial request; only HTTP 429 and 503
-LLM_BACKOFF_INITIAL_S = 4.0  # exponential delays: 4, 8, 16, 32 seconds
+# HTTP 429 and 503 retries after the first request, with exponential delays (4, 8, 16, 32 s at 4 retries).
+# 0 for demo use: a failed call falls back to the template or the manual form within seconds.
+# Set 4 for long design-agent runs on a rate-limited key.
+LLM_HTTP_RETRIES = 0
+LLM_BACKOFF_INITIAL_S = 4.0
 AGENT_LLM_INTERVAL_S = 4.0  # shared across agent workers, including HTTP retries
 
 # ---------------------------------------------------------------- element caps

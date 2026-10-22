@@ -118,7 +118,7 @@ def img(png: bytes, style: str = "width:100%;display:block", cls: str = "") -> s
 def init_state() -> None:
     defaults = dict(tab="Design", step=0, text="", printer_choice=FROM_TEXT, quick=False, problem=None, form=None,
                     parse_fail=None, results=None, live=None, view3d=None, growth_play=False, growth_i=0,
-                    qp_done=False, stage_view="Shape", agent_jobs={})
+                    qp_done=False, stage_view="Shape", agent_jobs={}, parse_source=None)
     for k, v in defaults.items():
         S.setdefault(k, v)
 
@@ -143,7 +143,7 @@ def load_demo(stem: str) -> None:
     p = data.demo_problem(stem)
     S.text = data.demo_text(stem)
     S.problem, S.form, S.parse_fail, S.results, S.live = p, formmod.problem_to_form(p), None, None, None
-    S.printer_choice = FROM_TEXT
+    S.printer_choice, S.parse_source = FROM_TEXT, None
     S.growth_i, S.growth_play, S.view3d = 0, False, None
 
 
@@ -236,17 +236,23 @@ def page_describe() -> None:
 
 def read_description() -> None:
     materials, processes = libs()
-    holder = st.empty()
-    with st.spinner("Reading your description… if this takes too long, a manual form will open."):
-        try:
-            r = parse.parse_text(S.text, min_walls=[p.min_wall_mm for p in processes.values()],
-                                 status=lambda s: holder.caption(s))
-        except parse.ParseFailed as exc:
-            S.parse_fail = str(exc)
-            S.problem, S.form, S.results = None, formmod.blank_form(), None
-            go(1)
-            return
-    p = r.problem
+    stem = data.match_demo_text(S.text)
+    saved = data.saved_parse(stem) if stem else None
+    if saved is not None:  # spec 4.4 step 5: a demo text loads its saved, checked parse; no LLM call
+        p, S.parse_source = saved, "saved parse"
+    else:
+        S.parse_source = None
+        holder = st.empty()
+        with st.spinner("Reading your description… if this takes too long, a manual form will open."):
+            try:
+                r = parse.parse_text(S.text, min_walls=[p.min_wall_mm for p in processes.values()],
+                                     status=lambda s: holder.caption(s))
+            except parse.ParseFailed as exc:
+                S.parse_fail = str(exc)
+                S.problem, S.form, S.results = None, formmod.blank_form(), None
+                go(1)
+                return
+        p = r.problem
     if S.printer_choice != FROM_TEXT and S.printer_choice != p.printer:
         p.printer = S.printer_choice
         p.provenance["printer"] = Provenance(source="user", original_text="printer selector")
@@ -374,9 +380,13 @@ def editors(p: Problem | None, f: dict) -> dict:
                                                 note(f"load_cases[{i}].loads[{j}].fz_N_out_of_plane")) if x))
     lds["text"] = (srcs + [""] * len(lds))[:len(lds)]
     lds = st.data_editor(lds, num_rows="dynamic", key="ed_loads", width="stretch", hide_index=True,
-                         column_config={"case_id": st.column_config.SelectboxColumn("case", options=case_ids),
-                                        "pad_id": st.column_config.SelectboxColumn("pad", options=pad_ids),
-                                        "text": st.column_config.TextColumn("from the text", disabled=True)})
+                         column_config={"case_id": st.column_config.SelectboxColumn("case", options=case_ids, width=88),
+                                        "pad_id": st.column_config.SelectboxColumn("pad", options=pad_ids, width=70),
+                                        "fx_N": st.column_config.NumberColumn("fx", width=56, help="N, x right"),
+                                        "fy_N": st.column_config.NumberColumn("fy", width=56, help="N, y up"),
+                                        "fz_N_out_of_plane": st.column_config.NumberColumn("fz", width=56,
+                                                                                           help="N, out of the plane"),
+                                        "text": st.column_config.TextColumn("from the text", disabled=True, width=150)})
     f["loads"] = _records(lds, drop=("text",))
 
     with st.expander("Keep-in and keep-out zones"):
@@ -397,9 +407,9 @@ def load_case_pills(p: Problem) -> str:
         fz = sum(abs(ld.fz_N_out_of_plane) for ld in lc.loads)
         parts = [lc.name]
         if inplane > 0:
-            parts.append(f"{inplane:g} N")
+            parts.append(f"{maps.sig(inplane)} N")
         if fz > 0:
-            parts.append(f"{fz:g} N out of plane · hand check")
+            parts.append(f"{maps.sig(fz)} N out of plane · hand check")
         if inplane > 0:
             parts.append(f"≤ {lc.max_deflection_mm:g} mm")
         out += ui.lc_pill(" · ".join(parts), col)
@@ -444,10 +454,23 @@ def readouts(p: Problem, est: dict, stem: str | None) -> None:
                                  frac=mins / 30, scale=("0", "30 min")), unsafe_allow_html=True)
 
 
+def cached_plan_rows(r: dict) -> list[list[str]]:
+    """The plan the saved results were computed with: one row per process catalog in results.json."""
+    rows = []
+    for pid, c in r["catalogs"].items():
+        rows.append([proc_label(pid), ui.esc(c["min_wall_text"].split(": ", 1)[-1]),
+                     f'{c["elements"]:,} elements · h {c["h_mm"]:.2f} mm',
+                     f'{ui.esc(c.get("sweep_mode", ""))} sweep · {len(c.get("levels") or [])} levels · {c["seconds"] / 60:.0f} min'])
+    return rows
+
+
 def page_check() -> None:
     materials, processes = libs()
     ui.title("Check the problem", "Everything below came from your description, sketch or a default. Fix anything wrong; "
                                   "the drawing and the checks update as you edit.")
+    if S.get("parse_source") == "saved parse":
+        st.markdown(ui.pill("saved parse", "accent") + '<span class="mx-note">This description matches a demo text, so '
+                    'its saved, checked parse was loaded. No LLM call was made.</span>', unsafe_allow_html=True)
     if S.problem is not None and S.problem.warnings:
         with st.container(key="card_interpretation_warnings"):
             st.markdown(ui.eyebrow("Interpretation warnings"), unsafe_allow_html=True)
@@ -507,15 +530,20 @@ def page_check() -> None:
                 st.markdown(ui.eyebrow("Limits and plan"), unsafe_allow_html=True)
                 readouts(p, est, stem)
             with st.container(key="card_runplan"):
-                st.markdown(ui.eyebrow("Run plan"), unsafe_allow_html=True)
+                if stem:  # the plan the saved results used, then the plan a live run would follow
+                    st.markdown(ui.eyebrow("Cached plan · the precomputed results"), unsafe_allow_html=True)
+                    st.markdown(ui.table(["process", "effective min wall", "mesh", "sweep"],
+                                         cached_plan_rows(cached_results(str(data.CACHE_DIR / stem)))), unsafe_allow_html=True)
+                    st.markdown(ui.pill("precomputed demo part: results load instantly", "accent"), unsafe_allow_html=True)
+                    st.markdown(ui.eyebrow("Live-run plan · if you change the problem", top=True), unsafe_allow_html=True)
+                else:
+                    st.markdown(ui.eyebrow("Live-run plan"), unsafe_allow_html=True)
                 rows = [[r["process"], f'{r["effective_min_wall_mm"]:.2f} mm enforced' +
                          (f' (process allows {r["min_wall_mm"]:.2f} mm)' if r["effective_min_wall_mm"] > r["min_wall_mm"] + 1e-9 else ""),
                          f'{r["elements"]:,} elements · h {r["h_mm"]:.2f} mm', f'~{r["seconds"] / 60:.0f} min']
                         for r in est["rows"]]
                 st.markdown(ui.table(["process", "effective min wall", "mesh", "time"], rows), unsafe_allow_html=True)
-                if stem:
-                    st.markdown(ui.pill("precomputed demo part: results load instantly", "accent"), unsafe_allow_html=True)
-                else:
+                if not stem:
                     mins = est["seconds"] / 60
                     st.markdown(ui.pill(f"estimated run time ~{mins:.0f} min" + (" (quick mode)" if est["quick"] else ""), "accent")
                                 + f'<span class="mx-note">From the timing model measured in step S9b '
@@ -641,7 +669,10 @@ def design_card(r: dict, d: dict, c: dict, dark: bool) -> None:
         else:
             pills += ui.pill("Fails: " + c["reason"], "fail")
         if not d.get("converged", True):
-            pills += ui.pill("not fully converged", "amber")
+            quick = any("quick mode" in n for n in (d.get("notes") or []) + (d["pick"].get("notes") or []))
+            pills += ui.pill(("catalog level stopped at its iteration limit" if quick
+                              else f"refinement stopped at {config.MAX_ITERS_REFINE} iterations")
+                             + "; numbers are from the re-checked exported shape", "amber", wrap=True)
         if d["pick"]["status"] == "loose":
             pills += ui.pill("limits are loose", "amber")
         st.markdown(f'<div class="mx-eyebrow mx-eyebrow-proc">{proc_label(pid)} · {ui.esc(material_name(mid))}</div>'

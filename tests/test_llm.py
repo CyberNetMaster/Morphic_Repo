@@ -26,8 +26,26 @@ def clock(monkeypatch, tmp_path):
     return state
 
 
+@pytest.fixture
+def ladder(monkeypatch):
+    """The four-step retry ladder (4, 8, 16, 32 s) for long agent runs; the demo default is no retry."""
+    monkeypatch.setattr(config, "LLM_HTTP_RETRIES", 4)
+
+
+def test_demo_default_falls_back_at_once(monkeypatch, clock):
+    assert config.LLM_HTTP_RETRIES == 0
+    calls = []
+    def provider(*args):
+        calls.append(clock.now)
+        raise HTTPError(429)
+    monkeypatch.setitem(llm._PROVIDERS, config.LLM_PROVIDER, provider)
+    with pytest.raises(llm.LLMError):
+        llm.complete("system", "user")
+    assert calls == [100] and clock.sleeps == []
+
+
 @pytest.mark.parametrize("code,attribute", [(429, "code"), (503, "status_code")])
-def test_four_retries_then_success(monkeypatch, clock, code, attribute):
+def test_four_retries_then_success(monkeypatch, clock, ladder, code, attribute):
     calls = []
     def provider(*args):
         calls.append(clock.now)
@@ -41,7 +59,7 @@ def test_four_retries_then_success(monkeypatch, clock, code, attribute):
 
 
 @pytest.mark.parametrize("code", [429, 503, 400, 401, 500])
-def test_retry_exhaustion_is_bounded_and_sanitized(monkeypatch, clock, code):
+def test_retry_exhaustion_is_bounded_and_sanitized(monkeypatch, clock, ladder, code):
     calls = []
     def provider(*args):
         calls.append(clock.now)
@@ -54,7 +72,7 @@ def test_retry_exhaustion_is_bounded_and_sanitized(monkeypatch, clock, code):
     assert "private" not in str(caught.value)
 
 
-def test_agent_paces_calls_and_transport_retries(monkeypatch, clock):
+def test_agent_paces_calls_and_transport_retries(monkeypatch, clock, ladder):
     starts = []
     def provider(*args):
         starts.append(clock.now)
@@ -82,7 +100,7 @@ def test_gate_survives_a_monotonic_clock_reset(clock):
     assert clock.sleeps == [4]
 
 
-def test_parser_waits_for_adapter_retry_budget(monkeypatch):
+def test_parser_waits_for_adapter_retry_budget(monkeypatch, ladder):
     waits = []
     class Future:
         def result(self, timeout):
