@@ -111,8 +111,8 @@ def png_frame(folder: str, process: str, index: int, nelx: int, nely: int, px: i
     return maps.density_png(z[f"it{it}"].astype(float) / 255.0, nelx, nely, True, px)
 
 
-def img(png: bytes, style: str = "width:100%;display:block") -> str:
-    return f'<img src="data:image/png;base64,{base64.b64encode(png).decode()}" style="{style}">'
+def img(png: bytes, style: str = "width:100%;display:block", cls: str = "") -> str:
+    return f'<img class="{cls}" src="data:image/png;base64,{base64.b64encode(png).decode()}" style="{style}">'
 
 
 def init_state() -> None:
@@ -181,11 +181,11 @@ def demo_preview_card(label: str, stem: str) -> None:
                         f'<div class="mx-preview-title">{ui.esc(label)}</div>'
                         f'<div class="mx-shape-box">{shape}</div>'
                         f'{ui.hero(f"{pv['mass_g']:.1f}", "g", "lightest passing design" + fill_txt)}'
-                        f'<div style="margin:10px 0 0">{pills}</div>'
-                        f'<div class="mx-note" style="margin-top:8px">{pv["width_mm"]:g} × {pv["height_mm"]:g} × '
+                        f'<div class="mx-pills">{pills}</div>'
+                        f'<div class="mx-note mx-block-sm">{pv["width_mm"]:g} × {pv["height_mm"]:g} × '
                         f'{pv["thickness_mm"]:g} mm · {pv["cases"]} load cases · safety factor {pv["safety_factor"]:g} · '
                         f'precomputed, loads without the network</div>', unsafe_allow_html=True)
-        if st.button(f"Open {label}", key=f"demo_{stem}", use_container_width=True):
+        if st.button(f"Open {label}", key=f"demo_{stem}", width="stretch"):
             load_demo(stem)
             go(1)
 
@@ -215,10 +215,10 @@ def page_describe() -> None:
                                             help="The selector wins over the text if you change it.")
             S.quick = st.toggle("Quick mode", value=S.quick,
                                 help="One process, 10k elements, no refinement or re-run. About a minute.")
-            st.markdown('<div class="mx-note" style="margin:4px 0 14px">Quick mode runs one process at a coarse mesh '
+            st.markdown(f'<div class="mx-note" style="margin:{theme.SPACE_1}px 0 {theme.SPACE_4}px">Quick mode runs one process at a coarse mesh '
                         'for a first look. The full run covers FDM, SLS and metal.</div>', unsafe_allow_html=True)
             if st.button("Read my description", type="primary", disabled=not S.text.strip(), key="read_btn",
-                         use_container_width=True):
+                         width="stretch"):
                 read_description()
         # Keep E's two-column layout; read the current printer choice before the sketch action.
         with left:
@@ -332,7 +332,7 @@ def editors(p: Problem | None, f: dict) -> dict:
     pads = pd.DataFrame(f["pads"] or [], columns=["id", "cx", "cy", "hole_r_mm", "ring_r_mm"])
     pads["hole"] = [note(f"pads[{i}].hole_r_mm") for i in range(len(pads))]
     pads["ring"] = [note(f"pads[{i}].ring_r_mm") for i in range(len(pads))]
-    pads = st.data_editor(pads, num_rows="dynamic", key="ed_pads", use_container_width=True, hide_index=True,
+    pads = st.data_editor(pads, num_rows="dynamic", key="ed_pads", width="stretch", hide_index=True,
                           column_config={"hole": st.column_config.TextColumn("hole source", disabled=True),
                                          "ring": st.column_config.TextColumn("ring source", disabled=True),
                                          "hole_r_mm": st.column_config.NumberColumn("hole r (mm)", help="0 = solid pad"),
@@ -344,7 +344,7 @@ def editors(p: Problem | None, f: dict) -> dict:
     with c1:
         st.markdown(ui.eyebrow("Supports"), unsafe_allow_html=True)
         sup = pd.DataFrame(f["supports"] or [], columns=["pad_id", "type"])
-        sup = st.data_editor(sup, num_rows="dynamic", key="ed_sup", use_container_width=True, hide_index=True,
+        sup = st.data_editor(sup, num_rows="dynamic", key="ed_sup", width="stretch", hide_index=True,
                              column_config={"pad_id": st.column_config.SelectboxColumn("pad", options=pad_ids),
                                             "type": st.column_config.SelectboxColumn("type", options=["pin", "slide_x", "slide_y"],
                                                                                      help="pin: x and y held. slide_x: free in x, y held. slide_y: free in y, x held.")})
@@ -353,7 +353,7 @@ def editors(p: Problem | None, f: dict) -> dict:
         st.markdown(ui.eyebrow("Load cases"), unsafe_allow_html=True)
         lcs = pd.DataFrame(f["load_cases"] or [], columns=["id", "name", "reason", "max_deflection_mm"])
         lcs["limit source"] = [note(f"load_cases[{i}].max_deflection_mm") for i in range(len(lcs))]
-        lcs = st.data_editor(lcs, num_rows="dynamic", key="ed_lcs", use_container_width=True, hide_index=True,
+        lcs = st.data_editor(lcs, num_rows="dynamic", key="ed_lcs", width="stretch", hide_index=True,
                              column_config={"limit source": st.column_config.TextColumn(disabled=True),
                                             "max_deflection_mm": st.column_config.NumberColumn("deflection limit (mm)")})
         f["load_cases"] = _records(lcs, drop=("limit source",))
@@ -367,7 +367,7 @@ def editors(p: Problem | None, f: dict) -> dict:
             srcs.append(" / ".join(x for x in (note(f"load_cases[{i}].loads[{j}].fx_N"), note(f"load_cases[{i}].loads[{j}].fy_N"),
                                                 note(f"load_cases[{i}].loads[{j}].fz_N_out_of_plane")) if x))
     lds["text"] = (srcs + [""] * len(lds))[:len(lds)]
-    lds = st.data_editor(lds, num_rows="dynamic", key="ed_loads", use_container_width=True, hide_index=True,
+    lds = st.data_editor(lds, num_rows="dynamic", key="ed_loads", width="stretch", hide_index=True,
                          column_config={"case_id": st.column_config.SelectboxColumn("case", options=case_ids),
                                         "pad_id": st.column_config.SelectboxColumn("pad", options=pad_ids),
                                         "text": st.column_config.TextColumn("from the text", disabled=True)})
@@ -375,7 +375,7 @@ def editors(p: Problem | None, f: dict) -> dict:
 
     with st.expander("Keep-in and keep-out zones"):
         zs = pd.DataFrame(f["zones"] or [], columns=["id", "kind", "shape", "cx", "cy", "r", "x", "y", "w", "h"])
-        zs = st.data_editor(zs, num_rows="dynamic", key="ed_zones", use_container_width=True, hide_index=True,
+        zs = st.data_editor(zs, num_rows="dynamic", key="ed_zones", width="stretch", hide_index=True,
                             column_config={"kind": st.column_config.SelectboxColumn(options=["keep_in", "keep_out"]),
                                            "shape": st.column_config.SelectboxColumn(options=["circle", "rect"])})
         f["zones"] = _records(zs)
@@ -453,7 +453,7 @@ def page_check() -> None:
                "red", "Could not read the description")
         c = st.columns(3)
         for i, (label, stem) in enumerate(data.DEMOS.items()):
-            if c[i].button(label, key=f"fail_demo_{stem}", use_container_width=True):
+            if c[i].button(label, key=f"fail_demo_{stem}", width="stretch"):
                 load_demo(stem)
                 st.rerun()
     if S.form is None:
@@ -564,7 +564,7 @@ def live_progress() -> None:
             mesh, _ = data.choose_mesh(W, H, processes[pid].min_wall_mm, cap)
             if mesh.nel == arr.size:
                 st.markdown(img(maps.density_png(arr.astype(float) / 255.0, mesh.nelx, mesh.nely, True, 1000),
-                                "width:100%;max-width:1000px;display:block;margin:12px auto"), unsafe_allow_html=True)
+                                f"width:100%;max-width:1000px;display:block;margin:{theme.SPACE_3}px auto"), unsafe_allow_html=True)
         st.markdown('<div class="mx-note">' + "<br>".join(ui.esc(x) for x in pr.log[-4:]) + "</div>", unsafe_allow_html=True)
 
 
@@ -600,13 +600,13 @@ def material_sources_html(mid: str) -> str:
                      f'<a href="{ui.esc(c.url)}" target="_blank" style="color:var(--mx-accent)">{ui.esc(c.short())}</a>' if c else "—"])
     z, znote = m.strength_z_used()
     il, ilnote = m.interlayer_shear_used()
-    extra = (f'<div class="mx-note" style="margin-top:8px">Z strength used: {z:.1f} MPa ({ui.esc(znote)}). It would '
+    extra = (f'<div class="mx-note mx-block-sm">Z strength used: {z:.1f} MPa ({ui.esc(znote)}). It would '
              f'govern in-plane stresses if the part were printed standing up.<br>Interlayer shear used: {il:.1f} MPa '
              f'({ui.esc(ilnote)}).' + (f"<br>{ui.esc(m.condition_note)}" if m.condition_note else "")
              + (f"<br>{ui.esc(m.cost_note)}" if m.cost_note else "")
              + (("<br>Flags: " + "; ".join(ui.esc(x) for x in m.flags)) if m.flags else "") + "</div>")
     proc = processes[m.process]
-    extra += (f'<div class="mx-note" style="margin-top:6px">Process min wall {proc.min_wall_mm:g} mm: '
+    extra += (f'<div class="mx-note mx-block-sm">Process min wall {proc.min_wall_mm:g} mm: '
               f'<a href="{ui.esc(proc.citation.url)}" target="_blank" style="color:var(--mx-accent)">{ui.esc(proc.citation.short())}</a></div>')
     return ui.table(["value", "used", "source"], rows) + extra
 
@@ -640,7 +640,7 @@ def design_card(r: dict, d: dict, c: dict, dark: bool) -> None:
         if d["pick"]["status"] == "loose":
             pills += ui.pill("limits are loose", "amber")
         st.markdown(f'<div class="mx-eyebrow mx-eyebrow-proc">{proc_label(pid)} · {ui.esc(material_name(mid))}</div>'
-                    f'<div style="margin:8px 0 4px">{pills}</div>', unsafe_allow_html=True)
+                    f'<div class="mx-pills">{pills}</div>', unsafe_allow_html=True)
         dens_key = f"design/{mid}"
         if dens_key in cached_npz(folder, "densities.npz") and ch:
             c1, c2 = st.columns(2)
@@ -661,7 +661,7 @@ def design_card(r: dict, d: dict, c: dict, dark: bool) -> None:
             saved += ui.pill("strut baseline cannot meet the limits", "amber")
         if c.get("weight_saved_vs_block") is not None:
             saved += ui.pill(f"{c['weight_saved_vs_block'] * -100:+.0f}% vs solid block", "")
-        st.markdown(f'<div style="margin:8px 0">{saved}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="mx-pills">{saved}</div>', unsafe_allow_html=True)
         # safety factor gauge + deflection meters
         g = ui.gauge(ch["sf"], ch["sf_target"], "safety factor", f"{ch['sf']:.2f} vs {ch['sf_target']:g} target", ch["stress_pass"])
         st.markdown(g + f'<div class="mx-note">filtered stress {ch["stress_reported_MPa"]:.1f} MPa · raw peak {ch["stress_raw_MPa"]:.1f} MPa '
@@ -675,14 +675,14 @@ def design_card(r: dict, d: dict, c: dict, dark: bool) -> None:
             col = theme.LOAD_CASE_COLORS[i % len(theme.LOAD_CASE_COLORS)]
             rows += (f'<div class="mx-row"><span><span class="mx-swatch" style="background:{col}"></span>{ui.esc(lc["name"])}</span>'
                      f'<span>{dv:.2f} of {lim:g} mm</span></div>' + ui.meter(dv / lim if lim else 0, dv <= lim))
-        st.markdown(f'<div style="margin-top:10px"><div class="mx-label">deflection vs limit</div>{rows}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="mx-block"><div class="mx-label">deflection vs limit</div>{rows}</div>', unsafe_allow_html=True)
         hand = ""
         for h in ch.get("out_of_plane", []) + ch.get("bearing", []):
             hand += (f'<div class="mx-row"><span>{ui.check_icon(bool(h["passed"]))} {ui.esc(h["name"])}</span>'
                      f'<span>SF {ui.fmt(h["sf"])}</span></div>'
                      f'<div class="mx-note">{ui.esc(h.get("where", ""))}' + (f' · <b>{ui.esc(h["suggestion"])}</b>' if h.get("suggestion") else "") + "</div>")
         if hand:
-            st.markdown(f'<div style="margin-top:10px"><div class="mx-label">hand checks (approximate)</div>{hand}'
+            st.markdown(f'<div class="mx-block"><div class="mx-label">hand checks (approximate)</div>{hand}'
                         f'<div class="mx-note">Bearing uses the full XY strength as an approximation; bearing allowables are '
                         f'often higher.</div></div>', unsafe_allow_html=True)
         cost = f"${c['material_cost_usd']:.2f} · material cost only, not print cost" if c.get("material_cost_usd") is not None else "cost not sourced"
@@ -691,7 +691,7 @@ def design_card(r: dict, d: dict, c: dict, dark: bool) -> None:
         notes = [n for n in (d.get("notes") or []) + (d["pick"].get("notes") or [])
                  if n and n != "not fully converged"]  # that one is already a pill
         if notes:
-            st.markdown('<div class="mx-note" style="margin-top:6px">' + "<br>".join(ui.esc(n) for n in dict.fromkeys(notes)) + "</div>",
+            st.markdown('<div class="mx-note mx-block-sm">' + "<br>".join(ui.esc(n) for n in dict.fromkeys(notes)) + "</div>",
                         unsafe_allow_html=True)
         with st.expander("Sources"):
             st.markdown(material_sources_html(mid), unsafe_allow_html=True)
@@ -699,7 +699,7 @@ def design_card(r: dict, d: dict, c: dict, dark: bool) -> None:
             st.markdown(limits_html(d), unsafe_allow_html=True)
         files = (d.get("geometry") or {}).get("files") or {}
         if files.get("stl") and mid in cached_npz(folder, "utilization.npz"):
-            if st.button("View in 3D", key=f"3d_{mid}", use_container_width=True):
+            if st.button("View in 3D", key=f"3d_{mid}", width="stretch"):
                 S.view3d = mid
                 st.rerun()
 
@@ -830,13 +830,14 @@ def page_compare() -> None:
                             f'{ui.esc(material_name(win))}</div><div class="mx-title">{ui.pill("Lightest", "win")} '
                             f'{ch["mass_g"]:.1f} g at {d["fill"]:.0%} fill</div>', unsafe_allow_html=True)
             with top[1]:
-                S.stage_view = st.segmented_control("view", ["Shape", "Stress"], default=S.stage_view, key="stage_seg",
+                S.stage_view = st.segmented_control("view", ["Shape", "Stress"], default=S.stage_view, key="view_seg",
                                                     label_visibility="collapsed") or S.stage_view
             if S.stage_view == "Stress" and win in cached_npz(folder, "utilization.npz"):
-                st.markdown(img(png_util(folder, win, nelx, nely, 1400), "width:100%;display:block;margin:6px 0"), unsafe_allow_html=True)
+                st.markdown(img(png_util(folder, win, nelx, nely, 1400), f"width:100%;display:block;margin:{theme.SPACE_2}px 0"),
+                            unsafe_allow_html=True)
                 st.markdown(maps.utilization_legend(True), unsafe_allow_html=True)
             else:
-                st.markdown(img(png_density(folder, f"design/{win}", nelx, nely, True, 1400), "width:100%;display:block;margin:6px 0"),
+                st.markdown(img(png_density(folder, f"design/{win}", nelx, nely, True, 1400), f"width:100%;display:block;margin:{theme.SPACE_2}px 0"),
                             unsafe_allow_html=True)
             k = st.columns(4)
             k[0].markdown(ui.hero(f"{ch['sf']:.2f}", "", f"safety factor · {ch['sf_target']:g} target"), unsafe_allow_html=True)
@@ -877,7 +878,7 @@ def page_compare() -> None:
             with st.spinner("Explaining the computed results…"):
                 explanation = grounded_explanation(json.dumps(payload, sort_keys=True), config.LLM_PROVIDER,
                                                    config.LLM_MODELS[config.LLM_PROVIDER])
-            st.markdown(ui.eyebrow("Why this wins") + f'<div style="font-size:{theme.TEXT_MD + 1}px;line-height:1.55;margin-top:8px">'
+            st.markdown(ui.eyebrow("Why this wins") + f'<div style="font-size:{theme.TEXT_MD + 1}px;line-height:1.55;margin-top:{theme.SPACE_2}px">'
                         f'{ui.esc(explanation.text)}</div>', unsafe_allow_html=True)
             st.caption("LLM explanation · numbers checked against the computed results" if explanation.source == "llm"
                        else "Template fallback · the LLM was unavailable or its response failed validation")
@@ -900,7 +901,7 @@ def page_compare() -> None:
     with p1:
         with st.container(key="card_pareto"):
             st.markdown(ui.eyebrow("Mass vs material cost · one point per material (its final pick)"), unsafe_allow_html=True)
-            st.plotly_chart(maps.pareto_chart(rk["pareto"], True, rk.get("caption_cost", "material cost only")),
+            st.plotly_chart(maps.pareto_chart(rk["pareto"], True, rk.get("caption_cost", "material cost only"), winner=win),
                             config=theme.PLOTLY_CONFIG, width="stretch", key="pareto")
             st.markdown('<div class="mx-note">Filled points pass and fit your printer; hollow grey points failed or are '
                         'filtered (hover for the reason). The dotted line joins the designs no other beats on both mass and cost. '
@@ -965,7 +966,7 @@ def page_export() -> None:
                 pills = "".join(ui.pill(b, "win" if b == "Lightest" else "accent") for b in c["badges"])
                 pills += ui.pill("passes" if d["status"] == "pass" else "fails", "pass" if d["status"] == "pass" else "fail")
                 st.markdown(f'<div class="mx-eyebrow mx-eyebrow-proc">{proc_label(d["process"])} · {ui.esc(material_name(mid))}</div>'
-                            f'<div style="margin:6px 0">{pills}</div>'
+                            f'<div class="mx-pills">{pills}</div>'
                             + (ui.hero(f"{d['checks']['mass_g']:.1f}", "g", f"{d['fill']:.1%} fill · {d['effective_min_wall']}") if d.get("checks") else ""),
                             unsafe_allow_html=True)
                 if files:
@@ -974,7 +975,7 @@ def page_export() -> None:
                         path = folder / files.get(ext, "")
                         if files.get(ext) and path.exists():
                             b[j].download_button(ext.upper(), data=path.read_bytes(), file_name=f"{r['problem']['name'][:24].replace(' ', '_')}_{mid}.{ext}",
-                                                 mime=mime, key=f"dl_{mid}_{ext}", use_container_width=True)
+                                                 mime=mime, key=f"dl_{mid}_{ext}", width="stretch")
                     g = d["geometry"]
                     st.markdown(f'<div class="mx-note">watertight: {"yes" if g["watertight"] else "no"} · volume error '
                                 f'{g["volume_error"]:.2%} · area {g["area_mm2"]:.0f} mm²</div>', unsafe_allow_html=True)
@@ -985,7 +986,7 @@ def page_export() -> None:
         st.markdown(ui.eyebrow("Report and run bundle"), unsafe_allow_html=True)
         b = st.columns(3)
         b[0].download_button("results.json", data=(folder / "results.json").read_bytes(), file_name="results.json",
-                             mime="application/json", key="dl_results", use_container_width=True)
+                             mime="application/json", key="dl_results", width="stretch")
         try:
             with st.spinner("Preparing the report and reproducible bundle…"):
                 pdf, bundle = prepared_downloads(str(folder), integration.export_signature(str(folder)))
@@ -1019,7 +1020,7 @@ def page_validation() -> None:
     ui.title("Validation", "Every check runs from the same finite element code the designs use. "
                            "Errors are stated at the mesh they were measured on.")
     top = st.columns([5, 1])
-    if top[1].button("Run all checks", key="run_checks", type="primary", use_container_width=True):
+    if top[1].button("Run all checks", key="run_checks", type="primary", width="stretch"):
         run_checks.clear()
     with st.spinner("Running the checks (about 10 s)…"):
         v = run_checks()
@@ -1028,7 +1029,7 @@ def page_validation() -> None:
     c = v["cantilever"]
     with st.container(key="card_cantilever"):
         ok = c["delta_error"] < c["tolerance"] and c["sigma_error"] < c["tolerance"]
-        st.markdown(ui.eyebrow("13.1 Cantilever beam vs beam theory") + f'<div style="margin:6px 0">{ok_pill(ok)} '
+        st.markdown(ui.eyebrow("13.1 Cantilever beam vs beam theory") + f'<div class="mx-pills">{ok_pill(ok)} '
                     f'{ui.pill("validation mesh: " + c["mesh"], "")}</div>', unsafe_allow_html=True)
         rows = [["tip deflection (with shear, κ = 5/6)", f"{c['delta_fe_mm']:.4f} mm", f"{c['delta_theory_mm']:.4f} mm",
                  f"{c['delta_error']:.2%}", ok_pill(c["delta_error"] < c["tolerance"])],
@@ -1053,7 +1054,7 @@ def page_validation() -> None:
         with st.container(key="card_scaling"):
             s = v["scaling"]
             ok = s["deflection_ratio_error"] < s["tolerance"] and s["stress_ratio_error"] < s["tolerance"]
-            st.markdown(ui.eyebrow("13.5 Scaling laws (the catalog method)") + f'<div style="margin:6px 0">{ok_pill(ok)}</div>',
+            st.markdown(ui.eyebrow("13.5 Scaling laws (the catalog method)") + f'<div class="mx-pills">{ok_pill(ok)}</div>',
                         unsafe_allow_html=True)
             st.markdown(ui.table(["doubling E", "ratio", "expected", "error"],
                                  [["deflection", f"{s['deflection_ratio']:.9f}", "0.5", f"{s['deflection_ratio_error']:.1e}"],
@@ -1062,11 +1063,11 @@ def page_validation() -> None:
                           f'does not depend on E, so one catalog run per process serves every material.</div>', unsafe_allow_html=True)
             mb = v["mbb"]
             ok = mb["error"] < mb["tolerance"]
-            st.markdown(ui.eyebrow("13.3 MBB benchmark (paper mode)") + f'<div style="margin:6px 0">{ok_pill(ok)}</div>',
+            st.markdown(ui.eyebrow("13.3 MBB benchmark (paper mode)", top=True) + f'<div class="mx-pills">{ok_pill(ok)}</div>',
                         unsafe_allow_html=True)
             grid = np.asarray(mb["density_grid"])
             st.markdown(img(maps.density_png(grid.ravel(), grid.shape[0], grid.shape[1], True, 700),
-                            "width:100%;max-width:420px;display:block;border-radius:8px"), unsafe_allow_html=True)
+                            "width:100%;max-width:420px;display:block", cls="mx-img"), unsafe_allow_html=True)
             st.markdown(ui.table(["", "value"], [["call", ui.esc(mb["call"])], ["our compliance", f"{mb['compliance']:.2f}"],
                                                  ["published compliance", f"{mb['published_compliance']:.2f}"],
                                                  ["error", f"{mb['error']:.2%} (limit {mb['tolerance']:.0%})"],
@@ -1082,7 +1083,7 @@ def page_validation() -> None:
         ok = (all(h["error_with_recovery"] < h["error_without_recovery"] for h in hs)
               and h16["error_with_recovery"] < 0.05 and h8["element_check_error"] < 0.05)
         st.markdown(ui.eyebrow("13.4 Hole stress check · plate with a central hole, with and without nodal recovery")
-                    + f'<div style="margin:6px 0">{ok_pill(ok)} {ui.pill(f"K_t finite width = {hs[0]["Ktg"]:.3f} (Pilkey, Chart 4.1)", "")}</div>',
+                    + f'<div class="mx-pills">{ok_pill(ok)} {ui.pill(f"K_t finite width = {hs[0]["Ktg"]:.3f} (Pilkey, Chart 4.1)", "")}</div>',
                     unsafe_allow_html=True)
         c1, c2 = st.columns([3, 2], gap="medium")
         rows = [[str(h["elements_per_radius"]), f"{h['error_without_recovery']:.1%}", f"{h['error_with_recovery']:.1%}",

@@ -7,7 +7,18 @@ primaryColor = "#0A84FF"
 backgroundColor = "#050506"
 secondaryBackgroundColor = "#141416"
 textColor = "#F5F5F7"
-font = "sans serif"
+# DARK["raised"]: the only line Streamlit draws (data editor cells); widgets get no border at all
+borderColor = "#232327"
+showWidgetBorder = false
+dataframeBorderColor = "#232327"
+# DARK["card_alt"]: the data editor header row
+dataframeHeaderBackgroundColor = "#1C1C1F"
+# RADIUS_MD for widgets, pills for buttons; the fonts mirror FONT_SANS and FONT_MONO
+baseRadius = "16px"
+buttonRadius = "full"
+font = "Inter, 'SF Pro Display', 'Segoe UI Variable Text', 'Segoe UI', system-ui, sans-serif"
+headingFont = "Inter, 'SF Pro Display', 'Segoe UI Variable Text', 'Segoe UI', system-ui, sans-serif"
+codeFont = "'JetBrains Mono', 'SF Mono', 'Cascadia Mono', Consolas, monospace"
 
 [server]
 headless = true

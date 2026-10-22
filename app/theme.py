@@ -93,6 +93,8 @@ PAD_GLOW_RINGS = [(3.0, 0.022), (2.6, 0.028), (2.25, 0.035), (1.95, 0.045), (1.6
 # the faint wide stroke under each load arrow on the dark stage
 ARROW_GLOW_WIDTH = 9
 ARROW_GLOW_OPACITY = 0.22
+# the halo around the winning point on the Pareto chart: (marker size factor, alpha), drawn largest first
+POINT_HALO_RINGS = [(3.4, 0.05), (2.5, 0.07), (1.8, 0.10)]
 
 # instrument readouts (Check step): tick strip under the hero number
 READOUT_TICKS = 24
@@ -130,8 +132,14 @@ DENSITY_SCALE_LIGHT = [[0.0, "rgba(0,0,0,0)"], [0.35, "#D2D2D7"], [1.0, "#1D1D1F
 DENSITY_SCALE_CINEMATIC = [[0.0, "#8E8E93"], [0.5, "#C7C7CC"], [1.0, "#E8E8ED"]]
 
 # ----------------------------------------------------------------------------- motion
-EASE = "cubic-bezier(0.22, 1, 0.36, 1)"
-RISE_MS = 420
+EASE = "cubic-bezier(0.22, 1, 0.36, 1)"  # the soft settle of meters and the growth strip (one-shot sequences)
+EASE_OUT = "ease-out"  # entrances and the press
+RISE_MS = 300  # cards fade and rise in: opacity, a small lift and a touch of blur
+RISE_PX = 12
+RISE_BLUR_PX = 4
+PRESS_SCALE = 0.96  # a pressed button; a disabled one never scales
+PRESS_MS = 150
+HOVER_MS = 150  # hover lifts and color changes: instant feedback, never expressive motion
 
 
 def surface(dark: bool) -> dict:
@@ -213,22 +221,28 @@ hr {{ border-color: {s['line']} !important; }}
 
 /* ---- buttons: soft, lit, physical */
 .stButton > button, .stDownloadButton > button, [data-testid="stFormSubmitButton"] > button {{
-  border-radius: {RADIUS_PILL}px; border: none; padding: {SPACE_2}px {SPACE_5}px;
+  border-radius: {RADIUS_PILL}px; border: 1px solid transparent; padding: {SPACE_2}px {SPACE_5}px;
   background: {s['raised']}; color: {s['text']}; font-weight: 550; font-size: {TEXT_SM + 1}px;
-  box-shadow: {s['shadow']}; transition: transform 160ms {EASE}, box-shadow 160ms {EASE};
+  box-shadow: {s['shadow']}; -webkit-tap-highlight-color: transparent;
+  transition: transform {HOVER_MS}ms {EASE_OUT}, box-shadow {HOVER_MS}ms {EASE_OUT}, color {HOVER_MS}ms {EASE_OUT};
 }}
-.stButton > button:hover, .stDownloadButton > button:hover {{ transform: translateY(-1px);
-  box-shadow: {s['shadow_hover']}; color: {s['text']}; border: none; }}
-.stButton > button:active {{ transform: translateY(0) scale(0.98); }}
-.stButton > button:focus:not(:active) {{ color: {s['text']}; border: none; }}
+.stButton > button:not(:disabled):active, .stDownloadButton > button:not(:disabled):active {{
+  transform: scale({PRESS_SCALE}); transition-duration: {PRESS_MS}ms; }}
+.stButton > button:focus:not(:active) {{ color: {s['text']}; }}
 .stButton > button[kind="primary"], .stDownloadButton > button[kind="primary"] {{
   background: linear-gradient(180deg, #2D95FF, {ACCENT}); color: #fff;
   box-shadow: 0 1px 0 rgba(255,255,255,0.25) inset, 0 8px 22px rgba(10,132,255,0.32); }}
-.stButton > button[kind="primary"]:hover {{ color: #fff; }}
-.stButton > button:disabled {{ opacity: 0.45; transform: none; box-shadow: none; }}
+.stButton > button:disabled, .stDownloadButton > button:disabled {{ opacity: 0.5; transform: none;
+  box-shadow: 0 0 0 1px {s['line']} inset; cursor: default; }}
 .stButton > button[kind="tertiary"] {{ background: transparent; box-shadow: none; color: {s['text_2']};
   padding: {SPACE_1}px {SPACE_3}px; }}
-.stButton > button[kind="tertiary"]:hover {{ color: {s['text']}; box-shadow: none; transform: none; }}
+@media (hover: hover) {{
+  .stButton > button:not(:disabled):hover, .stDownloadButton > button:not(:disabled):hover {{
+    transform: translateY(-1px); box-shadow: {s['shadow_hover']}; color: {s['text']}; }}
+  .stButton > button[kind="primary"]:not(:disabled):hover {{ color: #fff;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.25) inset, 0 10px 26px rgba(10,132,255,0.4); }}
+  .stButton > button[kind="tertiary"]:not(:disabled):hover {{ color: {s['text']}; box-shadow: none; transform: none; }}
+}}
 
 /* ---- inputs */
 .stTextArea textarea, .stTextInput input, .stNumberInput input, [data-baseweb="select"] > div {{
@@ -240,13 +254,25 @@ hr {{ border-color: {s['line']} !important; }}
 [data-testid="stWidgetLabel"] p {{ color: {s['text_2']} !important; font-size: {TEXT_SM}px !important; }}
 /* the Describe box: larger type, more air, a soft inner edge so it reads as a writing surface */
 [class*="st-key-card_describe"] .stTextArea textarea {{ font-size: {TEXT_LG - 1}px; line-height: 1.6;
-  padding: {SPACE_5}px {SPACE_6}px !important; border-radius: {RADIUS_LG}px !important;
+  padding: {SPACE_5}px {SPACE_6}px !important; border-radius: {RADIUS_MD}px !important;
   box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset, 0 0 0 1px {s['line']} inset; }}
-[class*="st-key-card_describe"] .stTextArea [data-baseweb="textarea"] {{ border-radius: {RADIUS_LG}px !important; }}
+[class*="st-key-card_describe"] .stTextArea [data-baseweb="textarea"] {{ border-radius: {RADIUS_MD}px !important; }}
+/* multiselect chips read as pills in the accent tint, not solid blocks */
+[data-testid="stMultiSelectTagsContainer"] span[data-tag] {{ border-radius: {RADIUS_PILL}px !important;
+  background: var(--mx-accent-soft) !important; color: {ACCENT} !important; }}
+[data-testid="stMultiSelectTagsContainer"] span[data-tag] span, [data-testid="stMultiSelectTagsContainer"] span[data-tag] button {{
+  color: {ACCENT} !important; font-weight: 600; }}
+/* the growth scrubber: the iteration count sits beside it, so the thumb carries no value bubble */
+[data-testid="stSlider"] [data-testid="stSliderThumbValue"] {{ display: none; }}
+[data-testid="stSlider"] [data-testid="stSliderTickBar"] div {{ color: {s['text_2']}; font-size: {TEXT_XS}px;
+  font-family: {FONT_SANS}; }}
 [class*="st-key-card_describe"] .stTextArea textarea::placeholder {{ color: {s['text_2']}; opacity: 0.7; }}
 
-/* ---- toggles */
-[data-testid="stToggle"] label div[role="switch"], .stToggle [role="checkbox"] {{ box-shadow: inset 0 1px 2px rgba(0,0,0,0.12); }}
+/* ---- toggles: an inset track with a softly lit knob */
+[data-testid="stCheckbox"] label:has(input[role="switch"]) > div:first-of-type {{
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.45), 0 1px 0 rgba(255,255,255,0.05); }}
+[data-testid="stCheckbox"] label:has(input[role="switch"]) > div:first-of-type > div {{
+  box-shadow: 0 1px 3px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06) inset; }}
 
 /* ---- segmented controls and pills */
 [data-testid="stButtonGroup"] button {{ border-radius: {RADIUS_PILL}px !important; border: none !important;
@@ -269,25 +295,45 @@ hr {{ border-color: {s['line']} !important; }}
 [data-testid="stExpander"] details {{ border: none !important; background: {s['card_alt']};
   border-radius: {RADIUS_MD}px; }}
 [data-testid="stExpander"] summary {{ color: {s['text_2']}; font-size: {TEXT_SM}px; }}
-[data-testid="stExpander"] summary:hover {{ color: {s['text']}; }}
+@media (hover: hover) {{ [data-testid="stExpander"] summary:hover {{ color: {s['text']}; }} }}
+[data-testid="stExpander"] summary {{ transition: color {HOVER_MS}ms {EASE_OUT}; }}
+
+/* ---- Streamlit's own messages (info, error) take the message style of the app */
+[data-testid="stAlert"] [data-testid="stAlertContainer"] {{ border-radius: {RADIUS_MD}px; border: none !important;
+  padding: {SPACE_3}px {SPACE_4}px; background: {s['card_alt']}; color: {s['text']}; }}
+[data-testid="stAlert"] [data-testid="stAlertContainer"]:has([data-testid="stAlertContentError"]) {{
+  background: var(--mx-fail-soft); }}
+[data-testid="stAlert"] [data-testid="stAlertContainer"]:has([data-testid="stAlertContentWarning"]) {{
+  background: var(--mx-amber-soft); }}
+[data-testid="stAlert"] [data-testid="stAlertContainer"]:has([data-testid="stAlertContentSuccess"]) {{
+  background: var(--mx-pass-soft); }}
+[data-testid="stAlert"] [data-testid="stAlertContainer"] p {{ font-size: {TEXT_SM + 1}px; color: {s['text']}; }}
+[data-testid="stText"] {{ font-family: {FONT_MONO}; font-size: {TEXT_XS + 1}px; color: {s['text_2']}; }}
+
+/* ---- the 3D dialog: a raised card, its scroll contained */
+[data-testid="stDialog"] [role="dialog"] {{ background: {s['card']}; border-radius: {RADIUS_XL}px;
+  box-shadow: {s['shadow_hover']}; overscroll-behavior: contain; }}
 
 /* ---- data editor / dataframe */
 [data-testid="stDataFrame"], [data-testid="stDataEditor"] {{ border-radius: {RADIUS_MD}px; overflow: hidden;
   box-shadow: {s['shadow']}; }}
+[data-testid="stDataFrame"] > div, [data-testid="stDataEditor"] > div {{ border: none !important; }}
 
 /* ---- bordered containers become cards */
 [data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"]) {{ }}
 div[data-testid="stVerticalBlockBorderWrapper"][data-mx-card], .st-key-mxcard {{ }}
 [class*="st-key-card"] {{ background: {s['card']}; border-radius: {RADIUS_LG}px; padding: {SPACE_5}px;
-  box-shadow: {s['shadow']}; animation: mxrise {RISE_MS}ms {EASE} both; }}
+  border: 1px solid transparent; box-shadow: {s['shadow']}; animation: mxrise {RISE_MS}ms {EASE_OUT} both; }}
 [class*="st-key-stage"] {{ background: {DARK['stage']};
   border-radius: {RADIUS_XL}px; padding: {SPACE_5}px; box-shadow: {DARK['shadow']};
-  animation: mxrise {RISE_MS}ms {EASE} both; }}
+  animation: mxrise {RISE_MS}ms {EASE_OUT} both; }}
 /* ---- Describe: one preview card per demo part, a small stage with the cached shape glowing on it */
 [class*="st-key-preview"] {{ background: {DARK['stage']}; border-radius: {RADIUS_XL}px; padding: {SPACE_5}px;
-  box-shadow: {DARK['shadow']}; animation: mxrise {RISE_MS}ms {EASE} both;
-  transition: transform 200ms {EASE}, box-shadow 200ms {EASE}; }}
-[class*="st-key-preview"]:hover {{ transform: translateY(-2px); box-shadow: {DARK['shadow_hover']}; }}
+  box-shadow: {DARK['shadow']}; animation: mxrise {RISE_MS}ms {EASE_OUT} both;
+  transition: transform {HOVER_MS}ms {EASE_OUT}, box-shadow {HOVER_MS}ms {EASE_OUT}; }}
+@media (hover: hover) {{
+  [class*="st-key-preview"]:hover {{ transform: translateY(-2px); box-shadow: {DARK['shadow_hover']}; }}
+}}
 [class*="st-key-preview"] .stButton > button {{ width: 100%; margin-top: {SPACE_3}px; }}
 .mx-preview-title {{ font-size: {TEXT_LG + 1}px; font-weight: 650; letter-spacing: -0.02em; color: {DARK['text']};
   margin: 2px 0 {SPACE_3}px; }}
@@ -297,7 +343,7 @@ div[data-testid="stVerticalBlockBorderWrapper"][data-mx-card], .st-key-mxcard {{
   filter: drop-shadow(0 0 18px {DARK['glow']}); }}
 [class*="st-key-preview"] .mx-hero {{ font-size: {TEXT_XL + 8}px; }}
 /* ---- Check: instrument readouts (one hero number, its context, a tick strip with a pointer) */
-.mx-readout {{ background: {s['card_alt']}; border-radius: {RADIUS_LG}px; padding: {SPACE_4}px {SPACE_5}px {SPACE_3}px;
+.mx-readout {{ background: {s['card_alt']}; border-radius: {RADIUS_MD}px; padding: {SPACE_4}px {SPACE_5}px {SPACE_3}px;
   box-shadow: 0 1px 0 rgba(255,255,255,0.04) inset; height: 100%; }}
 .mx-readout .mx-hero {{ font-size: {TEXT_XL + 8}px; margin-top: {SPACE_1}px; }}
 .mx-readout .mx-sub2 {{ font-size: {TEXT_XS + 1}px; color: {s['text_2']}; margin-top: {SPACE_1}px; line-height: 1.4;
@@ -307,7 +353,7 @@ div[data-testid="stVerticalBlockBorderWrapper"][data-mx-card], .st-key-mxcard {{
 .mx-ticks i:nth-child(6n+1) {{ height: 8px; }}
 .mx-ticks i.on {{ height: 9px; opacity: 0.85; }}
 .mx-ticks i.tip {{ height: 16px; opacity: 1; border-left-width: 2px; filter: drop-shadow(0 0 3px currentColor); }}
-.mx-scale {{ display: flex; justify-content: space-between; font-size: {TEXT_XS - 1}px; color: {s['text_2']};
+.mx-scale {{ display: flex; justify-content: space-between; font-size: {TEXT_XS}px; color: {s['text_2']};
   margin-top: 3px; font-variant-numeric: tabular-nums; }}
 .mx-lc {{ display: inline-flex; align-items: center; gap: 7px; padding: 4px 11px; border-radius: {RADIUS_PILL}px;
   font-size: {TEXT_XS + 1}px; font-weight: 600; margin: 0 6px 6px 0; white-space: nowrap; }}
@@ -318,15 +364,16 @@ div[data-testid="stVerticalBlockBorderWrapper"][data-mx-card], .st-key-mxcard {{
   overflow: hidden; text-overflow: ellipsis; }}
 .mx-next b {{ color: {s['text']}; font-weight: 650; margin-right: {SPACE_3}px; }}
 [class*="st-key-card"][class*="_win"] {{ box-shadow: {s['shadow']}, 0 0 0 1px rgba(10,132,255,0.35), 0 0 42px rgba(10,132,255,0.22); }}
-[class*="st-key-card"][class*="_quiet"] {{ opacity: 0.6; filter: saturate(0.25); }}
-[class*="st-key-card"][class*="_quiet"]:hover {{ opacity: 1; filter: none; }}
+[class*="st-key-card"][class*="_quiet"] {{ opacity: 0.6; filter: blur(0) saturate(0.25);
+  transition: opacity {HOVER_MS}ms {EASE_OUT}, filter {HOVER_MS}ms {EASE_OUT}; }}
+@media (hover: hover) {{ [class*="st-key-card"][class*="_quiet"]:hover {{ opacity: 1; filter: blur(0) saturate(1); }} }}
 [class*="st-key-card_fdm"] {{ background-image: {PROCESS['fdm']['tint_dark' if dark else 'tint_light']}; }}
 [class*="st-key-card_sls"] {{ background-image: {PROCESS['sls']['tint_dark' if dark else 'tint_light']}; }}
 [class*="st-key-card_metal"] {{ background-image: {PROCESS['metal']['tint_dark' if dark else 'tint_light']}; }}
 [class*="st-key-card_fdm"] .mx-eyebrow-proc {{ color: {PROCESS['fdm']['color']}; }}
 [class*="st-key-card_sls"] .mx-eyebrow-proc {{ color: {PROCESS['sls']['color']}; }}
 [class*="st-key-card_metal"] .mx-eyebrow-proc {{ color: {PROCESS['metal']['color']}; }}
-[class*="st-key-agent"] {{ background: {s['glass']}; backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+.st-key-agent_panel {{ background: {s['glass']}; backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
   border-radius: {RADIUS_XL}px; padding: {SPACE_5}px; border: 1px dashed {s['line']};
   box-shadow: {s['shadow']}; }}
 
@@ -347,9 +394,14 @@ div[data-testid="stVerticalBlockBorderWrapper"][data-mx-card], .st-key-mxcard {{
 .mx-sub {{ font-size: {TEXT_MD + 1}px; color: {s['text_2']}; margin-bottom: {SPACE_5}px; max-width: 720px; }}
 .mx-eyebrow {{ font-size: {TEXT_XS}px; letter-spacing: {EYEBROW_TRACKING}; text-transform: uppercase;
   color: {s['text_2']}; font-weight: 600; }}
+.mx-eyebrow.mx-top {{ margin-top: {SPACE_5}px; }}
+.mx-pills {{ margin: {SPACE_2}px 0 {SPACE_1}px; }}
+.mx-block {{ margin-top: {SPACE_3}px; }}
+.mx-block-sm {{ margin-top: {SPACE_2}px; }}
+.mx-img {{ border-radius: {RADIUS_SM}px; }}
 .mx-card {{ background: {s['card']}; border-radius: {RADIUS_LG}px; padding: {SPACE_5}px; box-shadow: {s['shadow']};
-  animation: mxrise {RISE_MS}ms {EASE} both; position: relative; overflow: hidden; }}
-.mx-card.quiet {{ opacity: 0.55; filter: saturate(0.2); transform: scale(0.98); }}
+  border: 1px solid transparent; animation: mxrise {RISE_MS}ms {EASE_OUT} both; position: relative; overflow: hidden; }}
+.mx-card.quiet {{ opacity: 0.55; filter: blur(0) saturate(0.2); transform: scale(0.98); }}
 .mx-card.win {{ box-shadow: {s['shadow']}, 0 0 0 1px rgba(10,132,255,0.35), 0 0 42px rgba(10,132,255,0.22); }}
 .mx-hero {{ font-size: {TEXT_HERO}px; font-weight: 650; letter-spacing: -0.035em; line-height: 1; color: {s['text']};
   font-variant-numeric: tabular-nums; }}
@@ -395,17 +447,34 @@ div[data-testid="stVerticalBlockBorderWrapper"][data-mx-card], .st-key-mxcard {{
 .mx-check path {{ stroke-dasharray: 24; stroke-dashoffset: 24; animation: mxdraw 700ms {EASE} 200ms forwards; }}
 .mx-kv {{ display: grid; grid-template-columns: auto 1fr; gap: 4px {SPACE_4}px; font-size: {TEXT_SM}px; }}
 .mx-kv span:nth-child(odd) {{ color: {s['text_2']}; }}
-.mx-table {{ width: 100%; border-collapse: collapse; font-size: {TEXT_SM}px; font-variant-numeric: tabular-nums; }}
+.mx-table {{ width: 100%; border-collapse: collapse; font-size: {TEXT_SM}px; font-variant-numeric: tabular-nums;
+  border: 0 !important; margin: 0; }}
+.mx-table th, .mx-table td {{ border: 0 !important; background: transparent !important; vertical-align: middle; }}
 .mx-table th {{ text-align: left; font-weight: 600; color: {s['text_2']}; font-size: {TEXT_XS}px;
-  letter-spacing: {EYEBROW_TRACKING}; text-transform: uppercase; padding: 6px 8px; }}
-.mx-table td {{ padding: 8px; border-top: 1px solid {s['line']}; color: {s['text']}; }}
+  letter-spacing: {EYEBROW_TRACKING}; text-transform: uppercase; padding: {SPACE_2}px {SPACE_3}px {SPACE_2}px 0;
+  border-bottom: 1px solid {s['line']} !important; }}
+.mx-table td {{ padding: {SPACE_2 + 2}px {SPACE_3}px {SPACE_2 + 2}px 0; color: {s['text']};
+  border-top: 1px solid {s['line']} !important; }}
+.mx-table tbody tr:first-child td {{ border-top: 0 !important; }}
+.mx-table th:last-child, .mx-table td:last-child {{ padding-right: 0; }}
+.mx-table .mx-pill {{ margin: 0; }}
 .mx-swatch {{ display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: 0; }}
 .mx-other {{ color: {other['text']}; }}
 {proc_css}
 
-@keyframes mxrise {{ from {{ opacity: 0; transform: translateY(8px); }} to {{ opacity: 1; transform: none; }} }}
+/* entrances name only their start: the end is the element's own style, so a quiet card settles at its own
+   opacity and tint instead of the keyframe's */
+@keyframes mxrise {{ from {{ opacity: 0; transform: translateY({RISE_PX}px); filter: blur({RISE_BLUR_PX}px) saturate(1); }} }}
+@keyframes mxfade {{ from {{ opacity: 0; }} }}
 @keyframes mxgrow {{ from {{ transform: scaleX(0); }} to {{ transform: scaleX(1); }} }}
 @keyframes mxdraw {{ to {{ stroke-dashoffset: 0; }} }}
-@media (prefers-reduced-motion: reduce) {{ * {{ animation: none !important; transition: none !important; }} }}
+@media (prefers-reduced-motion: reduce) {{
+  * {{ transition: none !important; }}
+  [class*="st-key-card"], [class*="st-key-stage"], [class*="st-key-preview"], .mx-card {{
+    animation: mxfade {PRESS_MS}ms {EASE_OUT} both !important; }}
+  .mx-meter > i {{ animation: none !important; }}
+  .mx-check path {{ animation: none !important; stroke-dashoffset: 0; }}
+  .stButton > button:not(:disabled):active, [class*="st-key-preview"]:hover {{ transform: none; }}
+}}
 </style>
 """

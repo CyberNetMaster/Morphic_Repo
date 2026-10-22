@@ -91,16 +91,66 @@ def _circle(cx, cy, r, n=48):
     return cx + r * np.cos(t), cy + r * np.sin(t)
 
 
+def _pad_label(p, side: str) -> dict:
+    """Where a pad's name goes: just outside the ring on the given side, a few pixels clear of it."""
+    r = p.ring_r_mm
+    if side == "above":
+        return dict(x=p.cx, y=p.cy + r, xanchor="center", yanchor="bottom", yshift=4)
+    if side == "right":
+        return dict(x=p.cx + r, y=p.cy, xanchor="left", yanchor="middle", xshift=6)
+    if side == "left":
+        return dict(x=p.cx - r, y=p.cy, xanchor="right", yanchor="middle", xshift=-6)
+    return dict(x=p.cx, y=p.cy - r, xanchor="center", yanchor="top", yshift=-4)
+
+
+def pad_label_side(support: str | None, busy: set[str]) -> str:
+    """The first free side for a pad's name. A pin and a slide_x draw their symbol under the pad, a slide_y
+    draws it to the left; ``busy`` holds the sides a load arrow comes from. Below is the default."""
+    taken = set(busy)
+    if support in ("pin", "slide_x"):
+        taken.add("below")
+    elif support == "slide_y":
+        taken.add("left")
+    return next((sd for sd in ("below", "above", "right", "left") if sd not in taken), "below")
+
+
 def problem_drawing(problem: Problem, dark: bool = True, height: int = 420) -> go.Figure:
     """Spec 11, step 2: pads, supports (pins as triangles, slides as rollers with the free direction),
     loads as arrows scaled by size with one color per case, keep-in solid, keep-out hatched, dimensions.
     Defaults are drawn in the amber tint. On the dark stage every pad carries a soft glow and each
-    load arrow a faint wide stroke beneath it, so the drawing reads like a lit instrument panel."""
+    load arrow a faint wide stroke beneath it, so the drawing reads like a lit instrument panel.
+    Pad names move to a free side of the pad so they never sit on a support symbol or an arrow, and
+    the axes are widened so every arrow tail and force label stays inside the drawing."""
     s = theme.surface(dark)
     W, H = problem.design_space.width_mm, problem.design_space.height_mm
     fig = go.Figure()
     fig.add_shape(type="rect", x0=0, y0=0, x1=W, y1=H, line=dict(color=s["text_2"], width=1.2),
                   fillcolor=s["card_alt"], layer="below")
+    scale = max(W, H)
+    # the load arrows as geometry first: their tails decide where pad names go and how wide the axes are
+    fmax = max((abs(ld.fx_N) + abs(ld.fy_N)) for lc in problem.load_cases for ld in lc.loads) or 1.0
+    arrows, out_of_plane, busy = [], [], {}
+    for ci, lc in enumerate(problem.load_cases):
+        col = theme.LOAD_CASE_COLORS[ci % len(theme.LOAD_CASE_COLORS)]
+        for ld in lc.loads:
+            p = problem.pad(ld.pad_id)
+            mag = float(np.hypot(ld.fx_N, ld.fy_N))
+            if mag > 0:
+                L = 0.12 * scale * (0.35 + 0.65 * mag / fmax)
+                ux, uy = ld.fx_N / mag, ld.fy_N / mag
+                x0, y0 = p.cx - ux * (L + p.ring_r_mm), p.cy - uy * (L + p.ring_r_mm)
+                arrows.append((p, col, ux, uy, x0, y0, mag))
+                sides = busy.setdefault(p.id, set())
+                if uy < -0.3:
+                    sides.add("above")  # the arrow comes down onto the pad
+                if uy > 0.3:
+                    sides.add("below")
+                if ux > 0.3:
+                    sides.add("left")
+                if ux < -0.3:
+                    sides.add("right")
+            if ld.fz_N_out_of_plane:
+                out_of_plane.append((p, col, lc, ld))
     # pad glows first so everything else draws on top of them
     for i, p in enumerate(problem.pads):
         ring_default = problem.source_of(f"pads[{i}].ring_r_mm").source == "default"
@@ -125,7 +175,6 @@ def problem_drawing(problem: Problem, dark: bool = True, height: int = 420) -> g
                                      fillpattern=dict(shape="/", fgcolor=s["text_2"], bgcolor="rgba(0,0,0,0)", size=6),
                                      name=f"keep-out {z.id}", hoverinfo="name"))
     sup = {sp.pad_id: sp.type for sp in problem.supports}
-    scale = max(W, H)
     for i, p in enumerate(problem.pads):
         hole_default = problem.source_of(f"pads[{i}].hole_r_mm").source == "default"
         ring_default = problem.source_of(f"pads[{i}].ring_r_mm").source == "default"
@@ -141,9 +190,9 @@ def problem_drawing(problem: Problem, dark: bool = True, height: int = 420) -> g
                                      fillcolor=theme.DEFAULT_AMBER_SOFT if hole_default else s["bg"],
                                      name=f"pad {p.id}: hole r {p.hole_r_mm:g} mm" + (" (default)" if hole_default else ""),
                                      hoverinfo="name"))
-        fig.add_annotation(x=p.cx, y=p.cy, text=p.id, showarrow=False,
-                           font=dict(size=theme.TEXT_XS, color=s["text"]), yshift=-p.ring_r_mm / scale * 300 - 10)
         t = sup.get(p.id)
+        fig.add_annotation(**_pad_label(p, pad_label_side(t, busy.get(p.id, set()))), text=p.id, showarrow=False,
+                           font=dict(size=theme.TEXT_XS + 1, color=s["text"]))
         if t == "pin":
             a = 0.05 * scale
             fig.add_trace(go.Scatter(x=[p.cx, p.cx - a / 2, p.cx + a / 2, p.cx], y=[p.cy, p.cy - a, p.cy - a, p.cy],
@@ -167,35 +216,30 @@ def problem_drawing(problem: Problem, dark: bool = True, height: int = 420) -> g
             fig.add_annotation(x=ay[0], y=ay[1], ax=ax[0], ay=ax[1], xref="x", yref="y", axref="x", ayref="y",
                                showarrow=True, arrowhead=3, arrowsize=1.1, arrowwidth=1.2, arrowcolor=s["text_2"],
                                startarrowhead=3, text="")
-    # loads: one color per case, arrow length scaled by force
-    fmax = max((abs(ld.fx_N) + abs(ld.fy_N)) for lc in problem.load_cases for ld in lc.loads) or 1.0
-    for ci, lc in enumerate(problem.load_cases):
-        col = theme.LOAD_CASE_COLORS[ci % len(theme.LOAD_CASE_COLORS)]
-        for ld in lc.loads:
-            p = problem.pad(ld.pad_id)
-            mag = np.hypot(ld.fx_N, ld.fy_N)
-            if mag > 0:
-                L = 0.12 * scale * (0.35 + 0.65 * mag / fmax)
-                ux, uy = ld.fx_N / mag, ld.fy_N / mag
-                x0, y0 = p.cx - ux * (L + p.ring_r_mm), p.cy - uy * (L + p.ring_r_mm)
-                tip = dict(x=p.cx - ux * p.ring_r_mm, y=p.cy - uy * p.ring_r_mm, ax=x0, ay=y0,
-                           xref="x", yref="y", axref="x", ayref="y", showarrow=True, text="")
-                if dark:  # the glow: a wide, faint stroke under the crisp arrow
-                    fig.add_annotation(**tip, arrowhead=0, arrowwidth=theme.ARROW_GLOW_WIDTH, arrowcolor=col,
-                                       opacity=theme.ARROW_GLOW_OPACITY)
-                fig.add_annotation(**tip, arrowhead=2, arrowsize=1.2, arrowwidth=2.2, arrowcolor=col)
-                # label beyond the arrow tail, on the side the arrow comes from
-                fig.add_annotation(x=x0, y=y0, text=f"{lc.name}: {mag:g} N", showarrow=False,
-                                   font=dict(size=theme.TEXT_XS, color=col),
-                                   xanchor="right" if ux > 0.3 else ("left" if ux < -0.3 else "center"),
-                                   yanchor="top" if uy > 0.3 else ("bottom" if uy < -0.3 else "middle"),
-                                   xshift=-6 if ux > 0.3 else (6 if ux < -0.3 else 0),
-                                   yshift=-4 if uy > 0.3 else (4 if uy < -0.3 else 0))
-            if ld.fz_N_out_of_plane:
-                fig.add_trace(go.Scatter(x=[p.cx], y=[p.cy], mode="markers",
-                                         marker=dict(symbol="circle-open-dot", size=16, color=col, line=dict(width=2)),
-                                         name=f"{lc.name}: {ld.fz_N_out_of_plane:g} N out of plane (hand check)",
-                                         hoverinfo="name"))
+    # loads: one color per case, arrow length scaled by force; the force sits at the tail, the case name
+    # and limit are in the pill of the same color under the drawing
+    lab_x, lab_y = [], []
+    for p, col, ux, uy, x0, y0, mag in arrows:
+        tip = dict(x=p.cx - ux * p.ring_r_mm, y=p.cy - uy * p.ring_r_mm, ax=x0, ay=y0,
+                   xref="x", yref="y", axref="x", ayref="y", showarrow=True, text="")
+        if dark:  # the glow: a wide, faint stroke under the crisp arrow
+            fig.add_annotation(**tip, arrowhead=0, arrowwidth=theme.ARROW_GLOW_WIDTH, arrowcolor=col,
+                               opacity=theme.ARROW_GLOW_OPACITY)
+        fig.add_annotation(**tip, arrowhead=2, arrowsize=1.2, arrowwidth=2.2, arrowcolor=col)
+        fig.add_annotation(x=x0, y=y0, text=f"{mag:g} N", showarrow=False,
+                           font=dict(size=theme.TEXT_XS + 1, color=col),
+                           xanchor="right" if ux > 0.3 else ("left" if ux < -0.3 else "center"),
+                           yanchor="top" if uy > 0.3 else ("bottom" if uy < -0.3 else "middle"),
+                           xshift=-6 if ux > 0.3 else (6 if ux < -0.3 else 0),
+                           yshift=-4 if uy > 0.3 else (4 if uy < -0.3 else 0))
+        # the room the label needs beyond the tail (about 40 px wide, 14 px tall at this scale)
+        lab_x += [x0 - (0.10 if ux > 0.3 else 0.05) * scale, x0 + (0.10 if ux < -0.3 else 0.05) * scale]
+        lab_y += [y0 - (0.06 if uy > 0.3 else 0.03) * scale, y0 + (0.06 if uy < -0.3 else 0.03) * scale]
+    for p, col, lc, ld in out_of_plane:
+        fig.add_trace(go.Scatter(x=[p.cx], y=[p.cy], mode="markers",
+                                 marker=dict(symbol="circle-open-dot", size=16, color=col, line=dict(width=2)),
+                                 name=f"{lc.name}: {ld.fz_N_out_of_plane:g} N out of plane (hand check)",
+                                 hoverinfo="name"))
     # dimensions
     off = 0.06 * scale
     for (x0, y0, x1, y1, text, xs, ys) in ((0, -off, W, -off, f"{W:g} mm", 0, -16), (-off, 0, -off, H, f"{H:g} mm", -22, 0)):
@@ -205,40 +249,108 @@ def problem_drawing(problem: Problem, dark: bool = True, height: int = 420) -> g
     fig.add_annotation(x=W, y=-off, text=f"thickness {problem.thickness_mm:g} mm (extruded)", showarrow=False,
                        xanchor="right", yshift=-16, font=dict(size=theme.TEXT_XS, color=s["text_2"]))
     pad = 0.12 * scale
+    x_lo, x_hi = min([-pad] + lab_x), max([W + pad * 0.5] + lab_x)
+    y_lo, y_hi = min([-pad] + lab_y), max([H + pad * 0.5] + lab_y)
     # fit the height to the part's aspect so a long thin part does not sit in empty space
-    height = int(max(240, min(height, 700 * (H + 1.6 * pad) / (W + 1.6 * pad))))
+    height = int(max(240, min(height, 700 * (y_hi - y_lo) / (x_hi - x_lo))))
     fig.update_layout(**theme.plotly_layout(dark, height=height, margin=dict(l=4, r=4, t=4, b=4)))
-    fig.update_xaxes(range=[-pad, W + pad * 0.5], visible=False, constrain="domain")
-    fig.update_yaxes(range=[-pad, H + pad * 0.5], visible=False, scaleanchor="x", scaleratio=1)
+    fig.update_xaxes(range=[x_lo, x_hi], visible=False, constrain="domain")
+    fig.update_yaxes(range=[y_lo, y_hi], visible=False, scaleanchor="x", scaleratio=1)
     return fig
 
 
 # ----------------------------------------------------------------------------- pareto
-def pareto_chart(points: list[dict], dark: bool, caption: str, height: int = 320) -> go.Figure:
+# label slots in order of preference: (Plotly textposition, x direction, y direction with y down)
+_LABEL_SLOTS = (("top center", 0, -1), ("bottom center", 0, 1), ("middle right", 1, 0), ("middle left", -1, 0),
+                ("top right", 1, -1), ("top left", -1, -1), ("bottom right", 1, 1), ("bottom left", -1, 1))
+
+
+def _overlap(a: tuple, b: tuple) -> float:
+    """Overlap area of two boxes (x0, y0, x1, y1)."""
+    w = min(a[2], b[2]) - max(a[0], b[0])
+    h = min(a[3], b[3]) - max(a[1], b[1])
+    return w * h if w > 0 and h > 0 else 0.0
+
+
+def place_labels(points: list[tuple[float, float, str, float]], plot_w: float, plot_h: float,
+                 font_px: float = theme.TEXT_XS) -> list[str]:
+    """One Plotly textposition per point so the labels do not sit on each other, on other markers or
+    outside the plot. Works in approximate pixel space: ``points`` are (px, py, text, marker radius)
+    with py measured downward. Greedy, in the given order (put the important points first): each
+    label takes the first slot with no overlap, otherwise the slot with the least."""
+    markers = [(px - r, py - r, px + r, py + r) for px, py, _, r in points]
+    taken: list[tuple] = []
+    out = []
+    for i, (px, py, text, r) in enumerate(points):
+        w, h = 0.62 * font_px * len(text) + 4, font_px * 1.3
+        others = [m for j, m in enumerate(markers) if j != i] + taken
+        best, best_box, best_cost = _LABEL_SLOTS[0][0], None, None
+        for name, hx, hy in _LABEL_SLOTS:
+            gap = r + 2 if (hx == 0 or hy == 0) else r * 0.75
+            cx, cy = px + hx * (gap + w / 2), py + hy * (gap + h / 2)
+            box = (cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2)
+            cost = sum(_overlap(box, b) for b in others)
+            cost += (max(0.0, -box[0]) + max(0.0, box[2] - plot_w)) * h + (max(0.0, -box[1]) + max(0.0, box[3] - plot_h)) * w
+            if best_cost is None or cost < best_cost - 1e-9:
+                best, best_box, best_cost = name, box, cost
+            if cost == 0:
+                break
+        taken.append(best_box)
+        out.append(best)
+    return out
+
+
+def pareto_chart(points: list[dict], dark: bool, caption: str, height: int = 320, winner: str | None = None,
+                 plot_w: int = 640) -> go.Figure:
+    """Mass against material cost, one point per material. Ranked designs are filled in their process
+    color, the rest hollow and grey; the winner gets a soft halo and a bold name. Labels are placed
+    so they do not overlap (``plot_w`` is the plot width the placement assumes, in px)."""
     s = theme.surface(dark)
     fig = go.Figure()
-    front = sorted([p for p in points if p.get("on_front")], key=lambda p: p["mass_g"])
+    pts = [p for p in points if p["mass_g"] is not None and p["cost_usd"] is not None]
+    pts.sort(key=lambda p: (p["state"] != "ranked", p["mass_g"]))  # the important points place their labels first
+    front = sorted([p for p in pts if p.get("on_front")], key=lambda p: p["mass_g"])
     if len(front) > 1:
         fig.add_trace(go.Scatter(x=[p["mass_g"] for p in front], y=[p["cost_usd"] for p in front], mode="lines",
                                  line=dict(color=s["text_2"], width=1, dash="dot"), hoverinfo="skip"))
-    for p in points:
-        if p["mass_g"] is None or p["cost_usd"] is None:
-            continue
+    if pts:
+        xs, ys = [p["mass_g"] for p in pts], [p["cost_usd"] for p in pts]
+        xspan = max(max(xs) - min(xs), 0.2 * abs(max(xs)), 1e-9)
+        yspan = max(max(ys) - min(ys), 0.2 * abs(max(ys)), 1e-9)
+        xr = [min(xs) - 0.16 * xspan, max(xs) + 0.16 * xspan]
+        yr = [min(ys) - 0.22 * yspan, max(ys) + 0.22 * yspan]
+        if min(ys) >= 0:
+            yr[0] = max(0.0, yr[0])
+    else:
+        xr, yr = [0, 1], [0, 1]
+    plot_h = max(120, height - 80)
+    px = [(p["mass_g"] - xr[0]) / (xr[1] - xr[0]) * plot_w for p in pts]
+    py = [(1 - (p["cost_usd"] - yr[0]) / (yr[1] - yr[0])) * plot_h for p in pts]
+    sizes = [13 if p["state"] == "ranked" else 11 for p in pts]
+    positions = place_labels([(x, y, p["material_id"], sz / 2) for x, y, p, sz in zip(px, py, pts, sizes)], plot_w, plot_h)
+    for p, sz, pos in zip(pts, sizes, positions):
         pc = theme.PROCESS.get(p["process_id"], {}).get("color", theme.MUTED)
         ranked = p["state"] == "ranked"
+        win = winner is not None and p["material_id"] == winner
+        if win:  # the highlighted point: a soft halo in its process color, fading outward
+            for k, alpha in theme.POINT_HALO_RINGS:
+                fig.add_trace(go.Scatter(x=[p["mass_g"]], y=[p["cost_usd"]], mode="markers", hoverinfo="skip",
+                                         marker=dict(size=sz * k, color=theme.rgba(pc, alpha), line=dict(width=0))))
         fig.add_trace(go.Scatter(
             x=[p["mass_g"]], y=[p["cost_usd"]], mode="markers+text",
-            text=[p["material_id"]], textposition="top center",
+            text=[f"<b>{p['material_id']}</b>" if win else p["material_id"]], textposition=pos,
             textfont=dict(size=theme.TEXT_XS, color=s["text"] if ranked else s["text_2"]),
-            marker=dict(size=13 if ranked else 11, color=pc if ranked else "rgba(0,0,0,0)",
+            marker=dict(size=sz, color=pc if ranked else "rgba(0,0,0,0)",
                         line=dict(color=pc if ranked else s["text_2"], width=1.5 if ranked else 1.2),
                         opacity=1.0 if ranked else 0.7),
             hovertemplate=(f"<b>{p['material_id']}</b> · {theme.PROCESS.get(p['process_id'], {}).get('label', p['process_id'])}"
                            f"<br>{p['mass_g']:.2f} g · ${p['cost_usd']:.2f}"
                            + (f"<br>{p['reason']}" if p.get("reason") else "") + "<extra></extra>")))
-    fig.update_layout(**theme.plotly_layout(dark, height=height, margin=dict(l=8, r=8, t=24, b=8)))
-    fig.update_xaxes(**theme.plotly_axis(dark, "mass (g)"))
-    fig.update_yaxes(**theme.plotly_axis(dark, f"material cost per part ($) · {caption}"))
+    fig.add_annotation(xref="paper", yref="paper", x=1, y=1, xanchor="right", yanchor="bottom", yshift=6, text=caption,
+                       showarrow=False, font=dict(size=theme.TEXT_XS, color=s["text_2"]))
+    fig.update_layout(**theme.plotly_layout(dark, height=height, margin=dict(l=8, r=8, t=30, b=8)))
+    fig.update_xaxes(**theme.plotly_axis(dark, "mass (g)"), range=xr, nticks=6)
+    fig.update_yaxes(**theme.plotly_axis(dark, "material cost per part ($)"), range=yr, nticks=6)
     return fig
 
 
@@ -288,6 +400,12 @@ def part_3d(stl_path, util_nodes: np.ndarray, nelx: int, nely: int, h: float, da
 
 
 # ----------------------------------------------------------------------------- validation plots
+def _legend_above(dark: bool) -> dict:
+    """A legend row above the plot area, so it never sits on a line."""
+    return dict(orientation="h", x=0, xanchor="left", y=1.0, yanchor="bottom", bgcolor="rgba(0,0,0,0)",
+                font=dict(size=theme.TEXT_XS, color=theme.surface(dark)["text_2"]), itemwidth=30)
+
+
 def mesh_refinement_plot(rows: list[dict], dark: bool, height: int = 300) -> go.Figure:
     s = theme.surface(dark)
     x = [r["elements_through_depth"] for r in rows]
@@ -297,12 +415,19 @@ def mesh_refinement_plot(rows: list[dict], dark: bool, height: int = 300) -> go.
         fig.add_trace(go.Scatter(x=x, y=[max(r[key], 1e-6) for r in rows], mode="lines+markers", name=name,
                                  line=dict(color=col, width=1.5), marker=dict(size=7, color=col),
                                  hovertemplate=f"{name}<br>%{{x}} elements: %{{y:.2%}}<extra></extra>"))
-    fig.add_hline(y=rows[0]["tolerance"], line=dict(color=theme.PASS, width=1, dash="dot"),
-                  annotation_text="3% target", annotation_font=dict(size=theme.TEXT_XS, color=theme.PASS))
-    fig.update_layout(**theme.plotly_layout(dark, height=height, showlegend=True,
-                                            legend=dict(orientation="h", y=1.08, font=dict(size=theme.TEXT_XS))))
-    fig.update_xaxes(**theme.plotly_axis(dark, "elements through the depth"), type="log")
-    fig.update_yaxes(**theme.plotly_axis(dark, "error"), type="log", tickformat=".1%")
+    tol = rows[0]["tolerance"]
+    fig.add_hline(y=tol, line=dict(color=theme.PASS, width=1, dash="dot"))
+    fig.add_annotation(xref="paper", x=1, xanchor="right", yref="y", y=np.log10(tol), yanchor="top", yshift=-2,
+                       text=f"{tol:.0%} target", showarrow=False, font=dict(size=theme.TEXT_XS, color=theme.PASS))
+    fig.update_layout(**theme.plotly_layout(dark, height=height, showlegend=True, legend=_legend_above(dark),
+                                            margin=dict(l=8, r=8, t=44, b=8)))
+    fig.update_xaxes(**theme.plotly_axis(dark, "elements through the depth"), type="log", tickvals=x,
+                     ticktext=[str(v) for v in x])
+    lo = min(max(r[k], 1e-6) for r in rows for k in ("delta_error", "sigma_error", "sigma_centre_error"))
+    ticks = [t for t in (1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1.0) if t >= lo * 0.5]
+    fig.update_yaxes(**theme.plotly_axis(dark, "error"), type="log", tickvals=ticks,
+                     ticktext=[f"{t:.{max(0, -int(np.floor(np.log10(t))) - 2)}%}" for t in ticks],
+                     range=[np.log10(lo * 0.5), np.log10(max(max(r["delta_error"] for r in rows) * 3, tol * 3))])
     return fig
 
 
@@ -317,9 +442,10 @@ def hole_plot(rows: list[dict], dark: bool, height: int = 300) -> go.Figure:
                                  line=dict(color=col, width=1.5), marker=dict(size=7, color=col),
                                  hovertemplate=f"{name}<br>%{{x}} per radius: %{{y:.1%}}<extra></extra>"))
     fig.add_hline(y=0.05, line=dict(color=theme.PASS, width=1, dash="dot"), annotation_text="5% target",
-                  annotation_font=dict(size=theme.TEXT_XS, color=theme.PASS))
-    fig.update_layout(**theme.plotly_layout(dark, height=height, showlegend=True,
-                                            legend=dict(orientation="h", y=1.08, font=dict(size=theme.TEXT_XS))))
-    fig.update_xaxes(**theme.plotly_axis(dark, "elements per hole radius"), type="log", tickvals=x)
-    fig.update_yaxes(**theme.plotly_axis(dark, "error vs K_t (finite width)"), tickformat=".0%", rangemode="tozero")
+                  annotation_position="bottom left", annotation_font=dict(size=theme.TEXT_XS, color=theme.PASS))
+    fig.update_layout(**theme.plotly_layout(dark, height=height, showlegend=True, legend=_legend_above(dark),
+                                            margin=dict(l=8, r=8, t=44, b=8)))
+    fig.update_xaxes(**theme.plotly_axis(dark, "elements per hole radius"), type="log", tickvals=x,
+                     ticktext=[str(v) for v in x])
+    fig.update_yaxes(**theme.plotly_axis(dark, "error vs K_t (finite width)"), tickformat=".0%", rangemode="tozero", nticks=5)
     return fig

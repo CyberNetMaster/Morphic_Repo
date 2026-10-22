@@ -35,8 +35,9 @@ def title(text: str, sub: str = "") -> None:
                 + (f'<div class="mx-sub">{esc(sub)}</div>' if sub else ""), unsafe_allow_html=True)
 
 
-def eyebrow(text: str) -> str:
-    return f'<div class="mx-eyebrow">{esc(text)}</div>'
+def eyebrow(text: str, top: bool = False) -> str:
+    """Small uppercase tracked label. ``top`` adds a section gap above it (for a second section in one card)."""
+    return f'<div class="mx-eyebrow{" mx-top" if top else ""}">{esc(text)}</div>'
 
 
 def pill(text: str, kind: str = "") -> str:

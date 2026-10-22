@@ -73,6 +73,10 @@ def test_dark_everywhere():
     assert cfg["theme"]["base"] == "dark"
     assert cfg["theme"]["backgroundColor"] == theme.DARK["bg"] and cfg["theme"]["primaryColor"] == theme.ACCENT
     assert cfg["theme"]["secondaryBackgroundColor"] == theme.DARK["card"] and cfg["theme"]["textColor"] == theme.DARK["text"]
+    # the data editor is the one Streamlit widget that draws lines: they take the theme's raised and inset tones
+    assert cfg["theme"]["dataframeBorderColor"] == theme.DARK["raised"] == cfg["theme"]["borderColor"]
+    assert cfg["theme"]["dataframeHeaderBackgroundColor"] == theme.DARK["card_alt"]
+    assert cfg["theme"]["baseRadius"] == f"{theme.RADIUS_MD}px" and cfg["theme"]["showWidgetBorder"] is False
     css = theme.css(True)
     assert theme.DARK["bg"] in css and theme.DARK["amber_text"] in css and "#B7791F" not in css
     brief = (Path(__file__).resolve().parents[1] / "design-refs" / "brief.md").read_text(encoding="utf-8")
@@ -123,3 +127,55 @@ def test_app_runs_headless(state, monkeypatch):
     at.query_params.update(state)
     at.run()
     assert not at.exception, at.exception
+
+
+def test_pareto_labels_do_not_overlap():
+    for stem in PARTS:
+        r = data.load_results(CACHE_DIR / stem)
+        fig = maps.pareto_chart(r["ranking"]["pareto"], True, "material cost only", winner=r["ranking"]["winner"])
+        labelled = [t for t in fig.data if t.mode == "markers+text"]
+        assert labelled and all(t.textposition in {slot[0] for slot in maps._LABEL_SLOTS} for t in labelled)
+        halo = [t for t in fig.data if t.mode == "markers" and t.hoverinfo == "skip"]
+        assert len(halo) == len(theme.POINT_HALO_RINGS)  # the winner's halo
+        assert fig.layout.xaxis.range is not None and fig.layout.yaxis.range[0] >= 0
+    # the placement itself: four points on the same spot still get four different slots
+    assert len(set(maps.place_labels([(100, 100, "aaaa", 6)] * 4, 400, 300))) == 4
+    # a lone point keeps the preferred slot
+    assert maps.place_labels([(200, 150, "pa6cf", 6)], 400, 300) == ["top center"]
+
+
+def test_pad_labels_avoid_support_symbols_and_arrows():
+    assert maps.pad_label_side("pin", set()) == "above"
+    assert maps.pad_label_side("slide_x", set()) == "above"
+    assert maps.pad_label_side("slide_y", set()) == "below"
+    assert maps.pad_label_side(None, set()) == "below"
+    assert maps.pad_label_side("pin", {"above"}) == "right"
+    assert maps.pad_label_side(None, {"below"}) == "above"
+    for stem in PARTS:
+        p = data.demo_problem(stem)
+        fig = maps.problem_drawing(p)
+        ids = {q.id for q in p.pads}
+        names = {a.text: a for a in fig.layout.annotations if a.text in ids}
+        assert set(names) == ids
+        for sp in p.supports:
+            if sp.type in ("pin", "slide_x"):
+                assert names[sp.pad_id].yanchor == "bottom"  # the name sits above the pad, clear of the symbol
+        # every arrow tail (and so every force label) is inside the axes
+        xr, yr = fig.layout.xaxis.range, fig.layout.yaxis.range
+        tails = [(a.ax, a.ay) for a in fig.layout.annotations if a.showarrow and a.axref == "x"]
+        assert tails and all(xr[0] <= ax <= xr[1] and yr[0] <= ay <= yr[1] for ax, ay in tails)
+        forces = [a for a in fig.layout.annotations if a.text and a.text.endswith(" N")]
+        assert forces and all(xr[0] <= a.x <= xr[1] and yr[0] <= a.y <= yr[1] for a in forces)
+
+
+def test_polish_rules_in_css_and_no_deprecated_calls():
+    from pathlib import Path
+
+    src = (Path(__file__).resolve().parents[1] / "app" / "streamlit_app.py").read_text(encoding="utf-8")
+    assert "use_container_width" not in src
+    css = theme.css(True)
+    assert ".mx-table th, .mx-table td { border: 0 !important" in css  # no cell grid on the HTML tables
+    assert f"scale({theme.PRESS_SCALE})" in css and f"{theme.PRESS_MS}ms" in css and "@media (hover: hover)" in css
+    assert "prefers-reduced-motion" in css and "mxfade" in css
+    assert "transition: all" not in css and "transition-all" not in css
+    assert "mx-top" in ui.eyebrow("13.3", top=True) and "mx-top" not in ui.eyebrow("13.1")
