@@ -277,3 +277,55 @@ def test_demo_text_loads_saved_parse_without_llm(monkeypatch):
     assert data.match_demo(at.session_state["problem"]) == "drone_arm"
     assert any("saved parse" in m.value for m in at.markdown)
 
+
+def test_saved_explanations_pass_grounding():
+    from morphic import explain
+
+    for stem in PARTS:
+        r = data.load_results(CACHE_DIR / stem)
+        saved = data.saved_explanation(r)
+        assert saved is not None and saved["results_key"] == r["key"] and saved["source"] in ("llm", "template")
+        assert saved["text"].strip() and explain.check_grounding(saved["text"], explain.saved_results_json(r)) == []
+    other = dict(data.load_results(CACHE_DIR / PARTS[0]), key="another run")
+    assert data.saved_explanation(other) is None  # a different run never borrows a demo's text
+
+
+def test_global_messages_hand_checks_and_paths():
+    from pathlib import Path
+
+    for stem in PARTS:
+        r = data.load_results(CACHE_DIR / stem)
+        msgs = data.global_messages(r["ranking"], {d["material"]: d for d in r["designs"]})
+        assert not any(m.startswith("Limits are loose") for m in msgs)  # no demo winner sits at its lowest computed level
+        assert not any("animation shows an independent run" in m for m in msgs)  # that note lives on the card
+    loose = "Limits are loose; part size is set by the minimum wall. Results shown at the lowest fill level."
+    rk = {"winner": "m", "messages": [loose, "m: animation shows an independent run at the same fill level", "other"]}
+    at_floor = {"m": {"pick": {"v_pick": 0.08, "levels": [{"fill": 0.08}, {"fill": 0.1}]}}}
+    above = {"m": {"pick": {"v_pick": 0.1, "levels": [{"fill": 0.08}, {"fill": 0.1}]}}}
+    assert data.global_messages(rk, at_floor) == [loose, "other"] and data.global_messages(rk, above) == ["other"]
+    assert ui.hand_check_display({"sf": 8174622701.1, "where": "Hard landing: FE reaction 0 N, 0.0 MPa vs 270 MPa"}) == \
+        ("∞", "Hard landing: no load on this pad in this case")
+    assert ui.hand_check_display({"sf": "inf", "where": "", "detail": "n/a (solid mount)"}) == ("∞", "n/a (solid mount)")
+    assert ui.hand_check_display({"sf": 3.82, "where": "24.0 mm from pad hub"}) == ("3.82", "24.0 mm from pad hub")
+    root = Path(__file__).resolve().parents[1]
+    assert ui.shown_path(root / "examples" / "cache" / "rc_arm") == "examples/cache/rc_arm"
+    assert ui.shown_path(Path(root.anchor) / "elsewhere" / "run").endswith("run")
+
+
+def test_demo_compare_uses_the_saved_explanation(monkeypatch):
+    from pathlib import Path
+
+    from streamlit.testing.v1 import AppTest
+    from morphic import llm
+
+    def no_call(*a, **k):
+        raise AssertionError("a precomputed demo part must not call the LLM")
+
+    monkeypatch.setattr(llm, "complete", no_call)
+    monkeypatch.setattr(llm, "complete_json", no_call)
+    at = AppTest.from_file(str(Path(__file__).resolve().parents[1] / "app" / "streamlit_app.py"), default_timeout=120)
+    at.query_params.update({"demo": PARTS[0], "step": "2"})
+    at.run()
+    assert not at.exception, at.exception
+    assert any(c.value.startswith("Saved explanation") for c in at.caption)
+

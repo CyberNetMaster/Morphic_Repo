@@ -9,6 +9,7 @@ sweep, cold re-run of the winner only) and reports progress through a `Progress`
 from __future__ import annotations
 
 import json
+import re
 import threading
 import time
 import traceback
@@ -82,6 +83,41 @@ def match_demo_text(text: str) -> str | None:
         if f.exists() and _squash(f.read_text(encoding="utf-8")) == t:
             return stem
     return None
+
+
+EXPLAINED_DIR = EXAMPLES / "explained"
+
+
+def saved_explanation(results: dict) -> dict | None:
+    """The saved, number-checked "Why this wins" text of a precomputed demo part
+    (examples/explained/<stem>.json), or None unless the results are that part's cached run (the key must match)."""
+    f = EXPLAINED_DIR / f"{Path(results.get('_dir', '')).name}.json"
+    if not f.exists():
+        return None
+    with open(f, encoding="utf-8") as fh:
+        saved = json.load(fh)
+    return saved if saved.get("results_key") == results.get("key") and saved.get("text") else None
+
+
+def global_messages(rk: dict, designs: dict) -> list[str]:
+    """The ranking's messages for the explanation card. The loose-limits note is shown only when the winning
+    design itself sits at the lowest fill level computed for its process (the engine's rule also fires when
+    every card is loose for other reasons, as on the drone arm). The per-material animation notes already
+    sit on the cards, so they are not repeated here."""
+    win = rk.get("winner")
+    at_lowest = False
+    if win and win in designs:
+        pk = designs[win].get("pick") or {}
+        levels = [lv["fill"] for lv in pk.get("levels") or []]
+        at_lowest = bool(levels) and pk.get("v_pick") is not None and pk["v_pick"] <= min(levels) + 1e-9
+    out = []
+    for m in rk.get("messages") or []:
+        if m.startswith("Limits are loose") and not at_lowest:
+            continue
+        if re.match(r"^\S+: animation shows an independent run", m):
+            continue
+        out.append(m)
+    return out
 
 
 def saved_parse(stem: str) -> Problem | None:

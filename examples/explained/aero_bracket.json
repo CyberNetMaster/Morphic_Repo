@@ -1,0 +1,11 @@
+{
+  "part": "aero_bracket",
+  "results_key": "fd2872728f1334d36c8b9fcd80e0ba029c5d6d6c3e231b2bda3aada740ac6da7",
+  "source": "template",
+  "provider": null,
+  "model": null,
+  "attempts": 1,
+  "generated_utc": "2026-10-22T04:07:57+00:00",
+  "grounding": "passed: every number in the text matches the computed results at display precision",
+  "text": "EOS Aluminium AlSi10Mg (DMLS / LPBF) is lightest among the passing designs allowed by your printer selection, at 111.12 g. It requires DMLS / LPBF metal. Its material cost is 4.56 USD, excluding print cost. The ranking favors lower mass; material cost does not determine the winner."
+}

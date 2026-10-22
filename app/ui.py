@@ -5,6 +5,7 @@ from __future__ import annotations
 import html
 import math
 import re
+from pathlib import Path
 
 import streamlit as st
 
@@ -210,6 +211,35 @@ def flow(steps: list[str], current: int, lead: str = "") -> str:
 
 def or_divider(text: str = "or") -> str:
     return f'<div class="mx-or">{esc(text)}</div>'
+
+
+NO_LOAD_SF = 1e6  # a bearing check with no reaction on the pad: the engine divides by a vanishing stress
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def hand_check_display(h: dict) -> tuple[str, str]:
+    """The safety factor text and the note of a hand check. A pad with no load in a case has no meaningful
+    number: show infinity and say so. A solid mount keeps its own detail."""
+    sf, where = h.get("sf"), h.get("where") or ""
+    try:
+        v = float(sf)
+    except (TypeError, ValueError):
+        return fmt(sf), where
+    if "FE reaction 0 N" in where or (v > NO_LOAD_SF and not math.isinf(v)):
+        case = where.split(":", 1)[0].strip() if ":" in where else ""
+        return "∞", (f"{case}: " if case else "") + "no load on this pad in this case"
+    if math.isinf(v):
+        return "∞", where or (h.get("detail") or "")
+    return fmt(sf), where
+
+
+def shown_path(path) -> str:
+    """A path for the screen: relative to the project root when inside it, with forward slashes."""
+    p = Path(path).resolve()
+    try:
+        return p.relative_to(ROOT.resolve()).as_posix()
+    except ValueError:
+        return str(p)
 
 
 def fmt(x, nd: int = 2) -> str:

@@ -1,0 +1,11 @@
+{
+  "part": "drone_arm",
+  "results_key": "245e86f476e7863f9dbc7e38039c6aa1d75417f9e5296b9ecc309334aefcc6ec",
+  "source": "template",
+  "provider": null,
+  "model": null,
+  "attempts": 1,
+  "generated_utc": "2026-10-22T04:07:57+00:00",
+  "grounding": "passed: every number in the text matches the computed results at display precision",
+  "text": "Polymaker Fiberon PA6-CF20 is lightest among the passing designs allowed by your printer selection, at 13.27 g. It requires Desktop FDM, 0.4 mm nozzle. Its material cost is 0.70 USD, excluding print cost. The ranking favors lower mass; material cost does not determine the winner."
+}

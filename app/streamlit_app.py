@@ -538,7 +538,7 @@ def page_check() -> None:
                     st.markdown(ui.eyebrow("Live-run plan · if you change the problem", top=True), unsafe_allow_html=True)
                 else:
                     st.markdown(ui.eyebrow("Live-run plan"), unsafe_allow_html=True)
-                rows = [[r["process"], f'{r["effective_min_wall_mm"]:.2f} mm enforced' +
+                rows = [[proc_label(r["process"]), f'{r["effective_min_wall_mm"]:.2f} mm enforced' +
                          (f' (process allows {r["min_wall_mm"]:.2f} mm)' if r["effective_min_wall_mm"] > r["min_wall_mm"] + 1e-9 else ""),
                          f'{r["elements"]:,} elements · h {r["h_mm"]:.2f} mm', f'~{r["seconds"] / 60:.0f} min']
                         for r in est["rows"]]
@@ -714,9 +714,10 @@ def design_card(r: dict, d: dict, c: dict, dark: bool) -> None:
         st.markdown(f'<div class="mx-block"><div class="mx-label">deflection vs limit</div>{rows}</div>', unsafe_allow_html=True)
         hand = ""
         for h in ch.get("out_of_plane", []) + ch.get("bearing", []):
+            sf_text, where = ui.hand_check_display(h)
             hand += (f'<div class="mx-row"><span>{ui.check_icon(bool(h["passed"]))} {ui.esc(h["name"])}</span>'
-                     f'<span>SF {ui.fmt(h["sf"])}</span></div>'
-                     f'<div class="mx-note">{ui.esc(h.get("where", ""))}' + (f' · <b>{ui.esc(h["suggestion"])}</b>' if h.get("suggestion") else "") + "</div>")
+                     f'<span>SF {sf_text}</span></div>'
+                     f'<div class="mx-note">{ui.esc(where)}' + (f' · <b>{ui.esc(h["suggestion"])}</b>' if h.get("suggestion") else "") + "</div>")
         if hand:
             st.markdown(f'<div class="mx-block"><div class="mx-label">hand checks (approximate)</div>{hand}'
                         f'<div class="mx-note">Bearing uses the full XY strength as an approximation; bearing allowables are '
@@ -911,20 +912,29 @@ def page_compare() -> None:
     with e1:
         with st.container(key="card_explain"):
             payload = explain.saved_results_json(r)
-            with st.spinner("Explaining the computed results…"):
-                explanation = grounded_explanation(json.dumps(payload, sort_keys=True), config.LLM_PROVIDER,
-                                                   config.LLM_MODELS[config.LLM_PROVIDER])
+            saved = data.saved_explanation(r)
+            if saved is not None and not explain.check_grounding(saved["text"], payload):
+                # a precomputed demo part: its saved, number-checked text, no LLM call (new parts take the live path)
+                text = saved["text"]
+                caption = ("Saved explanation · " + ("LLM text" if saved.get("source") == "llm" else "template text")
+                           + " · numbers checked against the computed results")
+            else:
+                with st.spinner("Explaining the computed results…"):
+                    explanation = grounded_explanation(json.dumps(payload, sort_keys=True), config.LLM_PROVIDER,
+                                                       config.LLM_MODELS[config.LLM_PROVIDER])
+                text = explanation.text
+                caption = ("LLM explanation · numbers checked against the computed results" if explanation.source == "llm"
+                           else "Template fallback · the LLM was unavailable or its response failed validation")
             st.markdown(ui.eyebrow("Why this wins") + f'<div style="font-size:{theme.TEXT_MD + 1}px;line-height:1.55;margin-top:{theme.SPACE_2}px">'
-                        f'{ui.esc(explanation.text)}</div>', unsafe_allow_html=True)
-            st.caption("LLM explanation · numbers checked against the computed results" if explanation.source == "llm"
-                       else "Template fallback · the LLM was unavailable or its response failed validation")
+                        f'{ui.esc(text)}</div>', unsafe_allow_html=True)
+            st.caption(caption)
             with st.expander("Facts used in the explanation"):
                 for card in payload["cards"]:
                     if card.get("mass"):
                         cost = card.get("material_cost")
                         st.text(f"{card['name']}: {card['mass']['value']} g · {card['printer']} · {card['state']}"
                                 + (f" · {cost['value']} USD material only" if cost else ""))
-            for m in rk.get("messages") or []:
+            for m in data.global_messages(rk, designs):
                 ui.msg(m, "info")
     with e2:
         with st.container(key="agent_panel"):
@@ -1032,7 +1042,7 @@ def page_export() -> None:
                                  key="dl_bundle", width="stretch")
         except Exception as exc:
             st.error(f"Report and bundle could not be prepared ({type(exc).__name__}). Geometry downloads remain available.")
-        ui.footnote(f"Results folder: {folder} · code {r['code_version'][:12]} · materials {r['materials_hash']} · "
+        ui.footnote(f"Results folder: {ui.shown_path(folder)} · code {r['code_version'][:12]} · materials {r['materials_hash']} · "
                     f"cap {r['solver_settings']['cap_used']:,} elements, {r['solver_settings']['sweep_mode_used']} sweep. "
                     f"The PDF contains one page per material. The bundle includes that same report and the inputs for morphic rerun.")
     ui.foot(FIXED_NOTE)
