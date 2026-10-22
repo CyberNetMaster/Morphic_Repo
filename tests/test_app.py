@@ -328,4 +328,7 @@ def test_demo_compare_uses_the_saved_explanation(monkeypatch):
     at.run()
     assert not at.exception, at.exception
     assert any(c.value.startswith("Saved explanation") for c in at.caption)
+    if data.saved_explanation(data.load_results(CACHE_DIR / PARTS[0]))["source"] != "llm":
+        assert any(c.value == "Saved explanation · written by Morphic's built-in rule · numbers checked against "
+                   "the computed results" for c in at.caption)
 

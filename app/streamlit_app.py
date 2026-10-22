@@ -916,7 +916,8 @@ def page_compare() -> None:
             if saved is not None and not explain.check_grounding(saved["text"], payload):
                 # a precomputed demo part: its saved, number-checked text, no LLM call (new parts take the live path)
                 text = saved["text"]
-                caption = ("Saved explanation · " + ("LLM text" if saved.get("source") == "llm" else "template text")
+                caption = ("Saved explanation · " + ("LLM text" if saved.get("source") == "llm"
+                                                      else "written by Morphic's built-in rule")
                            + " · numbers checked against the computed results")
             else:
                 with st.spinner("Explaining the computed results…"):
