@@ -107,3 +107,21 @@ finished and committed after the restart.
 
 None found. Spec section 11 lists what each step must show. All of it is still shown. The changes are in layout
 and styling only.
+
+## Status on master, 2026-10-22
+
+Checked again on `master` after the A to G merges. Everything stayed on this computer; nothing was pushed or uploaded.
+
+- Task E is on master in full. Commit `308e9e1` (merged by `3f9190b`) carries the dark theme on every step, the three
+  Describe preview cards from the cached results, the larger input area, the one-line "what happens next", the
+  Check drawing on the dark stage with glowing pads and colored load arrows, the load-case pills and the four
+  instrument readouts. `design-refs/brief.md` says "Dark everywhere" and the light-step rule is gone. All theme
+  values sit in `app/theme.py`; the E commit touched no file under `morphic/`.
+- The four open points listed under "Notes for the user" above are closed by commit `46c0ed2` ("Polish the app
+  design against the brief", report in `.plans/reports/polish.md`): pad names no longer sit on support symbols,
+  the Validation tables have no cell grid, no `use_container_width` call remains, and the three agent screens
+  were retaken from the saved exploration replay with the LLM switched off.
+- Current evidence: the full suite on this tree is 197 passed, 0 failed, 0 skipped
+  (`.plans/reports/polish-tests.xml`), and all 13 screens in `.plans/reports/screens/` were retaken on 2026-10-22
+  against `.plans/reports/polish_capture_app.py`, which makes no LLM request.
+
