@@ -7,6 +7,8 @@ All style values come from theme.py.
 
 from __future__ import annotations
 
+from urllib.parse import quote
+
 import streamlit as st
 
 from app import theme, ui
@@ -18,19 +20,32 @@ from morphic.problem import Provenance
 KEY = "sketch_upload"
 
 
+def _sketch_icon() -> str:
+    """An original glyph for the drop zone: a pencil finishing a short strut between two nodes."""
+    svg = (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22" fill="none" stroke="{theme.MUTED}" '
+           'stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">'
+           '<path d="M4 16.5 L12.5 8"/><circle cx="4" cy="16.5" r="1.7"/><circle cx="13" cy="7.5" r="1.7"/>'
+           '<path d="M14.5 3.5 l3.5 3.5 -2.2 2.2 -3.5 -3.5 z"/><path d="M5 20 h12"/></svg>')
+    return 'url("data:image/svg+xml,' + quote(svg, safe="") + '")'
+
+
 def css() -> str:
     k = f".st-key-{KEY}"
+    zone = f'{k} [data-testid="stFileUploaderDropzone"]'
     return f"""<style>
 {k} {{ gap: {theme.SPACE_2}px; margin: {theme.SPACE_1}px 0 {theme.SPACE_2}px; }}
-{k} [data-testid="stFileUploaderDropzone"] {{ background: var(--mx-input); border: 1px dashed {theme.MUTED};
-  border-radius: {theme.RADIUS_MD}px; padding: {theme.SPACE_2}px {theme.SPACE_3}px;
-  transition: background 160ms {theme.EASE}, border-color 160ms {theme.EASE}; }}
-{k} [data-testid="stFileUploaderDropzone"]:hover {{ background: var(--mx-accent-soft); border-color: {theme.ACCENT}; }}
-{k} [data-testid="stFileUploaderDropzoneInstructions"] span {{ font-size: {theme.TEXT_SM}px; color: var(--mx-text); }}
-{k} [data-testid="stFileUploaderDropzoneInstructions"] small {{ font-size: {theme.TEXT_XS}px; color: var(--mx-text-2); }}
-{k} [data-testid="stFileUploaderDropzone"] button {{ border: none; border-radius: {theme.RADIUS_PILL}px;
-  background: var(--mx-card); color: var(--mx-text); box-shadow: var(--mx-shadow); font-weight: 550;
-  font-size: {theme.TEXT_SM}px; padding: {theme.SPACE_1}px {theme.SPACE_4}px; }}
+{zone} {{ background: rgba(255,255,255,0.03); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border: 1px dashed rgba(255,255,255,0.2); border-radius: {theme.RADIUS_MD}px; padding: {theme.SPACE_3}px {theme.SPACE_4}px;
+  transition: background {theme.HOVER_MS}ms {theme.EASE_OUT}, border-color {theme.HOVER_MS}ms {theme.EASE_OUT}; }}
+@media (hover: hover) {{ {zone}:hover {{ background: var(--mx-accent-soft); border-color: {theme.ACCENT}; }} }}
+{zone} [data-testid="stFileUploaderDropzoneInstructions"] {{ display: flex; align-items: center; gap: {theme.SPACE_2}px; }}
+{zone} [data-testid="stFileUploaderDropzoneInstructions"]::before {{ content: ""; width: 22px; height: 22px; flex: none;
+  background: {_sketch_icon()} center / contain no-repeat; }}
+{zone} [data-testid="stFileUploaderDropzoneInstructions"] span {{ font-size: {theme.TEXT_SM}px; color: var(--mx-text); }}
+{zone} [data-testid="stFileUploaderDropzoneInstructions"] small {{ font-size: {theme.TEXT_XS}px; color: var(--mx-text-2); }}
+{zone} button {{ border: none; border-radius: {theme.RADIUS_PILL}px; background: var(--mx-input); color: var(--mx-text);
+  box-shadow: var(--mx-shadow); font-weight: {theme.WEIGHT_MEDIUM}; font-size: {theme.TEXT_SM}px;
+  padding: {theme.SPACE_1}px {theme.SPACE_4}px; }}
 </style>"""
 
 
@@ -38,7 +53,7 @@ def control(note: str, printer: str | None) -> None:
     """The upload box and its button. ``note`` (the description text) is sent with the photo;
     ``printer`` is the Describe selector's choice, or None for "from the text"."""
     with st.container(key=KEY):
-        st.markdown(css() + ui.eyebrow("Or a sketch")
+        st.markdown(css() + ui.eyebrow("Sketch photo")
                     + f'<div class="mx-note" style="margin-bottom:{theme.SPACE_3}px">A photo of a hand sketch: '
                       'outline, holes, load arrows and written dimensions. Any text above is sent with it.</div>',
                     unsafe_allow_html=True)

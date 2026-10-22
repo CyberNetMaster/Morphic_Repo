@@ -179,3 +179,52 @@ def test_polish_rules_in_css_and_no_deprecated_calls():
     assert "prefers-reduced-motion" in css and "mxfade" in css
     assert "transition: all" not in css and "transition-all" not in css
     assert "mx-top" in ui.eyebrow("13.3", top=True) and "mx-top" not in ui.eyebrow("13.1")
+
+
+def test_geist_is_bundled_and_inlined():
+    import tomllib
+    from pathlib import Path
+
+    for name in theme.FONT_FILES.values():
+        assert (theme.FONT_DIR / name).stat().st_size > 10_000
+    assert "SIL Open Font License" in (theme.FONT_DIR / "LICENSE.txt").read_text(encoding="utf-8")
+    css = theme.font_face_css()
+    assert css.count("@font-face") == len(theme.FONT_FILES) == css.count("data:font/woff2;base64,")
+    assert "http" not in css  # no font service, ever
+    assert theme.FONT_SANS.startswith("Geist") and theme.FONT_MONO.startswith("'Geist Mono'")
+    cfg = tomllib.loads((Path(__file__).resolve().parents[1] / ".streamlit" / "config.toml").read_text(encoding="utf-8"))
+    assert cfg["theme"]["font"] == theme.FONT_SANS and cfg["theme"]["codeFont"] == theme.FONT_MONO
+    main = theme.css(True)
+    assert f"font-size: {theme.TEXT_DISPLAY}px" in main and f"letter-spacing: {theme.TRACK_DISPLAY}" in main
+    assert f"letter-spacing: {theme.EYEBROW_TRACKING}" in main and f"line-height: {theme.LINE_BODY}" in main
+    assert "font-variant-numeric: tabular-nums" in main and ".mx-eyebrow::before" in main
+
+
+def test_numbers_use_the_mono_face():
+    assert "mx-num" in ui.pill("-39% vs strut") and "mx-num" in ui.pill("#1 · passes")
+    assert "mx-num" not in ui.pill("passes") and "mx-num" not in ui.pill("Lightest")
+    t = ui.table(["q", "v"], [["tip deflection", "18.27 mm"], ["$0.21", "yes"], ["—", "<b>0.3</b> of 1 mm"]])
+    assert t.count('<td class="mx-num">') == 3
+
+
+def test_describe_pieces():
+    f = ui.flow(["Check", "Generate", "Export"], 0, "What happens next")
+    assert f.count('class="step') == 3 and f.count('class="step on"') == 1 and f.count('class="link"') == 2
+    mark = ui.logomark()
+    assert "<svg" in mark and theme.ACCENT in mark and theme.ACCENT_LIGHT in mark
+    note = ui.footnote_html("a < b")
+    assert "mx-footnote" in note and "&lt;" in note and "<svg" in note
+    assert "mx-or" in ui.or_divider()
+
+
+def test_example_pill_fills_the_description():
+    from pathlib import Path
+
+    from streamlit.testing.v1 import AppTest
+
+    at = AppTest.from_file(str(Path(__file__).resolve().parents[1] / "app" / "streamlit_app.py"), default_timeout=120)
+    at.run()
+    at.button(key=f"ex_{PARTS[0]}").click().run()
+    assert not at.exception, at.exception
+    assert at.session_state["text"] == data.demo_text(PARTS[0]) and at.session_state["step"] == 0
+

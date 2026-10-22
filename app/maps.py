@@ -227,7 +227,7 @@ def problem_drawing(problem: Problem, dark: bool = True, height: int = 420) -> g
                                opacity=theme.ARROW_GLOW_OPACITY)
         fig.add_annotation(**tip, arrowhead=2, arrowsize=1.2, arrowwidth=2.2, arrowcolor=col)
         fig.add_annotation(x=x0, y=y0, text=f"{mag:g} N", showarrow=False,
-                           font=dict(size=theme.TEXT_XS + 1, color=col),
+                           font=dict(family=theme.FONT_MONO, size=theme.TEXT_XS + 1, color=col),
                            xanchor="right" if ux > 0.3 else ("left" if ux < -0.3 else "center"),
                            yanchor="top" if uy > 0.3 else ("bottom" if uy < -0.3 else "middle"),
                            xshift=-6 if ux > 0.3 else (6 if ux < -0.3 else 0),
@@ -245,9 +245,9 @@ def problem_drawing(problem: Problem, dark: bool = True, height: int = 420) -> g
     for (x0, y0, x1, y1, text, xs, ys) in ((0, -off, W, -off, f"{W:g} mm", 0, -16), (-off, 0, -off, H, f"{H:g} mm", -22, 0)):
         fig.add_shape(type="line", x0=x0, y0=y0, x1=x1, y1=y1, line=dict(color=s["text_2"], width=1))
         fig.add_annotation(x=(x0 + x1) / 2, y=(y0 + y1) / 2, text=text, showarrow=False, xshift=xs, yshift=ys,
-                           font=dict(size=theme.TEXT_XS, color=s["text_2"]), textangle=0 if ys else -90)
+                           font=dict(family=theme.FONT_MONO, size=theme.TEXT_XS, color=s["text_2"]), textangle=0 if ys else -90)
     fig.add_annotation(x=W, y=-off, text=f"thickness {problem.thickness_mm:g} mm (extruded)", showarrow=False,
-                       xanchor="right", yshift=-16, font=dict(size=theme.TEXT_XS, color=s["text_2"]))
+                       xanchor="right", yshift=-16, font=dict(family=theme.FONT_MONO, size=theme.TEXT_XS, color=s["text_2"]))
     pad = 0.12 * scale
     x_lo, x_hi = min([-pad] + lab_x), max([W + pad * 0.5] + lab_x)
     y_lo, y_hi = min([-pad] + lab_y), max([H + pad * 0.5] + lab_y)

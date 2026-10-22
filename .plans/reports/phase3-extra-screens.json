@@ -1,37 +1,37 @@
 {
-  "captured_utc": "2026-10-22T00:20:30.546791+00:00",
+  "captured_utc": "2026-10-22T01:42:19.191288+00:00",
   "screens": [
     {
       "file": ".plans\\reports\\screens\\sketch-1-describe.png",
-      "sha256": "92605a934e6376fd3b005d3712b6b8fd3012156529e6da4343fd8eda448203f2"
+      "sha256": "a6985bab1d6229326ae04ee5040b08389afe66cbe88ed5eee67c61fb7a4b59ec"
     },
     {
       "file": ".plans\\reports\\screens\\sketch-2-control.png",
-      "sha256": "61b00b94cec72d8bdbe6ee749a861e46b6cbdcdbd7e6108fe8c9d0c87bda04c4"
+      "sha256": "dc09f3b6e952187a1597bd6e6c9cd50cea1cd94c87dd575b064a5e274584b648"
     },
     {
       "file": ".plans\\reports\\screens\\sketch-3-chosen.png",
-      "sha256": "5d909b24d7187de7da923e07202f965090cdeacc90706d20186b0e0b36eb86c5"
+      "sha256": "cdae40c57758639f3e44f980ef64d8a7417587de2d309a604e5e28bfaa17136f"
     },
     {
       "file": ".plans\\reports\\screens\\sketch-4-hover.png",
-      "sha256": "7e187adfa0b6a371151123f168de0bdb13d38b618b4f6b8cf5d364351fe47695"
+      "sha256": "961adef0b2074b628c3db43c2e4317e292443a2506e1d3fcfdcbf8bdeed567fd"
     },
     {
       "file": ".plans\\reports\\screens\\sketch-5-check.png",
-      "sha256": "2d1ae51eea3254d64ea1b66af9198c270b0e247ea1c916469c0ecc8c227c500f"
+      "sha256": "20cd98ec6adcb700043296aaa1921420592b1aad5540812c4e2081c2ab5a5aa3"
     },
     {
       "file": ".plans\\reports\\screens\\6-drone-agent.png",
-      "sha256": "539484e12fe4cb81e07932570b25a1f5a98b7ed153e33ba4d0370dd634f73732"
+      "sha256": "3a0cc979da945f27053c51740a9f82e1d38cd419028ba223763c95004883a053"
     },
     {
       "file": ".plans\\reports\\screens\\6-drone-agent-panel.png",
-      "sha256": "ec3e0088a92dc23e11b53bfa2f57701e75f203944615d9205fbd0a4e6607a12a"
+      "sha256": "c0b8634b0ccaf4e122c8e6df03b808d08b12a3a43ced49029d69bdc22ca387df"
     },
     {
       "file": ".plans\\reports\\screens\\7-agent-review.png",
-      "sha256": "056234b3d948ce0795ae393e90be038692c0aa9d7ec6e5877445506858480302"
+      "sha256": "65f6d26f52259f2c8670b6ebeeb8634f90eecdb765e7ed7161a43f5ef6c173ba"
     }
   ],
   "sketch": "Fixed test-provider interpretation; not a live vision result",

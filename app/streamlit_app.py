@@ -207,6 +207,13 @@ def page_describe() -> None:
                                   placeholder="A bracket 120 mm long and 40 mm tall, 8 mm thick. Two M4 bolts hold "
                                               "the left end at (10, 10) and (10, 30). A 200 N downward load at (110, 20). "
                                               "Safety factor 2, deflection under 0.5 mm. Desktop FDM printer.")
+            st.markdown(f'<div class="mx-count">{len(S.text)} characters</div>', unsafe_allow_html=True)
+            with st.container(key="examples", horizontal=True, vertical_alignment="center", gap="small"):
+                st.markdown('<div class="mx-examples-label">Try an example</div>', unsafe_allow_html=True)
+                for label, stem in data.DEMOS.items():
+                    if st.button(label, key=f"ex_{stem}"):
+                        S.text = data.demo_text(stem)
+                        st.rerun()
         with right:
             st.markdown(ui.eyebrow("Run"), unsafe_allow_html=True)
             S.printer_choice = st.selectbox("Printer", [FROM_TEXT] + list(PRINTERS),
@@ -215,17 +222,16 @@ def page_describe() -> None:
                                             help="The selector wins over the text if you change it.")
             S.quick = st.toggle("Quick mode", value=S.quick,
                                 help="One process, 10k elements, no refinement or re-run. About a minute.")
-            st.markdown(f'<div class="mx-note" style="margin:{theme.SPACE_1}px 0 {theme.SPACE_4}px">Quick mode runs one process at a coarse mesh '
-                        'for a first look. The full run covers FDM, SLS and metal.</div>', unsafe_allow_html=True)
+            ui.footnote("Quick mode runs one process at a coarse mesh for a first look. The full run covers FDM, SLS and metal.")
             if st.button("Read my description", type="primary", disabled=not S.text.strip(), key="read_btn",
                          width="stretch"):
                 read_description()
         # Keep E's two-column layout; read the current printer choice before the sketch action.
         with left:
+            st.markdown(ui.or_divider(), unsafe_allow_html=True)
             sketch_upload.control(S.text, None if S.printer_choice == FROM_TEXT else S.printer_choice)
-        st.markdown('<div class="mx-next"><b>What happens next</b>Morphic reads your text or sketch into a problem, you check '
-                    'it on a drawing, then it optimizes a shape for six cited materials and ranks them by mass.</div>',
-                    unsafe_allow_html=True)
+        # what happens next, as the three steps that follow this one
+        st.markdown(ui.flow(["Check", "Generate", "Export"], 0, "What happens next"), unsafe_allow_html=True)
 
 
 def read_description() -> None:
@@ -491,9 +497,8 @@ def page_check() -> None:
                 st.plotly_chart(maps.problem_drawing(p, dark=True), config=theme.PLOTLY_CONFIG, width="stretch",
                                 key="drawing")
                 st.markdown(load_case_pills(p), unsafe_allow_html=True)
-                st.markdown('<div class="mx-note">Pins are filled triangles; slides are rollers with the free direction '
-                            'drawn. Arrow length scales with force; one color per load case. Amber marks a default.</div>',
-                            unsafe_allow_html=True)
+                ui.footnote("Pins are filled triangles; slides are rollers with the free direction drawn. Arrow length "
+                            "scales with force; one color per load case. Amber marks a default.")
         if p is not None:
             # the toggle below has already stored its new value when it triggers this rerun
             est = data.estimate_runtime(p, S.get("quick_check", S.quick), processes)
@@ -903,9 +908,9 @@ def page_compare() -> None:
             st.markdown(ui.eyebrow("Mass vs material cost · one point per material (its final pick)"), unsafe_allow_html=True)
             st.plotly_chart(maps.pareto_chart(rk["pareto"], True, rk.get("caption_cost", "material cost only"), winner=win),
                             config=theme.PLOTLY_CONFIG, width="stretch", key="pareto")
-            st.markdown('<div class="mx-note">Filled points pass and fit your printer; hollow grey points failed or are '
-                        'filtered (hover for the reason). The dotted line joins the designs no other beats on both mass and cost. '
-                        'Cost is material only, not print cost.</div>', unsafe_allow_html=True)
+            ui.footnote("Filled points pass and fit your printer; hollow grey points failed or are filtered (hover for the "
+                        "reason). The dotted line joins the designs no other beats on both mass and cost. Cost is material "
+                        "only, not print cost.")
     with p2:
         with st.container(key="card_levels"):
             st.markdown(ui.eyebrow("Fill levels per material"), unsafe_allow_html=True)
@@ -921,7 +926,7 @@ def page_compare() -> None:
                              dots, f"{d['fill']:.1%}" if d.get("fill") is not None else "—",
                              f"{d['checks']['mass_g']:.1f} g" if d.get("checks") else "—"])
             st.markdown(ui.table(["material", "levels (low → high)", "pick", "mass"], rows)
-                        + '<div class="mx-note">Green passes, red fails, grey is an isolated stress failure or a non-monotonic level (ignored).</div>',
+                        + ui.footnote_html("Green passes, red fails, grey is an isolated stress failure or a non-monotonic level (ignored)."),
                         unsafe_allow_html=True)
 
     # ---- card grid grouped by process
@@ -996,10 +1001,9 @@ def page_export() -> None:
                                  key="dl_bundle", width="stretch")
         except Exception as exc:
             st.error(f"Report and bundle could not be prepared ({type(exc).__name__}). Geometry downloads remain available.")
-        st.markdown(f'<div class="mx-note">Results folder: {ui.esc(folder)} · code {ui.esc(r["code_version"][:12])} · '
-                    f'materials {ui.esc(r["materials_hash"])} · cap {r["solver_settings"]["cap_used"]:,} elements, '
-                    f'{ui.esc(r["solver_settings"]["sweep_mode_used"])} sweep. The PDF contains one page per material. '
-                    f'The bundle includes that same report and the inputs for morphic rerun.</div>', unsafe_allow_html=True)
+        ui.footnote(f"Results folder: {folder} · code {r['code_version'][:12]} · materials {r['materials_hash']} · "
+                    f"cap {r['solver_settings']['cap_used']:,} elements, {r['solver_settings']['sweep_mode_used']} sweep. "
+                    f"The PDF contains one page per material. The bundle includes that same report and the inputs for morphic rerun.")
     ui.foot(FIXED_NOTE)
     if st.button("← Compare", key="back3", type="tertiary"):
         go(2)
@@ -1038,8 +1042,8 @@ def page_validation() -> None:
                 ["element-centre stress, top row (element check)", f"{c['sigma_centre_MPa']:.3f} MPa", f"{c['sigma_centre_theory_MPa']:.3f} MPa",
                  f"{c['sigma_centre_error']:.2%}", ok_pill(c["sigma_centre_error"] < c["tolerance"])]]
         st.markdown(ui.table(["quantity", "FE", "theory", "error", f"< {c['tolerance']:.0%}"], rows), unsafe_allow_html=True)
-        st.markdown('<div class="mx-note">L = 100 mm, depth 10 mm, thickness 10 mm, tip load spread over the end face, fixed face at x = 0. '
-                    'Production meshes are finer (about 90 elements through 20 mm at the live cap).</div>', unsafe_allow_html=True)
+        ui.footnote("L = 100 mm, depth 10 mm, thickness 10 mm, tip load spread over the end face, fixed face at x = 0. "
+                    "Production meshes are finer (about 90 elements through 20 mm at the live cap).")
 
     m1, m2 = st.columns(2, gap="medium")
     with m1:
@@ -1059,8 +1063,9 @@ def page_validation() -> None:
             st.markdown(ui.table(["doubling E", "ratio", "expected", "error"],
                                  [["deflection", f"{s['deflection_ratio']:.9f}", "0.5", f"{s['deflection_ratio_error']:.1e}"],
                                   ["max stress", f"{s['stress_ratio']:.9f}", "1.0", f"{s['stress_ratio_error']:.1e}"]])
-                        + f'<div class="mx-note">Tolerance {s["tolerance"]:.0e}. For a fixed shape, deflection scales 1/E and stress '
-                          f'does not depend on E, so one catalog run per process serves every material.</div>', unsafe_allow_html=True)
+                        + ui.footnote_html(f"Tolerance {s['tolerance']:.0e}. For a fixed shape, deflection scales 1/E and stress "
+                                           "does not depend on E, so one catalog run per process serves every material."),
+                        unsafe_allow_html=True)
             mb = v["mbb"]
             ok = mb["error"] < mb["tolerance"]
             st.markdown(ui.eyebrow("13.3 MBB benchmark (paper mode)", top=True) + f'<div class="mx-pills">{ok_pill(ok)}</div>',
@@ -1072,8 +1077,8 @@ def page_validation() -> None:
                                                  ["published compliance", f"{mb['published_compliance']:.2f}"],
                                                  ["error", f"{mb['error']:.2%} (limit {mb['tolerance']:.0%})"],
                                                  ["iterations", str(mb["iterations"])]])
-                        + f'<div class="mx-note">Our result (above) next to the published figure: {ui.esc(mb["source"])}. The published '
-                          f'image is in the paper and is not redistributed here; compare the layout with Fig. 3 bottom-left.</div>',
+                        + ui.footnote_html(f"Our result (above) next to the published figure: {mb['source']}. The published image "
+                                           "is in the paper and is not redistributed here; compare the layout with Fig. 3 bottom-left."),
                         unsafe_allow_html=True)
 
     with st.container(key="card_hole"):
@@ -1091,10 +1096,10 @@ def page_validation() -> None:
                  f"{h['stair_step_ratio']:.3f}"] for h in hs]
         c1.markdown(ui.table(["elements / radius", "element centre", "recovered (boundary max)", "recovered at 90° node",
                               "element check", "stair-step ratio"], rows)
-                    + f'<div class="mx-note">Pass: recovered error below the element-centre error at every mesh; recovered error '
-                      f'< 5% at 16 per radius; element check < 5% at 8 per radius. The recovered error at 8 per radius '
-                      f'({h8["error_with_recovery"]:.1%}) is the remaining stress error at a smooth edge at the live mesh, and the '
-                      f'Limits note on every card says so.</div>', unsafe_allow_html=True)
+                    + ui.footnote_html(f"Pass: recovered error below the element-centre error at every mesh; recovered error "
+                                       f"< 5% at 16 per radius; element check < 5% at 8 per radius. The recovered error at 8 per "
+                                       f"radius ({h8['error_with_recovery']:.1%}) is the remaining stress error at a smooth edge at "
+                                       f"the live mesh, and the Limits note on every card says so."), unsafe_allow_html=True)
         with c2:
             st.plotly_chart(maps.hole_plot(hs, True), config=theme.PLOTLY_CONFIG, width="stretch", key="holeplot")
     ui.foot(f"Checks run {v['when']} on this machine. The same element, assembly and solver serve every design.")
@@ -1105,15 +1110,16 @@ def main() -> None:
     init_state()
     apply_query_params()
     ui.inject_css(dark=True)  # dark everywhere: every step and the Validation tab share one palette
-    head = st.columns([5, 1])
-    with head[0]:
-        ui.topbar(S.step if S.tab == "Design" else None, S.tab)
-    with head[1]:
-        choice = st.segmented_control("tab", ["Design", "Validation"], default=S.tab, key="tab_seg",
-                                      label_visibility="collapsed")
-        if choice and choice != S.tab:
-            S.tab = choice
-            st.rerun()
+    with st.container(key="topbar"):
+        head = st.columns([5, 1], vertical_alignment="center")
+        with head[0]:
+            ui.topbar(S.step if S.tab == "Design" else None, S.tab)
+        with head[1]:
+            choice = st.segmented_control("tab", ["Design", "Validation"], default=S.tab, key="tab_seg",
+                                          label_visibility="collapsed")
+            if choice and choice != S.tab:
+                S.tab = choice
+                st.rerun()
     if S.tab == "Validation":
         page_validation()
     else:

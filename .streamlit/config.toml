@@ -13,12 +13,13 @@ showWidgetBorder = false
 dataframeBorderColor = "#232327"
 # DARK["card_alt"]: the data editor header row
 dataframeHeaderBackgroundColor = "#1C1C1F"
-# RADIUS_MD for widgets, pills for buttons; the fonts mirror FONT_SANS and FONT_MONO
+# RADIUS_MD for widgets, pills for buttons; the fonts mirror FONT_SANS and FONT_MONO (Geist, bundled under
+# app/static/fonts and loaded by the app's own @font-face rules; Streamlit fetches nothing)
 baseRadius = "16px"
 buttonRadius = "full"
-font = "Inter, 'SF Pro Display', 'Segoe UI Variable Text', 'Segoe UI', system-ui, sans-serif"
-headingFont = "Inter, 'SF Pro Display', 'Segoe UI Variable Text', 'Segoe UI', system-ui, sans-serif"
-codeFont = "'JetBrains Mono', 'SF Mono', 'Cascadia Mono', Consolas, monospace"
+font = "Geist, 'Segoe UI Variable Text', 'Segoe UI', system-ui, sans-serif"
+headingFont = "Geist, 'Segoe UI Variable Text', 'Segoe UI', system-ui, sans-serif"
+codeFont = "'Geist Mono', 'Cascadia Mono', Consolas, monospace"
 
 [server]
 headless = true

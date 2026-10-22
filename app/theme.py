@@ -6,19 +6,35 @@ the Plotly layouts, and the color scales for stress and density maps.
 
 from __future__ import annotations
 
-# ----------------------------------------------------------------------------- fonts
-FONT_SANS = ("Inter, 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI Variable Text', "
-             "'Segoe UI', system-ui, sans-serif")
-FONT_MONO = "'JetBrains Mono', 'SF Mono', 'Cascadia Mono', Consolas, monospace"
+import base64
+import functools
+from pathlib import Path
 
-# type scale (px)
-TEXT_XS = 11
-TEXT_SM = 13
-TEXT_MD = 15
-TEXT_LG = 19
-TEXT_XL = 28
-TEXT_HERO = 44
-EYEBROW_TRACKING = "0.08em"
+# ----------------------------------------------------------------------------- fonts
+# Geist for headings, labels and body; Geist Mono for every numeral, unit and technical value.
+# Both are bundled under app/static/fonts (SIL Open Font License, see LICENSE.txt there) and loaded
+# with @font-face from those files only. Nothing is fetched from a font service.
+FONT_DIR = Path(__file__).resolve().parent / "static" / "fonts"
+FONT_FILES = {"Geist": "Geist-Variable.woff2", "Geist Mono": "GeistMono-Variable.woff2"}
+FONT_SANS = "Geist, 'Segoe UI Variable Text', 'Segoe UI', system-ui, sans-serif"
+FONT_MONO = "'Geist Mono', 'Cascadia Mono', Consolas, monospace"
+
+# type scale (px): one display size for page titles, two heading sizes, body, small, and the eyebrow
+TEXT_XS = 11  # eyebrow labels, chart ticks, scale marks
+TEXT_SM = 13  # small: notes, table rows, pills
+TEXT_MD = 15  # body
+TEXT_LG = 19  # medium headings
+TEXT_XL = 28  # large headings
+TEXT_DISPLAY = 36  # page titles
+TEXT_HERO = 44  # instrument hero numbers
+LINE_BODY = 1.5
+LINE_TIGHT = 1.1
+WEIGHT_REGULAR = 400
+WEIGHT_MEDIUM = 500
+WEIGHT_SEMIBOLD = 600
+TRACK_DISPLAY = "-0.02em"  # page titles and the wordmark
+TRACK_HEADING = "-0.01em"
+EYEBROW_TRACKING = "0.08em"  # small uppercase labels
 
 # ----------------------------------------------------------------------------- spacing and shape
 SPACE_1 = 4
@@ -37,6 +53,7 @@ RADIUS_PILL = 999
 
 # ----------------------------------------------------------------------------- the one accent + status
 ACCENT = "#0A84FF"
+ACCENT_LIGHT = "#2D95FF"  # the lit end of accent gradients (primary button, logomark)
 ACCENT_SOFT = "rgba(10,132,255,0.12)"
 PASS = "#30B35A"
 PASS_SOFT = "rgba(48,179,90,0.12)"
@@ -66,6 +83,7 @@ LIGHT = {
     "amber_text": "#B7791F",
     "glow": "rgba(29,29,31,0.18)",
     "pad_fill": "rgba(120,120,128,0.30)",
+    "glass_input": "rgba(255,255,255,0.55)",
     "stage": "radial-gradient(120% 90% at 50% 0%, #FFFFFF 0%, #F5F5F7 70%)",
 }
 
@@ -85,6 +103,7 @@ DARK = {
     "amber_text": DEFAULT_AMBER,
     "glow": "rgba(245,245,247,0.22)",
     "pad_fill": "rgba(255,255,255,0.16)",
+    "glass_input": "rgba(255,255,255,0.045)",  # the Describe box: frosted, a touch lighter than its card
     "stage": "radial-gradient(120% 90% at 50% 0%, #17171B 0%, #050506 70%)",
 }
 
@@ -146,6 +165,19 @@ def surface(dark: bool) -> dict:
     return DARK if dark else LIGHT
 
 
+@functools.lru_cache(maxsize=1)
+def font_face_css() -> str:
+    """The @font-face rules for the bundled Geist files, inlined as data URIs. Inlining keeps one path for
+    the app and the screenshot fixtures (Streamlit's static server only serves the main script's own
+    static folder) and means no font request ever leaves the page."""
+    rules = []
+    for family, name in FONT_FILES.items():
+        b64 = base64.b64encode((FONT_DIR / name).read_bytes()).decode("ascii")
+        rules.append(f'@font-face {{ font-family: "{family}"; font-style: normal; font-weight: 100 900; '
+                     f'font-display: swap; src: url(data:font/woff2;base64,{b64}) format("woff2"); }}')
+    return "<style>\n" + "\n".join(rules) + "\n</style>"
+
+
 def rgba(hex_color: str, alpha: float) -> str:
     """'#RRGGBB' -> 'rgba(r,g,b,a)' for soft fills and glows derived from one theme color."""
     c = hex_color.lstrip("#")
@@ -171,9 +203,9 @@ def plotly_layout(dark: bool, **extra) -> dict:
 
 def plotly_axis(dark: bool, title: str = "", grid: bool = True) -> dict:
     s = surface(dark)
-    return dict(title=dict(text=title, font=dict(size=TEXT_XS, color=s["text_2"])), showgrid=grid,
+    return dict(title=dict(text=title, font=dict(family=FONT_SANS, size=TEXT_XS, color=s["text_2"])), showgrid=grid,
                 gridcolor=s["line"], gridwidth=1, zeroline=False, showline=False,
-                tickfont=dict(size=TEXT_XS, color=s["text_2"]), ticks="")
+                tickfont=dict(family=FONT_MONO, size=TEXT_XS, color=s["text_2"]), ticks="")
 
 
 PLOTLY_CONFIG = {"displaylogo": False, "displayModeBar": False, "responsive": True}
@@ -202,19 +234,23 @@ def css(dark: bool) -> str:
 }}
 html, body, .stApp, [data-testid="stAppViewContainer"] {{
   background: {s['bg']} !important; color: {s['text']};
-  font-family: {FONT_SANS}; font-feature-settings: "tnum" 1, "cv11" 1; -webkit-font-smoothing: antialiased;
+  font-family: {FONT_SANS}; font-weight: {WEIGHT_REGULAR}; line-height: {LINE_BODY};
+  font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; -webkit-font-smoothing: antialiased;
 }}
+[data-testid="stMarkdownContainer"] p, [data-testid="stMarkdownContainer"] li {{ line-height: {LINE_BODY}; }}
 .stApp {{ transition: background {RISE_MS}ms {EASE}; }}
 [data-testid="stHeader"] {{ background: transparent; height: 0; }}
+/* the two style-only markdown elements (fonts, theme) take no room in the flow */
+[data-testid="stElementContainer"]:has([data-testid="stMarkdownContainer"] > style:only-child) {{ display: none; }}
 [data-testid="stToolbar"], [data-testid="stDecoration"], #MainMenu, footer {{ display: none !important; }}
-.block-container {{ padding-top: {SPACE_5}px !important; padding-bottom: {SPACE_7 * 2}px !important;
+.block-container {{ padding-top: 0 !important; padding-bottom: {SPACE_7 * 2}px !important;
   max-width: 1280px; }}
 .stApp p, .stApp li, .stApp label, .stApp span, .stApp div {{ font-family: {FONT_SANS}; }}
 .stApp code {{ font-family: {FONT_MONO}; }}
 .stApp [data-testid="stIconMaterial"], .stApp .material-symbols-rounded, .stApp span[class*="material-symbols"] {{
   font-family: "Material Symbols Rounded" !important; }}
 h1, h2, h3, h4 {{ font-family: {FONT_SANS} !important; color: {s['text']} !important;
-  letter-spacing: -0.02em; font-weight: 650 !important; }}
+  letter-spacing: {TRACK_HEADING}; font-weight: {WEIGHT_SEMIBOLD} !important; }}
 [data-testid="stMarkdownContainer"] p {{ color: {s['text']}; }}
 [data-testid="stCaptionContainer"], .stCaption {{ color: {s['text_2']} !important; }}
 hr {{ border-color: {s['line']} !important; }}
@@ -230,7 +266,7 @@ hr {{ border-color: {s['line']} !important; }}
   transform: scale({PRESS_SCALE}); transition-duration: {PRESS_MS}ms; }}
 .stButton > button:focus:not(:active) {{ color: {s['text']}; }}
 .stButton > button[kind="primary"], .stDownloadButton > button[kind="primary"] {{
-  background: linear-gradient(180deg, #2D95FF, {ACCENT}); color: #fff;
+  background: linear-gradient(180deg, {ACCENT_LIGHT}, {ACCENT}); color: #fff;
   box-shadow: 0 1px 0 rgba(255,255,255,0.25) inset, 0 8px 22px rgba(10,132,255,0.32); }}
 .stButton > button:disabled, .stDownloadButton > button:disabled {{ opacity: 0.5; transform: none;
   box-shadow: 0 0 0 1px {s['line']} inset; cursor: default; }}
@@ -254,9 +290,29 @@ hr {{ border-color: {s['line']} !important; }}
 [data-testid="stWidgetLabel"] p {{ color: {s['text_2']} !important; font-size: {TEXT_SM}px !important; }}
 /* the Describe box: larger type, more air, a soft inner edge so it reads as a writing surface */
 [class*="st-key-card_describe"] .stTextArea textarea {{ font-size: {TEXT_LG - 1}px; line-height: 1.6;
-  padding: {SPACE_5}px {SPACE_6}px !important; border-radius: {RADIUS_MD}px !important;
-  box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset, 0 0 0 1px {s['line']} inset; }}
-[class*="st-key-card_describe"] .stTextArea [data-baseweb="textarea"] {{ border-radius: {RADIUS_MD}px !important; }}
+  padding: {SPACE_5}px {SPACE_6}px {SPACE_6}px !important; border-radius: {RADIUS_LG}px !important;
+  background: {s['glass_input']} !important; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  box-shadow: inset 0 2px 10px rgba(0,0,0,0.35), inset 0 0 0 1px {s['line']}; resize: none;
+  transition: box-shadow {HOVER_MS}ms {EASE_OUT}; }}
+[class*="st-key-card_describe"] .stTextArea textarea:focus {{ outline: none;
+  box-shadow: inset 0 2px 10px rgba(0,0,0,0.35), 0 0 0 3px var(--mx-accent-soft), 0 0 28px rgba(10,132,255,0.22); }}
+[class*="st-key-card_describe"] .stTextArea [data-baseweb="textarea"] {{ border-radius: {RADIUS_LG}px !important;
+  background: transparent !important; }}
+[class*="st-key-card_describe"] .stTextArea [data-baseweb="base-input"] {{ background: transparent !important; }}
+/* the character count sits inside the bottom-right of the box; the row of example pills follows below it */
+.mx-count {{ font-family: {FONT_MONO}; font-size: {TEXT_XS}px; color: {s['text_2']}; text-align: right; height: 0;
+  margin: -{SPACE_6 + SPACE_3}px 0 {SPACE_6 + SPACE_3}px; padding-right: {SPACE_5}px; position: relative; z-index: 1;
+  pointer-events: none; opacity: 0.8; }}
+.st-key-examples .stButton > button {{ min-height: 0; height: auto; padding: 3px {SPACE_3}px; font-size: {TEXT_XS + 1}px;
+  font-weight: {WEIGHT_MEDIUM}; background: {s['card_alt']}; color: {s['text_2']}; box-shadow: none;
+  border: 1px solid {s['line']}; line-height: 1.6; }}
+@media (hover: hover) {{ .st-key-examples .stButton > button:not(:disabled):hover {{ color: {s['text']};
+  transform: none; box-shadow: none; border-color: rgba(255,255,255,0.18); }} }}
+.mx-examples-label {{ font-size: {TEXT_XS + 1}px; color: {s['text_2']}; white-space: nowrap; }}
+/* "or": a hairline with the word centered on it, between the two ways in */
+.mx-or {{ display: flex; align-items: center; gap: {SPACE_3}px; margin: {SPACE_3}px 0 {SPACE_2}px; color: {s['text_2']};
+  font-size: {TEXT_XS}px; font-weight: {WEIGHT_MEDIUM}; letter-spacing: {EYEBROW_TRACKING}; text-transform: uppercase; }}
+.mx-or::before, .mx-or::after {{ content: ""; flex: 1; height: 1px; background: {s['line']}; }}
 /* multiselect chips read as pills in the accent tint, not solid blocks */
 [data-testid="stMultiSelectTagsContainer"] span[data-tag] {{ border-radius: {RADIUS_PILL}px !important;
   background: var(--mx-accent-soft) !important; color: {ACCENT} !important; }}
@@ -335,7 +391,7 @@ div[data-testid="stVerticalBlockBorderWrapper"][data-mx-card], .st-key-mxcard {{
   [class*="st-key-preview"]:hover {{ transform: translateY(-2px); box-shadow: {DARK['shadow_hover']}; }}
 }}
 [class*="st-key-preview"] .stButton > button {{ width: 100%; margin-top: {SPACE_3}px; }}
-.mx-preview-title {{ font-size: {TEXT_LG + 1}px; font-weight: 650; letter-spacing: -0.02em; color: {DARK['text']};
+.mx-preview-title {{ font-size: {TEXT_LG + 1}px; font-weight: {WEIGHT_SEMIBOLD}; letter-spacing: {TRACK_HEADING}; color: {DARK['text']};
   margin: 2px 0 {SPACE_3}px; }}
 .mx-shape-box {{ height: {PREVIEW_SHAPE_PX}px; display: flex; align-items: center; justify-content: center;
   margin: {SPACE_2}px 0 {SPACE_3}px; }}
@@ -353,16 +409,25 @@ div[data-testid="stVerticalBlockBorderWrapper"][data-mx-card], .st-key-mxcard {{
 .mx-ticks i:nth-child(6n+1) {{ height: 8px; }}
 .mx-ticks i.on {{ height: 9px; opacity: 0.85; }}
 .mx-ticks i.tip {{ height: 16px; opacity: 1; border-left-width: 2px; filter: drop-shadow(0 0 3px currentColor); }}
-.mx-scale {{ display: flex; justify-content: space-between; font-size: {TEXT_XS}px; color: {s['text_2']};
+.mx-scale {{ display: flex; justify-content: space-between; font-family: {FONT_MONO}; font-size: {TEXT_XS}px; color: {s['text_2']};
   margin-top: 3px; font-variant-numeric: tabular-nums; }}
 .mx-lc {{ display: inline-flex; align-items: center; gap: 7px; padding: 4px 11px; border-radius: {RADIUS_PILL}px;
   font-size: {TEXT_XS + 1}px; font-weight: 600; margin: 0 6px 6px 0; white-space: nowrap; }}
 .mx-lc i {{ display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: currentColor;
   box-shadow: 0 0 8px currentColor; }}
 /* ---- Describe: the one-line "what happens next" */
-.mx-next {{ margin: {SPACE_4}px 0 0; font-size: {TEXT_SM + 1}px; color: {s['text_2']}; white-space: nowrap;
-  overflow: hidden; text-overflow: ellipsis; }}
-.mx-next b {{ color: {s['text']}; font-weight: 650; margin-right: {SPACE_3}px; }}
+.mx-flow {{ display: flex; align-items: center; flex-wrap: wrap; gap: {SPACE_2}px; margin: {SPACE_4}px 0 {SPACE_2}px;
+  font-size: {TEXT_SM}px; color: {s['text_2']}; }}
+.mx-flow .lead {{ color: {s['text']}; font-weight: {WEIGHT_SEMIBOLD}; margin-right: {SPACE_2}px; }}
+.mx-flow .step {{ display: inline-flex; align-items: center; gap: 7px; padding: 3px {SPACE_3}px 3px 4px;
+  border-radius: {RADIUS_PILL}px; background: {s['card_alt']}; color: {s['text_2']}; font-weight: {WEIGHT_MEDIUM};
+  white-space: nowrap; }}
+.mx-flow .step i {{ display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px;
+  border-radius: 50%; font-style: normal; font-family: {FONT_MONO}; font-size: {TEXT_XS}px; color: {s['text']};
+  background: rgba(255,255,255,0.08); }}
+.mx-flow .step.on {{ background: var(--mx-accent-soft); color: {ACCENT}; }}
+.mx-flow .step.on i {{ background: {ACCENT}; color: #fff; box-shadow: 0 0 10px rgba(10,132,255,0.5); }}
+.mx-flow .link {{ width: 22px; height: 1px; background: rgba(255,255,255,0.16); flex: none; }}
 [class*="st-key-card"][class*="_win"] {{ box-shadow: {s['shadow']}, 0 0 0 1px rgba(10,132,255,0.35), 0 0 42px rgba(10,132,255,0.22); }}
 [class*="st-key-card"][class*="_quiet"] {{ opacity: 0.6; filter: blur(0) saturate(0.25);
   transition: opacity {HOVER_MS}ms {EASE_OUT}, filter {HOVER_MS}ms {EASE_OUT}; }}
@@ -378,22 +443,35 @@ div[data-testid="stVerticalBlockBorderWrapper"][data-mx-card], .st-key-mxcard {{
   box-shadow: {s['shadow']}; }}
 
 /* ---- Morphic HTML components */
-.mx-topbar {{ display: flex; align-items: center; justify-content: space-between; margin-bottom: {SPACE_4}px; }}
-.mx-brand {{ font-size: {TEXT_LG + 3}px; font-weight: 700; letter-spacing: -0.03em; color: {s['text']}; }}
-.mx-brand small {{ font-size: {TEXT_SM}px; font-weight: 500; color: {s['text_2']}; letter-spacing: 0;
-  margin-left: {SPACE_3}px; }}
+.st-key-topbar {{ position: sticky; top: 0; z-index: 40; margin: 0 0 {SPACE_2}px;
+  padding: {SPACE_3}px {SPACE_4}px; background: {s['glass']}; backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid {s['line']};
+  border-radius: 0 0 {RADIUS_LG}px {RADIUS_LG}px; }}
+.mx-topbar {{ display: flex; align-items: center; justify-content: space-between; }}
+.mx-brand {{ display: inline-flex; align-items: center; gap: {SPACE_2}px; font-size: {TEXT_LG + 3}px;
+  font-weight: {WEIGHT_SEMIBOLD}; letter-spacing: {TRACK_DISPLAY}; color: {s['text']}; }}
+.mx-brand .mx-mark {{ width: 22px; height: 22px; flex: none; filter: drop-shadow(0 0 6px rgba(10,132,255,0.35)); }}
+.mx-brand small {{ font-size: {TEXT_SM}px; font-weight: {WEIGHT_MEDIUM}; color: {s['text_2']}; letter-spacing: 0;
+  margin-left: {SPACE_2}px; }}
 .mx-steps {{ display: flex; gap: {SPACE_1}px; background: {s['card']}; padding: {SPACE_1}px;
   border-radius: {RADIUS_PILL}px; box-shadow: {s['shadow']}; }}
 .mx-step {{ padding: 6px {SPACE_4}px; border-radius: {RADIUS_PILL}px; font-size: {TEXT_SM}px; font-weight: 550;
   color: {s['text_2']}; white-space: nowrap; }}
-.mx-step b {{ font-weight: 650; margin-right: 6px; opacity: 0.55; }}
+.mx-step b {{ font-family: {FONT_MONO}; font-weight: {WEIGHT_MEDIUM}; margin-right: 6px; opacity: 0.55; }}
 .mx-step.on {{ background: {s['text']}; color: {s['bg']}; }}
 .mx-step.done {{ color: {s['text']}; }}
-.mx-title {{ font-size: {TEXT_XL + 6}px; font-weight: 700; letter-spacing: -0.03em; color: {s['text']};
-  margin: {SPACE_3}px 0 {SPACE_1}px 0; line-height: 1.1; }}
-.mx-sub {{ font-size: {TEXT_MD + 1}px; color: {s['text_2']}; margin-bottom: {SPACE_5}px; max-width: 720px; }}
+.mx-title {{ font-size: {TEXT_DISPLAY}px; font-weight: {WEIGHT_SEMIBOLD}; letter-spacing: {TRACK_DISPLAY};
+  color: {s['text']}; margin: {SPACE_4}px 0 0; line-height: {LINE_TIGHT}; }}
+/* the tagline under a title: one step above body, secondary tone, a comfortable measure, tucked under the title
+   with the larger gap below it */
+.mx-sub {{ font-size: {TEXT_MD + 2}px; font-weight: {WEIGHT_REGULAR}; line-height: {LINE_BODY}; color: {s['text_2']};
+  margin: {SPACE_2}px 0 {SPACE_5}px; max-width: 60ch; }}
 .mx-eyebrow {{ font-size: {TEXT_XS}px; letter-spacing: {EYEBROW_TRACKING}; text-transform: uppercase;
-  color: {s['text_2']}; font-weight: 600; }}
+  color: {s['text_2']}; font-weight: {WEIGHT_MEDIUM}; }}
+/* every section starts the same way: a short accent line before the label (process colors keep their own) */
+.mx-eyebrow::before {{ content: ""; display: inline-block; width: 10px; height: 2px; border-radius: 1px;
+  background: var(--mx-accent); margin-right: {SPACE_2}px; vertical-align: middle; position: relative; top: -1px; }}
+.mx-eyebrow-proc::before, .mx-eyebrow[style*="color"]::before {{ background: currentColor; opacity: 0.8; }}
 .mx-eyebrow.mx-top {{ margin-top: {SPACE_5}px; }}
 .mx-pills {{ margin: {SPACE_2}px 0 {SPACE_1}px; }}
 .mx-block {{ margin-top: {SPACE_3}px; }}
@@ -403,15 +481,23 @@ div[data-testid="stVerticalBlockBorderWrapper"][data-mx-card], .st-key-mxcard {{
   border: 1px solid transparent; animation: mxrise {RISE_MS}ms {EASE_OUT} both; position: relative; overflow: hidden; }}
 .mx-card.quiet {{ opacity: 0.55; filter: blur(0) saturate(0.2); transform: scale(0.98); }}
 .mx-card.win {{ box-shadow: {s['shadow']}, 0 0 0 1px rgba(10,132,255,0.35), 0 0 42px rgba(10,132,255,0.22); }}
-.mx-hero {{ font-size: {TEXT_HERO}px; font-weight: 650; letter-spacing: -0.035em; line-height: 1; color: {s['text']};
-  font-variant-numeric: tabular-nums; }}
-.mx-hero small {{ font-size: {TEXT_LG}px; font-weight: 500; color: {s['text_2']}; margin-left: 4px; letter-spacing: 0; }}
+.mx-hero {{ font-family: {FONT_MONO}; font-size: {TEXT_HERO}px; font-weight: {WEIGHT_MEDIUM}; letter-spacing: -0.03em;
+  line-height: 1; color: {s['text']}; font-variant-numeric: tabular-nums; }}
+.mx-hero small {{ font-size: {TEXT_LG}px; font-weight: {WEIGHT_REGULAR}; color: {s['text_2']}; margin-left: 4px;
+  letter-spacing: 0; }}
 .mx-label {{ font-size: {TEXT_SM}px; color: {s['text_2']}; }}
-.mx-num {{ font-variant-numeric: tabular-nums; }}
+.mx-num {{ font-family: {FONT_MONO}; font-variant-numeric: tabular-nums; }}
+.mx-pill.mx-num {{ font-size: {TEXT_XS}px; }}
 .mx-row {{ display: flex; justify-content: space-between; gap: {SPACE_3}px; font-size: {TEXT_SM}px;
   padding: 5px 0; color: {s['text']}; }}
 .mx-row span:first-child {{ color: {s['text_2']}; }}
-.mx-note {{ font-size: {TEXT_XS + 1}px; color: {s['text_2']}; line-height: 1.5; }}
+.mx-note {{ font-size: {TEXT_XS + 1}px; color: {s['text_2']}; line-height: {LINE_BODY}; }}
+/* a standalone note reads as a quiet footnote: a small info glyph, a faint bar and a barely tinted field */
+.mx-footnote {{ display: flex; gap: {SPACE_2}px; align-items: flex-start; font-size: {TEXT_SM}px; line-height: {LINE_BODY};
+  color: {s['text_2']}; padding: {SPACE_2}px {SPACE_3}px; margin: 0 0 {SPACE_3}px;
+  border-left: 2px solid rgba(255,255,255,0.14); background: rgba(255,255,255,0.03);
+  border-radius: 0 {RADIUS_SM}px {RADIUS_SM}px 0; }}
+.mx-footnote svg {{ flex: none; width: 14px; height: 14px; margin-top: 3px; opacity: 0.75; }}
 .mx-pill {{ display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: {RADIUS_PILL}px;
   font-size: {TEXT_XS + 1}px; font-weight: 600; background: {s['card_alt']}; color: {s['text_2']};
   margin: 0 6px 6px 0; white-space: nowrap; }}
@@ -439,8 +525,8 @@ div[data-testid="stVerticalBlockBorderWrapper"][data-mx-card], .st-key-mxcard {{
 .mx-funnel {{ display: flex; align-items: stretch; gap: {SPACE_2}px; flex-wrap: wrap; }}
 .mx-funnel > div {{ flex: 1; min-width: 140px; background: {s['card']}; border-radius: {RADIUS_MD}px;
   padding: {SPACE_4}px; box-shadow: {s['shadow']}; }}
-.mx-funnel .n {{ font-size: {TEXT_XL}px; font-weight: 650; letter-spacing: -0.02em; color: {s['text']};
-  font-variant-numeric: tabular-nums; }}
+.mx-funnel .n {{ font-family: {FONT_MONO}; font-size: {TEXT_XL}px; font-weight: {WEIGHT_MEDIUM}; letter-spacing: -0.02em;
+  color: {s['text']}; font-variant-numeric: tabular-nums; }}
 .mx-foot {{ font-size: {TEXT_XS + 1}px; color: {s['text_2']}; border-top: 1px solid {s['line']};
   padding-top: {SPACE_3}px; margin-top: {SPACE_5}px; }}
 .mx-check {{ display: inline-block; width: 18px; height: 18px; vertical-align: -3px; }}
@@ -453,6 +539,7 @@ div[data-testid="stVerticalBlockBorderWrapper"][data-mx-card], .st-key-mxcard {{
 .mx-table th {{ text-align: left; font-weight: 600; color: {s['text_2']}; font-size: {TEXT_XS}px;
   letter-spacing: {EYEBROW_TRACKING}; text-transform: uppercase; padding: {SPACE_2}px {SPACE_3}px {SPACE_2}px 0;
   border-bottom: 1px solid {s['line']} !important; }}
+.mx-table td.mx-num {{ font-size: {TEXT_SM - 1}px; }}
 .mx-table td {{ padding: {SPACE_2 + 2}px {SPACE_3}px {SPACE_2 + 2}px 0; color: {s['text']};
   border-top: 1px solid {s['line']} !important; }}
 .mx-table tbody tr:first-child td {{ border-top: 0 !important; }}
