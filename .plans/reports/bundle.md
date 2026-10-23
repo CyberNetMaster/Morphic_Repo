@@ -1,4 +1,4 @@
-# Workspace D
+﻿# Workspace D
 
 S13 implemented locally on 2026-10-21. No engine modules were modified. No network calls, uploads,
 pushes, remote changes, pull requests, or API-key access were performed. Generated evidence stays
@@ -7,7 +7,7 @@ under the ignored `.plans/s13/` directory; `.env` remains ignored and uncommitte
 ## Changes
 
 - `morphic/report.py`: fpdf2 A4 report, one page per design or one selected material. Includes the
-  checked problem drawing, actual exported SVG shape, recovered nodal utilization (shared 0–1 scale,
+  checked problem drawing, actual exported SVG shape, recovered nodal utilization (shared 0â€“1 scale,
   red above 1), smoothed FE numbers, load-case deflections, raw and filtered stress/SF, hand checks,
   mass savings, material-only cost, mesh and wall size, material conditions, linked citations,
   interlayer-shear stand-in, convergence note, and limits. The aerospace slice caveat is included.
@@ -72,12 +72,12 @@ Local evidence:
 
 The sandbox initially prevented pytest from accessing its private temporary directories. The tests
 and replay workers were rerun with local filesystem access; no dependency downloads were needed.
-The existing Python 3.12 environment at `C:/Users/night/projects/morphic/.venv/Scripts/python.exe`
+The existing Python 3.12 environment at `C:/Users/user/projects/morphic/.venv/Scripts/python.exe`
 was used with `python -m morphic.cli` so imports resolve to this worktree. Poppler came from the
 locally installed Codex runtime. The final full-suite command was:
 
 ```powershell
-C:/Users/night/projects/morphic/.venv/Scripts/python.exe -m pytest --basetemp=.plans/s13/verified-tests --junitxml=.plans/s13/verified-tests.xml
+C:/Users/user/projects/morphic/.venv/Scripts/python.exe -m pytest --basetemp=.plans/s13/verified-tests --junitxml=.plans/s13/verified-tests.xml
 ```
 
 ## Handoff

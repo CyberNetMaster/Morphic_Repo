@@ -1,4 +1,4 @@
-# Workspace F
+﻿# Workspace F
 
 Sketch to design. Date: 2026-10-21. Branch: `emdash/f-sketch-0l68c`.
 
@@ -79,7 +79,7 @@ Provenance: each label the LLM quotes is stored with a `sketch: ` prefix (for ex
 Full suite on the committed code: **179 passed in 369.35 s** (152 before this work, plus 27). An earlier run, before a last prompt-wording change, also gave 179 passed, in 168.80 s. The final run was slower because other work ran on the laptop at the same time. Command:
 
 ```powershell
-& C:/Users/night/projects/morphic/.venv/Scripts/python.exe -m pytest -p no:cacheprovider -q -o addopts="" --junitxml=.plans/reports/sketch-tests.xml
+& C:/Users/user/projects/morphic/.venv/Scripts/python.exe -m pytest -p no:cacheprovider -q -o addopts="" --junitxml=.plans/reports/sketch-tests.xml
 ```
 
 Record: `.plans/reports/sketch-tests.xml`.

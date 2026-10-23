@@ -1,4 +1,4 @@
-# Workspace C
+﻿# Workspace C
 
 Implemented S12 from section 10 of `.plans/morphic-spec.md`.
 
@@ -13,7 +13,7 @@ Integration contract: call `results_json(rank_result)` after final smoothed rech
 Validation: 26 explanation tests passed. The final full suite passed: **98 passed in 51.91 seconds**, including slow tests, with this command:
 
 ```powershell
-& C:/Users/night/projects/morphic/.venv/Scripts/python.exe -m pytest -p no:cacheprovider
+& C:/Users/user/projects/morphic/.venv/Scripts/python.exe -m pytest -p no:cacheprovider
 ```
 
 The first full-suite run had 89 passes and five setup errors caused by sandbox access to pytest's temporary directory. A workspace-local temporary directory encountered the same restriction. The final run was permitted outside the sandbox and passed. Test-created temporary directories inside the workspace were removed. The staged diff passed `git diff --cached --check`.
