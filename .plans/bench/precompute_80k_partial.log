@@ -1,4 +1,4 @@
-2026-10-21 08:02:15 [ 0.00 h] precompute start: 3 part(s), cap 80000, code 7636be5505699238e6b7b8a307046c20f4903d64
+﻿2026-10-21 08:02:15 [ 0.00 h] precompute start: 3 part(s), cap 80000, code 7636be5505699238e6b7b8a307046c20f4903d64
 2026-10-21 08:02:15 [ 0.00 h] PART rc_arm: RC car lower suspension arm (1/10 scale buggy, rear) | cap 80000, cold per level, 10 levels | key 29e099fec329
 2026-10-21 08:02:15 [ 0.00 h]   partial update: re-run ['fdm'], restore ['metal', 'sls']
 2026-10-21 08:02:51 [ 0.01 h]   restored catalog metal: 13 levels, 0 refined (from 2578ddad)
@@ -49,7 +49,7 @@
 2026-10-21 08:21:57 [ 0.33 h]   pa12      strut 7.59 mm mass 8.14 g | smoothed: pass, SF 4.42, mass 3.99 g
 2026-10-21 08:22:30 [ 0.34 h]   alsi10mg  strut 2.5 mm mass 10.16 g | smoothed: pass, SF 4.82, mass 7.44 g
 2026-10-21 08:23:04 [ 0.35 h]   ti64      strut 1.62 mm mass 13.59 g | smoothed: pass, SF 17.83, mass 12.29 g
-2026-10-21 08:23:08 [ 0.35 h] PART rc_arm done in 20.9 min -> C:\Users\night\projects\morphic\examples\cache\rc_arm | winner pa6cf
+2026-10-21 08:23:08 [ 0.35 h] PART rc_arm done in 20.9 min -> C:\Users\user\projects\morphic\examples\cache\rc_arm | winner pa6cf
 2026-10-21 08:23:08 [ 0.35 h] PART aero_bracket: Aerospace mounting bracket (GE jet engine bracket challenge, 2D slice) | cap 80000, cold per level, 10 levels | key 28489a086599
 2026-10-21 08:23:08 [ 0.35 h]   partial update: re-run ['metal'], restore ['fdm', 'sls']
 2026-10-21 08:23:15 [ 0.35 h]   restored catalog fdm: 1 levels, 0 refined (from 2578ddad)

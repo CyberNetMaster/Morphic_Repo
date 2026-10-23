@@ -1,4 +1,4 @@
-2026-10-21 01:01:45 [ 0.00 h] precompute start: 3 part(s), cap 80000, code 2578ddad4d5218a06aef370e41a344c3c8a37c18
+﻿2026-10-21 01:01:45 [ 0.00 h] precompute start: 3 part(s), cap 80000, code 2578ddad4d5218a06aef370e41a344c3c8a37c18
 2026-10-21 01:01:45 [ 0.00 h] PART rc_arm: RC car lower suspension arm (1/10 scale buggy, rear) | cap 80000, cold per level, 10 levels | key 938e77da1ccb
 2026-10-21 01:01:49 [ 0.00 h]   fdm catalog fill 0.6000 start
 2026-10-21 01:01:49 [ 0.00 h]   fdm catalog fill 0.6000 it 1 beta 1 obj 1.4601 change 0.200
@@ -95,7 +95,7 @@
 2026-10-21 02:13:55 [ 1.20 h]   pa12      strut 7.59 mm mass 8.14 g | smoothed: pass, SF 4.42, mass 3.99 g
 2026-10-21 02:14:33 [ 1.21 h]   alsi10mg  strut 2.5 mm mass 10.16 g | smoothed: pass, SF 4.82, mass 7.44 g
 2026-10-21 02:15:11 [ 1.22 h]   ti64      strut 1.62 mm mass 13.59 g | smoothed: pass, SF 17.83, mass 12.29 g
-2026-10-21 02:15:22 [ 1.23 h] PART rc_arm done in 73.6 min -> C:\Users\night\projects\morphic\examples\cache\rc_arm | winner pa6cf
+2026-10-21 02:15:22 [ 1.23 h] PART rc_arm done in 73.6 min -> C:\Users\user\projects\morphic\examples\cache\rc_arm | winner pa6cf
 2026-10-21 02:15:23 [ 1.23 h] PART drone_arm: 5-inch FPV drone arm | cap 80000, cold per level, 10 levels | key 245e86f476e7
 2026-10-21 02:15:25 [ 1.23 h]   fdm catalog fill 0.6000 start
 2026-10-21 02:15:25 [ 1.23 h]   fdm catalog fill 0.6000 it 1 beta 1 obj 1.4457 change 0.200
@@ -189,7 +189,7 @@
 2026-10-21 03:31:19 [ 2.49 h]   pa12      strut None mm mass None g | smoothed: fail, SF 5.23, mass 12.98 g
 2026-10-21 03:32:02 [ 2.50 h]   alsi10mg  strut 7.18 mm mass 24.63 g | smoothed: pass, SF 4.42, mass 13.33 g
 2026-10-21 03:32:44 [ 2.52 h]   ti64      strut 6.13 mm mass 36.51 g | smoothed: pass, SF 5.98, mass 21.81 g
-2026-10-21 03:32:55 [ 2.52 h] PART drone_arm done in 77.5 min -> C:\Users\night\projects\morphic\examples\cache\drone_arm | winner pa6cf
+2026-10-21 03:32:55 [ 2.52 h] PART drone_arm done in 77.5 min -> C:\Users\user\projects\morphic\examples\cache\drone_arm | winner pa6cf
 2026-10-21 03:32:55 [ 2.52 h] PART aero_bracket: Aerospace mounting bracket (GE jet engine bracket challenge, 2D slice) | cap 80000, cold per level, 10 levels | key fd2872728f13
 2026-10-21 03:33:03 [ 2.52 h]   fdm catalog fill 0.6000 start
 2026-10-21 03:33:03 [ 2.52 h]   fdm catalog fill 0.6000 it 1 beta 1 obj 2.1966 change 0.200
@@ -251,5 +251,5 @@
 2026-10-21 04:28:54 [ 3.45 h]   pa12      strut None mm mass None g | smoothed: fail, SF 0.41, mass 157.78 g
 2026-10-21 04:29:35 [ 3.46 h]   alsi10mg  strut 28.09 mm mass 245.18 g | smoothed: pass, SF 1.72, mass 111.12 g
 2026-10-21 04:30:16 [ 3.48 h]   ti64      strut 17.72 mm mass 233.26 g | smoothed: pass, SF 5.66, mass 174.02 g
-2026-10-21 04:30:21 [ 3.48 h] PART aero_bracket done in 57.4 min -> C:\Users\night\projects\morphic\examples\cache\aero_bracket | winner alsi10mg
+2026-10-21 04:30:21 [ 3.48 h] PART aero_bracket done in 57.4 min -> C:\Users\user\projects\morphic\examples\cache\aero_bracket | winner alsi10mg
 2026-10-21 04:30:21 [ 3.48 h] precompute finished: 3 ok, 0 failed

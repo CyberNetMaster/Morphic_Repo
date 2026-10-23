@@ -1,7 +1,7 @@
-# Morphic — Build Spec
+﻿# Morphic â€” Build Spec
 
-Status: complete plan, ready to build. Written 2026-10-20. Revised 2026-10-20 after review (all review items A1–A7, B1–B10, C1–C9, D1–D7 applied; nodal stress recovery added after the second review).
-Event: OSI Hackathon (Open Scientific Intelligence), Oct 21–22, 2026, MIT hub. Solo entry.
+Status: complete plan, ready to build. Written 2026-10-20. Revised 2026-10-20 after review (all review items A1â€“A7, B1â€“B10, C1â€“C9, D1â€“D7 applied; nodal stress recovery added after the second review).
+Event: OSI Hackathon (Open Scientific Intelligence), Oct 21â€“22, 2026, MIT hub. Solo entry.
 Submission: public post with a demo video (max 4:00) and a 1-page write-up. Due **Thu Oct 22, 8:00 PM Eastern**.
 Judging: impact on research, innovativeness, scalability, relevance to physical sciences / materials.
 
@@ -22,7 +22,7 @@ Morphic is a design tool for load-bearing parts.
 In the standard topology optimization setup (stiffest shape for a fixed amount of material), the shape does **not** depend on the material. Stiffness scales every result by the same factor. Morphic uses a different setup, so the material does matter:
 
 - **Goal:** lowest mass.
-- **Limits:** safety factor ≥ target (uses material strength) and deflection ≤ limit (uses material stiffness), in every load case.
+- **Limits:** safety factor â‰¥ target (uses material strength) and deflection â‰¤ limit (uses material stiffness), in every load case.
 
 A stiffer or stronger material meets the limits with less material. Less material gives a different shape: fewer, thinner members. Each process also has its own minimum wall, which sets the optimizer's filter size. So shapes differ by **material** (through the fill level) and by **process** (through the minimum wall).
 
@@ -88,12 +88,12 @@ Publishing: build a clean, publish-ready repo with a README and MIT license. **C
 
 ## 3. Repo layout
 
-The code lives at the **git root**, `C:\Users\night\projects\morphic`. This spec lives at `C:\Users\night\projects\morphic\.plans\morphic-spec.md`. The earlier `morphic-interview\` folder is not used for code.
+The code lives at the **git root**, `C:\Users\user\projects\morphic`. This spec lives at `C:\Users\user\projects\morphic\.plans\morphic-spec.md`. The earlier `morphic-interview\` folder is not used for code.
 
 Line endings: `.gitattributes` with `* text=auto eol=lf`, so the repo stores LF and git stops warning about CRLF.
 
 ```
-morphic/                      (= git root, C:\Users\night\projects\morphic)
+morphic/                      (= git root, C:\Users\user\projects\morphic)
   README.md                 # what it is, install, run, validate, reproduce, limits, citations
   LICENSE                   # MIT
   pyproject.toml / uv.lock
@@ -196,13 +196,13 @@ Ranking is always by mass (section 7). There is no `goal` field. Cost is shown a
 | printer | any |
 | materials | all 6 |
 | pad hole radius | 1.6 mm (M3 clearance); 0 if the text says a solid mount |
-| pad ring width | max(2 mm, 2 × process min wall) |
+| pad ring width | max(2 mm, 2 Ã— process min wall) |
 
 ### 4.4 Parsing flow
 
 1. Send the text and the JSON schema to Claude (structured output / tool use).
 2. Validate with Pydantic. If it fails, retry **once**, sending the validation error back.
-3. Time limit 45 s per call. While waiting, show a spinner that says "Reading your description… if this takes too long, a manual form will open."
+3. Time limit 45 s per call. While waiting, show a spinner that says "Reading your descriptionâ€¦ if this takes too long, a manual form will open."
 4. If it fails again, or the API cannot be reached within the time limit: show the manual form (always available as a tab on the Check step) and offer the 3 saved demo problems.
 5. The demo parts load from saved, checked JSON. The video never depends on the network.
 
@@ -218,9 +218,9 @@ Each failed check gives a plain message on the check screen. Red stops the solve
 | A keep-out zone covers a pad or a support | red | names the zone and pad |
 | Keep-in zones fill > 90% of the design space | red | nothing left to optimize |
 | No path of free space from loads to supports (keep-out zones cut it off) | red | "Keep-out zones block every path from load to support." |
-| Size < 5 mm or > 2000 mm; force > 1,000,000 N; thickness > shorter side of the design space | yellow | "Check units: did you mean …?" |
+| Size < 5 mm or > 2000 mm; force > 1,000,000 N; thickness > shorter side of the design space | yellow | "Check units: did you mean â€¦?" |
 | Thickness < span / 20 | yellow | "Thin part: may buckle or twist sideways. The 2D model cannot check this." |
-| Any `fz_N_out_of_plane` ≠ 0 | red banner, not blocking | "Out-of-plane load: not part of the optimization. Checked by hand formula only." |
+| Any `fz_N_out_of_plane` â‰  0 | red banner, not blocking | "Out-of-plane load: not part of the optimization. Checked by hand formula only." |
 | Process min wall needs smaller elements than the cap allows | yellow | shows the effective min wall that will be used |
 
 ---
@@ -231,7 +231,7 @@ Each failed check gives a plain message on the check screen. Red stops the solve
 
 The values below were **starting values**; the cited values now live in `materials.yaml` (research log in `.plans/materials-research.md`). Substitutions accepted 2026-10-20, all flagged in the YAML: Poisson's ratios from cited literature (no maker sheet lists one); PLA and PETG Z strength from Ultimaker datasheet knockdown ratios (Prusa sheets have no Z-loaded value); AlSi10Mg modulus from the archived EOS 05.2014 sheet (current sheets list none); powder costs from third-party reseller prices. Do not use a value without a citation.
 
-| id | Material | Process | Source to cite | E (MPa) approx | Strength used (MPa) approx | Density (g/cm³) approx | Cost $/kg (to source) |
+| id | Material | Process | Source to cite | E (MPa) approx | Strength used (MPa) approx | Density (g/cmÂ³) approx | Cost $/kg (to source) |
 |---|---|---|---|---|---|---|---|
 | pla | Prusament PLA | FDM | Prusament PLA technical data sheet | ~2,200 | ~57 (XY) | ~1.24 | maker store price |
 | petg | Prusament PETG | FDM | Prusament PETG technical data sheet | ~1,500 | ~47 (XY) | ~1.27 | maker store price |
@@ -244,7 +244,7 @@ Per material, `materials.yaml` stores:
 
 ```
 id, name, process, E_xy_MPa, nu, strength_xy_MPa, strength_z_MPa,
-strength_kind ("yield" | "tensile" — use the lower of yield and tensile),
+strength_kind ("yield" | "tensile" â€” use the lower of yield and tensile),
 interlayer_shear_MPa (optional, only if a datasheet gives it),
 density_g_cm3, cost_usd_per_kg, cost_note,
 z_knockdown: { value, source }       # used only when strength_z is missing
@@ -254,7 +254,7 @@ citations: { E, nu, strength_xy, strength_z, interlayer_shear, density, cost } -
 Rules:
 - **In-plane checks use XY strength** from printed test bars (the part is printed flat).
 - **The out-of-plane bending check also uses XY strength.** When a flat-printed slab bends about an in-plane axis, the tension on its faces runs along x, inside the layers, so XY strength applies.
-- **The interlayer shear check uses Z strength / √3** as a conservative stand-in for interlayer shear strength, labeled as a stand-in. If a datasheet gives interlayer shear strength directly, use that and cite it. If the datasheet has no Z value, Z = XY × cited knockdown factor. The factor and its source appear in the results.
+- **The interlayer shear check uses Z strength / âˆš3** as a conservative stand-in for interlayer shear strength, labeled as a stand-in. If a datasheet gives interlayer shear strength directly, use that and cite it. If the datasheet has no Z value, Z = XY Ã— cited knockdown factor. The factor and its source appear in the results.
 - Z strength stays in the library and is shown on the card, with the note that it would govern in-plane stresses if the part were printed standing up.
 - Poisson's ratio: from the datasheet, or a cited typical value if the datasheet has none.
 - Cost is **material cost per kg only**. Label it "material cost only, not print cost" everywhere it appears. It is shown as information and never used for ranking.
@@ -277,31 +277,31 @@ Rules:
 - 2D plane stress, 4-node bilinear square elements (Q4), as in the 88-line code. The same element is used for optimization, re-checks, the baseline, and validation.
 - Element size `h` per process: `h = max(min_wall / 2.5, size that fits the element cap)`.
   - Element cap: **40,000** for live runs, **150,000** for the precomputed demo parts (or 80,000 if the timing benchmark, step S9, shows 150,000 cannot finish in time; section 6.10).
-  - Effective min wall = max(process min wall, 2.5 × h). It is **always shown** on every result, for example "metal: 1.1 mm enforced (process allows 0.5 mm)".
+  - Effective min wall = max(process min wall, 2.5 Ã— h). It is **always shown** on every result, for example "metal: 1.1 mm enforced (process allows 0.5 mm)".
 - Pads: hole elements are fixed at density 0 (passive void). Ring elements are fixed at density 1 (passive solid). A pad with `hole_r_mm = 0` is a solid disc of passive solid.
 - Supports: all nodes on the inner edge of the pad ring (or, for a solid pad, the nodes nearest the pad center within a radius of one element) are constrained. `pin`: x and y. `slide_x`: y only (free to move in x). `slide_y`: x only (free to move in y).
 - Loads: spread evenly over the nodes on the inner edge of the pad ring (or the same central nodes for a solid pad).
 - Solve: one factorization per iteration, one back-solve per load case.
-- Stresses (evaluation only, never inside the optimizer loop): strain from the B matrices at the 2 × 2 Gauss points of the square element, plane-stress D matrix, then nodal recovery (section 6.8, step 5).
-- Reactions (evaluation only): K·u − f at the constrained degrees of freedom, summed per support pad, for the bearing check (section 6.8, step 9).
+- Stresses (evaluation only, never inside the optimizer loop): strain from the B matrices at the 2 Ã— 2 Gauss points of the square element, plane-stress D matrix, then nodal recovery (section 6.8, step 5).
+- Reactions (evaluation only): KÂ·u âˆ’ f at the constrained degrees of freedom, summed per support pad, for the bearing check (section 6.8, step 9).
 
 ### 6.2 Topology optimization (one run = one process, one fill level)
 
-- SIMP, penalty p = 3, E_min = 1e-9 × E.
+- SIMP, penalty p = 3, E_min = 1e-9 Ã— E.
 - Density filter with radius `r_min = effective_min_wall / 2` (in elements: at least 1.5).
-- Heaviside projection with β continuation. Cold runs: 1 → 2 → 4 → 8 → 16, stepping up every 40 iterations or when the change < 0.01. **Warm-started runs start at β = 4** and continue 4 → 8 → 16 with the same rule.
+- Heaviside projection with Î² continuation. Cold runs: 1 â†’ 2 â†’ 4 â†’ 8 â†’ 16, stepping up every 40 iterations or when the change < 0.01. **Warm-started runs start at Î² = 4** and continue 4 â†’ 8 â†’ 16 with the same rule.
 - Update: optimality criteria (OC), as in the 88-line code, with the volume constraint on the projected (physical) densities.
 - Objective with several load cases: sum of compliances, each divided by a fixed normalization value. **The normalization is computed once per process catalog**, at uniform density equal to the first sweep level (60%), and held fixed for every run in that catalog: the sweep, the refinement runs, and the cold re-runs. Each case then counts equally and the weights never drift between runs.
 - Constraint: volume fraction = fill level (over the non-passive elements).
-- Stop (two rules, either one ends the run; decided 2026-10-20 after S9): at β = 16, (a) max design-variable change < 0.01, or (b) the objective has changed less than 0.1% over 10 consecutive iterations. Limit 300 iterations total (cold) / 100 iterations (warm). A result is marked "not fully converged" only if neither rule is met at the iteration limit. Rule (b) exists because under the Heaviside projection a few boundary elements keep flipping after the objective has settled, so rule (a) alone almost never fires.
-- Material inside the catalog uses reference E = 1 and ν = 0.33. Results are scaled per material afterward (section 6.4).
-- **Snapshots:** save the physical density field as **uint8 (density × 255), zlib-compressed** (`.npz`). Near-binary fields compress about 10×. Catalog and refinement runs save every 2 iterations. The cold re-run for the animation (section 6.7) saves every iteration. Rough size: about 20–30 kB per snapshot at 150k elements, so tens of MB per demo part.
+- Stop (two rules, either one ends the run; decided 2026-10-20 after S9): at Î² = 16, (a) max design-variable change < 0.01, or (b) the objective has changed less than 0.1% over 10 consecutive iterations. Limit 300 iterations total (cold) / 100 iterations (warm). A result is marked "not fully converged" only if neither rule is met at the iteration limit. Rule (b) exists because under the Heaviside projection a few boundary elements keep flipping after the objective has settled, so rule (a) alone almost never fires.
+- Material inside the catalog uses reference E = 1 and Î½ = 0.33. Results are scaled per material afterward (section 6.4).
+- **Snapshots:** save the physical density field as **uint8 (density Ã— 255), zlib-compressed** (`.npz`). Near-binary fields compress about 10Ã—. Catalog and refinement runs save every 2 iterations. The cold re-run for the animation (section 6.7) saves every iteration. Rough size: about 20â€“30 kB per snapshot at 150k elements, so tens of MB per demo part.
 - **Paper mode** (tests only): density filter, no Heaviside projection, node-level point load and supports, and the exact mesh, volume fraction, penalty, filter radius, move limit, and stop rule of the published MBB run. Used by the MBB benchmark (section 13.3) and nowhere else.
 
 ### 6.3 Catalog per process
 
-- Fill levels: 60%, 55%, …, 15% (10 levels), **swept downward**. Each level removes material from the one above, which changes the topology more than adding material would.
-- **Live runs:** the 60% level runs cold from uniform density. Each lower level is warm-started from the level above (β from 4, section 6.2).
+- Fill levels: 60%, 55%, â€¦, 15% (10 levels), **swept downward**. Each level removes material from the one above, which changes the topology more than adding material would.
+- **Live runs:** the 60% level runs cold from uniform density. Each lower level is warm-started from the level above (Î² from 4, section 6.2).
 - **Precomputed demo parts:** every level runs cold from uniform density, so each shape is independent and the side-by-side grid shows real topology differences, not one topology thickened. If the timing benchmark (step S9) shows cold runs at the chosen cap cannot finish in time, fall back in this order: (1) 80k cap with cold runs, (2) the chosen cap with the warm downward sweep. Whichever is used is recorded in the run bundle.
 - Early stop: if the 60% level fails every limit for every material, stop the sweep and go to the "no material passes" flow (section 8).
 - **Extension below 15%, per material** (decided 2026-10-21): if at least one material passes at 15%, continue down to 12%, 10%, 8% while at least one material still passes. Each material follows the extension only while it passes: the first lower level it fails at is the bottom of its refinement window, and levels computed below that (for other materials) do not count for it. A material that fails at 15% gets no extension levels. A material that passes at 8% carries the card note "limits are loose; part size is set by the minimum wall". The global message is shown only when every material passes at 8%. (Before this change the sweep only extended when every material passed, so a lighter pick could be missed when another material failed at a lower level.)
@@ -309,11 +309,11 @@ Rules:
 
 ### 6.4 Scaling to each material (why the catalog is valid)
 
-For one shape with force loads and the same ν:
-- Deflection is proportional to 1 / E. Store `δ × E` for each load case.
+For one shape with force loads and the same Î½:
+- Deflection is proportional to 1 / E. Store `Î´ Ã— E` for each load case.
 - Stress does not depend on E. Store the max von Mises stress for each load case.
 
-So, for material m at a catalog level: deflection = (δE) / E_m, and SF = strength_m / σ_max. Each material's passing range is found with no extra solves.
+So, for material m at a catalog level: deflection = (Î´E) / E_m, and SF = strength_m / Ïƒ_max. Each material's passing range is found with no extra solves.
 
 ### 6.5 Choosing the catalog level per material
 
@@ -326,11 +326,11 @@ Rule: `v_pick` = the lowest level that passes both limits, such that the next le
 
 ### 6.6 Refinement step (per material)
 
-1. Bisect inside the refinement window, **3 steps** (final resolution about 0.6% fill). Each step is a short run (β from 4, at most 60 iterations) warm-started from the `v_pick` design.
+1. Bisect inside the refinement window, **3 steps** (final resolution about 0.6% fill). Each step is a short run (Î² from 4, at most 60 iterations) warm-started from the `v_pick` design.
 2. **Memoize by (process, fill level).** The shape at a given fill level is the same for every material in a process, so materials that ask for the same bisection level share one run.
 3. Quick mode skips refinement and reports the catalog level.
 4. If results are not monotonic (noise), keep the smallest fill level that passed and add a note.
-5. **Final re-check:** run the chosen shape again with the material's real E and ν. These numbers are the ones reported. If the re-check fails where the scaled estimate passed, step up to the next passing fill (refinement level first, then catalog level) and add a note.
+5. **Final re-check:** run the chosen shape again with the material's real E and Î½. These numbers are the ones reported. If the re-check fails where the scaled estimate passed, step up to the next passing fill (refinement level first, then catalog level) and add a note.
 
 ### 6.7 Cold re-run for the animation
 
@@ -342,34 +342,34 @@ If the cold re-run's final shape passes the limits, it replaces the sweep's shap
 
 1. **Clean-up:** threshold the projected density at 0.5 into solid and void. Remove islands of solid not connected to any pad.
 2. **Connectivity:** check that every load pad is connected through solid to at least one support pad. If not, that fill level fails with the message "load pad not connected to a support."
-3. **Re-analysis** of the clean shape with the real E and ν, for each load case.
+3. **Re-analysis** of the clean shape with the real E and Î½, for each load case.
 4. **Deflection:** the largest displacement magnitude over the load pad's nodes, per load case. Compared with that case's limit.
-5. **Stress: nodal recovery.** Element-center stress sits half an element inside a surface and under-reads edge peaks by roughly 10–15% at the production mesh, which would overstate the safety factor exactly where parts fail. So every reported stress is recovered to the nodes:
-   - For each element counted as solid, compute the stress components (σx, σy, τxy) at the 2 × 2 Gauss points, using the **full material E** for every solid element. The strain comes from the FE solution; using full E errs on the high side for a partially filled boundary element.
-   - Extrapolate the components from the 4 Gauss points to the 4 corner nodes with the standard Q4 extrapolation: the bilinear fit through the Gauss-point values, evaluated at ξ, η = ±1. The weights are 1 + √3/2, −1/2, 1 − √3/2, −1/2 (nearest Gauss point, the two adjacent ones, the opposite one).
-   - At each node, average each component over the **solid elements only** that share the node. "Solid" means density ≥ 0.5 after clean-up, or area fraction ≥ 0.5 in the smoothed re-check; passive ring elements count as solid. Void elements never enter the average, so a boundary node is not pulled toward zero. A node touched by no solid element is masked.
+5. **Stress: nodal recovery.** Element-center stress sits half an element inside a surface and under-reads edge peaks by roughly 10â€“15% at the production mesh, which would overstate the safety factor exactly where parts fail. So every reported stress is recovered to the nodes:
+   - For each element counted as solid, compute the stress components (Ïƒx, Ïƒy, Ï„xy) at the 2 Ã— 2 Gauss points, using the **full material E** for every solid element. The strain comes from the FE solution; using full E errs on the high side for a partially filled boundary element.
+   - Extrapolate the components from the 4 Gauss points to the 4 corner nodes with the standard Q4 extrapolation: the bilinear fit through the Gauss-point values, evaluated at Î¾, Î· = Â±1. The weights are 1 + âˆš3/2, âˆ’1/2, 1 âˆ’ âˆš3/2, âˆ’1/2 (nearest Gauss point, the two adjacent ones, the opposite one).
+   - At each node, average each component over the **solid elements only** that share the node. "Solid" means density â‰¥ 0.5 after clean-up, or area fraction â‰¥ 0.5 in the smoothed re-check; passive ring elements count as solid. Void elements never enter the average, so a boundary node is not pulled toward zero. A node touched by no solid element is masked.
    - Compute von Mises from the averaged components at each node. These nodal values feed the safety factor, the stress maps, the 3D view, and the cinematic coloring.
    - **Reported value:** the max nodal von Mises over solid nodes **outside an exclusion zone around each pad: the pad ring itself plus one ring width beyond it, measured in millimeters.** The zone is in mm, not elements, so it does not change with the element cap. (Pin bearing on the hole wall is not modeled in the FE: the load is spread evenly around the hole edge, so stress inside the ring is not physical. Bearing gets its own hand check, step 9.)
    - **Raw peak:** the max nodal von Mises over all solid nodes, including the exclusion zones, shown in small text next to it, with the note: "Raw peak includes stress spikes at load and support points, which are an artifact of the model. The filtered value is used for the safety factor."
    - **Mesh note (shown in the Limits expander):** stress is reported at the mesh size used, which is printed on the card. Nodal recovery removes most of the edge under-read; the error that remains at the production mesh is measured by the hole check (section 13.4) and shown on the Validation tab. Sharp inner corners have peaks that grow with mesh refinement; the smoothing step (section 9) removes most inner corners, and the final numbers come from the smoothed shape. Stair-stepped boundaries on the grid add local noise, which the smoothed re-check (area fractions) reduces.
 6. **Safety factor** = strength / reported max stress (recovered nodal, outside the exclusion zones), worst case over all load cases.
-7. **Mass** = solid area × thickness × density.
+7. **Mass** = solid area Ã— thickness Ã— density.
 8. **Out-of-plane hand checks** (only if a load case has `fz`). Treat the part as a beam bending through its thickness, along the straight line from the load pad to the nearest support pad. At 20 sections along the line, take the solid width `w` crossing that section.
-   - **Bending:** I = w·t³/12, M = F_z × distance to the load, σ = M·(t/2)/I. Compared with **XY strength** (the face stress runs along the layers). Report the worst SF.
-   - **Interlayer shear:** τ = 1.5 · F_z / (w · t) at mid-thickness, which is a layer interface. Compared with **Z strength / √3** (or a cited interlayer shear strength if the datasheet has one). Report the worst SF.
+   - **Bending:** I = wÂ·tÂ³/12, M = F_z Ã— distance to the load, Ïƒ = MÂ·(t/2)/I. Compared with **XY strength** (the face stress runs along the layers). Report the worst SF.
+   - **Interlayer shear:** Ï„ = 1.5 Â· F_z / (w Â· t) at mid-thickness, which is a layer interface. Compared with **Z strength / âˆš3** (or a cited interlayer shear strength if the datasheet has one). Report the worst SF.
    - Both are labeled "approximate hand check". The card shows pass or fail for each.
-9. **Bearing hand check** (every pad with a hole, load pads and support pads, every load case). The pin presses on the hole wall. σ_bearing = F / (d × t), with d = 2 × `hole_r_mm` and t = `thickness_mm`.
-   - **Load pads:** F is the in-plane resultant √(fx² + fy²) of the applied force on that pad. Out-of-plane `fz` does not count (it runs along the pin).
-   - **Support pads:** F is the in-plane resultant of the FE reaction force on that pad: the reactions at the pad's constrained nodes, recovered as K·u − f on the constrained degrees of freedom and summed per pad. For `pin`, both components; for `slide_x`, only Ry exists; for `slide_y`, only Rx. A pad that is both a load pad and a support pad uses the reaction, which already includes the applied load. As a check, the reactions over all support pads must sum to minus the applied load in every load case (to 1e-6 relative); if not, the solve is flagged.
-   - SF_bearing = strength / σ_bearing, worst case over load cases and pads, compared with the target safety factor. It uses the **full XY strength as an approximation; bearing allowables are often higher, so this errs on the safe side**, and the card says so. Solid pads (`hole_r_mm = 0`) show "n/a (solid mount)". Pin shear and edge tear-out are not checked, and the limits say so.
-   - Load-pad bearing does not depend on the optimized shape, so a fail there applies to every design in that material at that hole size and thickness. Support-pad bearing can differ by design, because the reactions split between supports by stiffness, so it is evaluated per design from the re-analysis (and finally from the smoothed re-check, step 10). The suggested fix is scaled from the numbers: required d × t = current d × t × (SF_target / SF_bearing) for the failing pad, offered as a larger pin, a thicker part, or a bushing.
+9. **Bearing hand check** (every pad with a hole, load pads and support pads, every load case). The pin presses on the hole wall. Ïƒ_bearing = F / (d Ã— t), with d = 2 Ã— `hole_r_mm` and t = `thickness_mm`.
+   - **Load pads:** F is the in-plane resultant âˆš(fxÂ² + fyÂ²) of the applied force on that pad. Out-of-plane `fz` does not count (it runs along the pin).
+   - **Support pads:** F is the in-plane resultant of the FE reaction force on that pad: the reactions at the pad's constrained nodes, recovered as KÂ·u âˆ’ f on the constrained degrees of freedom and summed per pad. For `pin`, both components; for `slide_x`, only Ry exists; for `slide_y`, only Rx. A pad that is both a load pad and a support pad uses the reaction, which already includes the applied load. As a check, the reactions over all support pads must sum to minus the applied load in every load case (to 1e-6 relative); if not, the solve is flagged.
+   - SF_bearing = strength / Ïƒ_bearing, worst case over load cases and pads, compared with the target safety factor. It uses the **full XY strength as an approximation; bearing allowables are often higher, so this errs on the safe side**, and the card says so. Solid pads (`hole_r_mm = 0`) show "n/a (solid mount)". Pin shear and edge tear-out are not checked, and the limits say so.
+   - Load-pad bearing does not depend on the optimized shape, so a fail there applies to every design in that material at that hole size and thickness. Support-pad bearing can differ by design, because the reactions split between supports by stiffness, so it is evaluated per design from the re-analysis (and finally from the smoothed re-check, step 10). The suggested fix is scaled from the numbers: required d Ã— t = current d Ã— t Ã— (SF_target / SF_bearing) for the failing pad, offered as a larger pin, a thicker part, or a bushing.
 10. **Smoothed re-check:** done after geometry export (section 9). Its numbers replace these if they differ.
 
 ### 6.9 Baselines (`baseline.py`)
 
 - **Full block:** the whole design space minus keep-out zones and holes, same material. Mass only (no limits check needed).
 - **Strut baseline (headline "weight saved"):** straight, constant-width solid struts from each load pad center to its nearest support pad(s), going around keep-out zones (shortest path on the grid if a straight line is blocked). Find the smallest width that meets the same SF and deflection limits, by bisection, with the same FE solver. Same material and thickness. Said plainly on the card: "constant-width straight struts, sized by the same solver to the same limits."
-- Weight saved = 1 − mass_optimized / mass_baseline. Show both: "vs. simple strut design: X%" (headline) and "vs. solid block: Y%".
+- Weight saved = 1 âˆ’ mass_optimized / mass_baseline. Show both: "vs. simple strut design: X%" (headline) and "vs. solid block: Y%".
 - If no strut width up to the design-space size passes, show "the simple design cannot meet the limits", and only the full-block number.
 
 ### 6.10 Compute: measured on this laptop (S9, 2026-10-20)
@@ -405,10 +405,10 @@ The cost is close to linear in the element count (about 2.2e-5 s per element per
 
 - **Printer filter:** materials whose process is not in the user's printer group are **greyed out with the reason** ("needs a metal printing service"). They are still computed and shown, but not ranked. "any" allows all.
 - **Ranking:** by mass, lowest first, among designs that pass every limit and are allowed by the printer filter. **Cost never ranks.**
-- **Information shown, not ranked:** material cost per part = mass × $/kg, labeled "material cost only, not print cost."
+- **Information shown, not ranked:** material cost per part = mass Ã— $/kg, labeled "material cost only, not print cost."
 - **Badges:** "Lightest" on the top of the ranking (it also gets the highlight border). "Cheapest material" on the passing, allowed design with the lowest material cost, labeled as information.
 - **Pareto chart:** mass (x) vs. material cost per part (y). **One point per material: its final pick.** Passing and allowed designs are filled, colored by process. Failed or filtered designs are hollow grey, with a hover reason. A line joins the passing, allowed points that are not dominated. The caption says that cost is material only.
-- **Funnel summary:** "N candidate designs evaluated → M met the limits → K printable with your printer → ranked by mass". Isolated stress failures (section 6.5) show as a labeled grey count.
+- **Funnel summary:** "N candidate designs evaluated â†’ M met the limits â†’ K printable with your printer â†’ ranked by mass". Isolated stress failures (section 6.5) show as a labeled grey count.
 
 ---
 
@@ -416,7 +416,7 @@ The cost is close to linear in the element count (about 2.2e-5 s per element per
 
 | Situation | What Morphic does |
 |---|---|
-| No material passes | Show each material's best SF and deflection against the target (at 60% fill, or the full block if that is better). Suggest specific fixes from scaling: for in-plane loads, deflection and stress both scale **exactly** 1/t for the same shape, so required t ≈ t × max(SF_target/SF, δ/δ_limit); out-of-plane bending stress scales 1/t² and interlayer shear 1/t. Also suggest a larger design space or a lower safety factor, each with the computed number, e.g. "increase thickness to 9 mm". Never change the problem on its own. |
+| No material passes | Show each material's best SF and deflection against the target (at 60% fill, or the full block if that is better). Suggest specific fixes from scaling: for in-plane loads, deflection and stress both scale **exactly** 1/t for the same shape, so required t â‰ˆ t Ã— max(SF_target/SF, Î´/Î´_limit); out-of-plane bending stress scales 1/tÂ² and interlayer shear 1/t. Also suggest a larger design space or a lower safety factor, each with the computed number, e.g. "increase thickness to 9 mm". Never change the problem on its own. |
 | A material passes at 8% | Card note: limits are loose for that material. If every material passes at 8%, also the global loose-limits message (section 6.3). Show results at the lowest level. |
 | A material passes only with a fill above its catalog's 60% | Treated as fail for that material, with its numbers. |
 | Isolated stress failure at a level above the pick | Shown greyed in the funnel with the label; does not move the pick (section 6.5). |
@@ -437,16 +437,16 @@ The cost is close to linear in the element count (about 2.2e-5 s per element per
 1. Contour the filtered density at 0.5 with marching squares (scikit-image).
 2. Smooth lightly. The max move of any point is under 0.5 element.
 3. Repair pads: union the exact pad ring circles, subtract the exact hole circles and keep-out zones (shapely). Drop slivers smaller than the effective min wall.
-4. Extrude to `thickness_mm` with trimesh. Check: `is_watertight`, and volume = area × thickness within 1%. Fail loudly if not.
+4. Extrude to `thickness_mm` with trimesh. Check: `is_watertight`, and volume = area Ã— thickness within 1%. Fail loudly if not.
 5. Export: **STL** (mm), **SVG** (outline), **DXF** (ezdxf, outline with holes).
-6. **Smoothed re-check:** rasterize the smoothed polygon back onto the analysis grid (area fraction per element, 4×4 supersampling). Run the FE again with **linear scaling, E_e = E × fraction** for boundary elements (no SIMP penalty; this is a geometry check, not an optimization). Recompute stress with nodal recovery (section 6.8, step 5), counting elements with fraction ≥ 0.5 as solid, then SF, deflection, and mass. **These are the numbers shown and exported**, so the numbers match the STL.
+6. **Smoothed re-check:** rasterize the smoothed polygon back onto the analysis grid (area fraction per element, 4Ã—4 supersampling). Run the FE again with **linear scaling, E_e = E Ã— fraction** for boundary elements (no SIMP penalty; this is a geometry check, not an optimization). Recompute stress with nodal recovery (section 6.8, step 5), counting elements with fraction â‰¥ 0.5 as solid, then SF, deflection, and mass. **These are the numbers shown and exported**, so the numbers match the STL.
 
 ---
 
 ## 10. Explanation (`explain.py`)
 
 - Input to the LLM: only the results JSON (all numbers, rounded as displayed).
-- Output: 3–4 short sentences on why the top design wins and what trade-off it makes (mass vs. material cost vs. which printer is needed).
+- Output: 3â€“4 short sentences on why the top design wins and what trade-off it makes (mass vs. material cost vs. which printer is needed).
 - **Number check:** extract every number in the text. Each must match a value in the results JSON within display rounding. Units must match.
 - If any number fails: retry once with the list of bad numbers. If it fails again: use a template explanation filled from the results.
 - Plain English only. No claims beyond the computed data.
@@ -457,14 +457,14 @@ The cost is close to linear in the element count (about 2.2e-5 s per element per
 
 Top bar: "Morphic" + step indicator. Tabs: **Design** (the 4 steps) and **Validation**.
 
-### Step 1 — Describe
+### Step 1 â€” Describe
 - Large text box.
 - Three example buttons: "RC car arm", "Drone arm", "Aerospace bracket". Each fills in the text and loads the saved JSON.
 - Printer selector (it can also come from the text; the selector wins if changed).
 - "Quick mode" toggle.
 - Button: "Read my description".
 
-### Step 2 — Check
+### Step 2 â€” Check
 - Drawing of the design space: pads (pins as filled triangles, slides as rollers with their free direction drawn, loads as red arrows scaled by size, one color per load case), keep-in zones (solid fill), keep-out zones (hatched), dimensions.
 - Editable table of all values. Defaults are highlighted yellow. The original text appears next to each value.
 - Sanity messages (red / yellow) above the drawing.
@@ -472,16 +472,16 @@ Top bar: "Morphic" + step indicator. Tabs: **Design** (the 4 steps) and **Valida
 - Shows the effective min wall per process and the estimated run time (from the timing model measured in step S9).
 - Button: "Generate designs" (disabled while any red check is open).
 
-### Step 3 — Compare
+### Step 3 â€” Compare
 - Progress during a live run: current process, fill level, iteration, elapsed time, and a live preview of the growing shape.
 - **Growth animation** of the top design, built from the cold re-run snapshots (section 6.7), with the caption: "The update rule adds material where strain energy is high and removes it where it is low, the same idea as bone remodeling (Wolff's law)."
 - Funnel summary and Pareto chart (section 7).
 - **Card grid**, one card per material (up to 6), grouped by process. Each card shows:
-  - optimized shape image and stress map. **Stress maps show recovered nodal utilization = σ_vm × SF_target / strength on a shared 0–1 scale**, drawn with smooth shading on the node grid, void nodes masked, with values above 1 in a distinct red. This keeps plastics and metals readable side by side.
+  - optimized shape image and stress map. **Stress maps show recovered nodal utilization = Ïƒ_vm Ã— SF_target / strength on a shared 0â€“1 scale**, drawn with smooth shading on the node grid, void nodes masked, with values above 1 in a distinct red. This keeps plastics and metals readable side by side.
   - mass, weight saved (vs. strut, vs. block), fill level
   - SF (filtered) with the raw peak in small text and the one-line note
   - deflection per load case vs. limit
-  - out-of-plane checks (if any): bending and interlayer shear, each pass/fail; next to them, the bearing check per pad with a hole (load pads from the applied force, support pads from the FE reaction force; pass/fail, σ_bearing vs. strength, with the note that full strength is used as an approximation and bearing allowables are often higher)
+  - out-of-plane checks (if any): bending and interlayer shear, each pass/fail; next to them, the bearing check per pad with a hole (load pads from the applied force, support pads from the FE reaction force; pass/fail, Ïƒ_bearing vs. strength, with the note that full strength is used as an approximation and bearing allowables are often higher)
   - effective min wall enforced, and the mesh size used
   - material cost per part (labeled "material cost only")
   - badges; highlight on the winner; grey + reason if failed or filtered
@@ -491,7 +491,7 @@ Top bar: "Morphic" + step indicator. Tabs: **Design** (the 4 steps) and **Valida
 - Explanation text (section 10).
 - Fixed one-line note on every result: "Static check only. Fatigue and impact toughness are not evaluated. Printed flat at 100% infill. See Limits."
 
-### Step 4 — Export
+### Step 4 â€” Export
 - Per design: STL, SVG, DXF downloads.
 - PDF report (1 page per design: problem drawing, material and citations, shape, stress map, numbers, limits).
 - Run bundle zip (section 12).
@@ -511,7 +511,7 @@ Top bar: "Morphic" + step indicator. Tabs: **Design** (the 4 steps) and **Valida
 Zip contents:
 - `problem.json` (as solved, after user edits)
 - `materials.yaml` + `processes.yaml` with a content hash
-- `solver_settings.json` (all constants from `config.py`, element caps, filter, β schedule, tolerances, cold vs. warm sweep used)
+- `solver_settings.json` (all constants from `config.py`, element caps, filter, Î² schedule, tolerances, cold vs. warm sweep used)
 - `code_version.txt` (git commit hash; "dirty" if there are uncommitted changes)
 - `environment.txt` (Python, NumPy, SciPy, PyPardiso versions, thread count)
 - `results.json` (every number shown in the UI)
@@ -530,20 +530,20 @@ Cache key = SHA-256 of (problem JSON + materials hash + solver settings + code v
 
 All run as `pytest` tests and from the Validation tab. The write-up names the mesh each error was measured at.
 
-1. **Cantilever beam** (L = 100 mm, h = 10 mm, t = 10 mm, solid, tip load spread over the end face, fixed face at x = 0). **Validation mesh: 20 elements through the depth** (h_elem = 0.5 mm, 200 × 20 elements). This is still coarser than the production meshes (about 90 elements through 20 mm at the live cap).
-   - Tip deflection vs. beam theory with shear correction: δ = PL³/(3EI) + PL/(κGA), κ = 5/6.
-   - Bending stress at mid-span vs. σ = M·c/I with M = P·L/2: the **recovered nodal stress at the top surface node** (section 6.8, step 5) against the surface value. As a check on the element itself, also report the element-center value of the top row against σ = M·y/I at y = c − h_elem/2. (Mid-span avoids the stress spike at the fixed end.)
+1. **Cantilever beam** (L = 100 mm, h = 10 mm, t = 10 mm, solid, tip load spread over the end face, fixed face at x = 0). **Validation mesh: 20 elements through the depth** (h_elem = 0.5 mm, 200 Ã— 20 elements). This is still coarser than the production meshes (about 90 elements through 20 mm at the live cap).
+   - Tip deflection vs. beam theory with shear correction: Î´ = PLÂ³/(3EI) + PL/(ÎºGA), Îº = 5/6.
+   - Bending stress at mid-span vs. Ïƒ = MÂ·c/I with M = PÂ·L/2: the **recovered nodal stress at the top surface node** (section 6.8, step 5) against the surface value. As a check on the element itself, also report the element-center value of the top row against Ïƒ = MÂ·y/I at y = c âˆ’ h_elem/2. (Mid-span avoids the stress spike at the fixed end.)
    - Pass if both errors < 3% at the validation mesh.
    - If Q4 cannot reach 3% at that mesh, report the true error and the finer mesh that reaches it. Do not change the element only for the test.
 2. **Mesh refinement:** 2, 4, 8, 16, 32 elements through the depth. Plot the error. It must shrink steadily.
 3. **MBB benchmark (paper mode):** run the 88-line paper's MBB case in paper mode (section 6.2): same mesh, volume fraction, penalty, density filter radius, move limit, point load, supports, and stop rule as the published run. Copy the exact call arguments, the published compliance value, and the published figure from Andreassen et al. (2011) into the test during the build. Pass if compliance is within 2% (the paper's value depends on its own iteration count) and the layout matches the figure visually.
-4. **Hole stress check (plate with a central hole in tension), with and without nodal recovery.** Plate width W = 10 × hole diameter d (d = 10 mm, W = 100 mm, length 2W), uniform tension at the ends, quarter model with symmetry supports. The hole is represented **the way production represents it**: on the regular grid, as void elements with area fractions at the boundary (section 9.6), not as a body-fitted mesh. The hole center sits on a node and the radius is a whole number of elements, so the top of the hole (θ = 90°, where the stress is highest) lies exactly on a grid line and the edge node there is a true boundary node. Meshes: 8, 16, and 32 elements across the hole radius. The production meshes fall inside this range: a 1.6 mm pad hole has about 8 elements per radius at the live cap and about 14 at the demo cap.
+4. **Hole stress check (plate with a central hole in tension), with and without nodal recovery.** Plate width W = 10 Ã— hole diameter d (d = 10 mm, W = 100 mm, length 2W), uniform tension at the ends, quarter model with symmetry supports. The hole is represented **the way production represents it**: on the regular grid, as void elements with area fractions at the boundary (section 9.6), not as a body-fitted mesh. The hole center sits on a node and the radius is a whole number of elements, so the top of the hole (Î¸ = 90Â°, where the stress is highest) lies exactly on a grid line and the edge node there is a true boundary node. Meshes: 8, 16, and 32 elements across the hole radius. The production meshes fall inside this range: a 1.6 mm pad hole has about 8 elements per radius at the live cap and about 14 at the demo cap.
    Target: the finite-width stress concentration factor from Pilkey, *Peterson's Stress Concentration Factors* (circular hole in a finite-width plate under tension; copy the exact formula and its range from the book during the build). At d/W = 0.1 it is within about 1% of the infinite-plate value of 3.0, and the check uses the finite-width value, not 3.0, so it is valid for a finite plate.
    The test reports, at each mesh:
-   - **Without recovery:** the element-center von Mises in the edge element at θ = 90° vs. the true edge value K_t·σ_nom. This is the under-read.
-   - **With recovery:** the **maximum recovered nodal von Mises over the hole boundary nodes** vs. the true edge value. This is the number production uses for the safety factor. On the grid the top of the hole is a flat ledge, so the peak flattens at θ = 90° and moves a few degrees along the ledge; the value at the θ = 90° node is also reported, with the angle where the maximum sits. (Decided 2026-10-20 after the build showed the 90° node alone reads 7.4% low at 16 elements per radius.)
+   - **Without recovery:** the element-center von Mises in the edge element at Î¸ = 90Â° vs. the true edge value K_tÂ·Ïƒ_nom. This is the under-read.
+   - **With recovery:** the **maximum recovered nodal von Mises over the hole boundary nodes** vs. the true edge value. This is the number production uses for the safety factor. On the grid the top of the hole is a flat ledge, so the peak flattens at Î¸ = 90Â° and moves a few degrees along the ledge; the value at the Î¸ = 90Â° node is also reported, with the angle where the maximum sits. (Decided 2026-10-20 after the build showed the 90Â° node alone reads 7.4% low at 16 elements per radius.)
    - **Element check:** the element-center value vs. the analytical hoop stress at that element's centroid radius (Kirsch field scaled by K_t,finite / 3). This separates the element's own error from the under-read.
-   - **Stair-step noise:** the max recovered nodal stress on the hole boundary vs. the value at the θ = 90° node, which shows how much the grid representation moves the peak.
+   - **Stair-step noise:** the max recovered nodal stress on the hole boundary vs. the value at the Î¸ = 90Â° node, which shows how much the grid representation moves the peak.
    Pass: the recovered (boundary-maximum) error is smaller than the element-center error at every mesh; the recovered error is < 5% at 16 elements per radius; the element check is < 5% at 8 elements per radius. The recovered error at 8 elements per radius (about 6%, measured during the build) is reported on the Validation tab and in the Limits note as "the remaining stress error at a smooth edge at the live mesh."
 5. **Scaling laws:** for a fixed shape, check that doubling E halves deflection and leaves stress unchanged (to 1e-6). This proves the catalog method in section 6.4.
 6. **Other tests:** schema and sanity checks, watertight STL and volume, connectivity check, reaction forces summing to the applied load, bearing (load and support pads) and out-of-plane hand checks against hand-computed values, explanation grounding (a planted wrong number must be caught), and bundle rerun (both modes).
@@ -556,19 +556,19 @@ The values below are approved. Sources marked "to cite" must still be confirmed 
 
 ### 14.1 RC car lower suspension arm (1/10 scale buggy, rear)
 - View: front view of the arm (vertical plane through the arm), so the main vertical load is in-plane.
-- Design space: 90 mm × 20 mm. **Thickness (fore-aft, extruded): 12 mm.** (Thinner than the 20 mm height, so plane stress holds and the thickness sanity check does not fire.)
+- Design space: 90 mm Ã— 20 mm. **Thickness (fore-aft, extruded): 12 mm.** (Thinner than the 20 mm height, so plane stress holds and the thickness sanity check does not fire.)
 - Pads: inner hinge pin at (6, 10), **pin**. Shock mount at (55, 16), **slide_x** (vertical reaction only, free in x: a shock only pushes along its axis, which is close to vertical). Outer hub pin at (84, 10), load pad.
-- Load case 1 "Hard landing": fy = −80 N at the hub. Reason: about 0.5 kg per corner × 9.81 × ~15 g landing peak (impact factor to cite from RC or vehicle dynamics source). Deflection limit 1.0 mm.
-- Load case 2 "Curb hit, sideways": fx = −40 N at the hub. Reason: lateral strike, ~3× the cornering force. Deflection limit 1.0 mm.
+- Load case 1 "Hard landing": fy = âˆ’80 N at the hub. Reason: about 0.5 kg per corner Ã— 9.81 Ã— ~15 g landing peak (impact factor to cite from RC or vehicle dynamics source). Deflection limit 1.0 mm.
+- Load case 2 "Curb hit, sideways": fx = âˆ’40 N at the hub. Reason: lateral strike, ~3Ã— the cornering force. Deflection limit 1.0 mm.
 - Out-of-plane case 3 "Front impact": fz = 60 N at the hub (hand checks only).
 - SF 2.0. Printer: desktop FDM.
 
 ### 14.2 5-inch FPV drone arm
 - View: side view along the arm, so thrust is in-plane.
-- Design space: **120 mm × 18 mm**. Thickness (width): 10 mm. (Changed 2026-10-21 from 120 × 15 mm: the 8 mm motor ring at mid-height did not fit the 15 mm height, and the sanity check "pad fully inside the design space" blocked the solve. The design space was enlarged and the pads recentred at y = 9 mm; the 8 mm ring is kept.)
+- Design space: **120 mm Ã— 18 mm**. Thickness (width): 10 mm. (Changed 2026-10-21 from 120 Ã— 15 mm: the 8 mm motor ring at mid-height did not fit the 15 mm height, and the sanity check "pad fully inside the design space" blocked the solve. The design space was enlarged and the pads recentred at y = 9 mm; the 8 mm ring is kept.)
 - Pads: two frame bolts at (5, 9) and (25, 9), both **pin** (clamped between frame plates). Motor mount keep-in pad at (112, 9), ring r = 8 mm, `hole_r_mm = 0` (solid), load pad.
-- Load case 1 "Full thrust": fy = +32 N. Reason: ~1.6 kgf max static thrust for a 2306 motor on 6S with a 5-inch prop (to cite from a motor thrust table) × 2 for dynamic loads.
-- Load case 2 "Hard landing": fy = −50 N. Reason: arm hits the ground first (impact factor to cite).
+- Load case 1 "Full thrust": fy = +32 N. Reason: ~1.6 kgf max static thrust for a 2306 motor on 6S with a 5-inch prop (to cite from a motor thrust table) Ã— 2 for dynamic loads.
+- Load case 2 "Hard landing": fy = âˆ’50 N. Reason: arm hits the ground first (impact factor to cite).
 - Out-of-plane case 3 "Side crash": fz = 30 N (hand checks only).
 - Deflection limit 0.5 mm in both cases. Reason: arm stiffness affects motor vibration seen by the flight controller.
 - SF 2.0. Printer: desktop FDM.
@@ -577,19 +577,19 @@ The values below are approved. Sources marked "to cite" must still be confirmed 
 - Sources (cite both in `examples/aero_bracket.json`, `reason` field, and in the README):
   1. GE / GrabCAD Jet Engine Bracket Challenge page (2013): load cases, pin size, bolt spec, material, min wall, STEP file.
   2. Carter, W. T., et al. (2014), "The GE Aircraft Engine Bracket Challenge: An Experiment in Crowdsourcing for Mechanical Design Concepts": original mass and winner result.
-- Verified from both sources: the four load cases, the 0.75 in clevis pin, the four 0.375-24 base bolts (interfaces 2–5), Ti-6Al-4V, min wall 0.050 in (1.27 mm).
+- Verified from both sources: the four load cases, the 0.75 in clevis pin, the four 0.375-24 base bolts (interfaces 2â€“5), Ti-6Al-4V, min wall 0.050 in (1.27 mm).
 - View: side view of the clevis bracket.
-- Design space: about 178 mm × 65 mm (**to confirm from the challenge STEP file** during the build). Thickness: 25 mm.
-- Pads: the original has four base bolts (interfaces 2–5, 0.375-24 UNF, hole r ≈ 4.8 mm). The 2D side view merges them into **two pad pairs**: each pad in the side view stands for the two bolts that lie behind each other along the viewing axis. Both merged base pads are **pin**. One clevis pin pad at the top (interface 1), load pad; hole diameter 0.75 in (19.05 mm), and the bearing check uses it.
+- Design space: about 178 mm Ã— 65 mm (**to confirm from the challenge STEP file** during the build). Thickness: 25 mm.
+- Pads: the original has four base bolts (interfaces 2â€“5, 0.375-24 UNF, hole r â‰ˆ 4.8 mm). The 2D side view merges them into **two pad pairs**: each pad in the side view stands for the two bolts that lie behind each other along the viewing axis. Both merged base pads are **pin**. One clevis pin pad at the top (interface 1), load pad; hole diameter 0.75 in (19.05 mm), and the bearing check uses it.
 - Load cases (as in the challenge, each separate):
-  - "Vertical": 8,000 lbf ≈ 35,600 N upward.
-  - "Horizontal": 8,500 lbf ≈ 37,800 N.
-  - "Angled 42°": 9,500 lbf ≈ 42,300 N at 42° from vertical.
-  - The challenge's torsion load (5,000 lbf·in) is out-of-plane: noted, not checked in 2D.
-- Material of the original: Ti-6Al-4V, yield 131 ksi (about 903 MPa) at 75 °F. Minimum wall 0.050 in (1.27 mm). Use these as the reference values on the card; the metal entry in the library (section 5.1) must match or cite its own datasheet.
+  - "Vertical": 8,000 lbf â‰ˆ 35,600 N upward.
+  - "Horizontal": 8,500 lbf â‰ˆ 37,800 N.
+  - "Angled 42Â°": 9,500 lbf â‰ˆ 42,300 N at 42Â° from vertical.
+  - The challenge's torsion load (5,000 lbfÂ·in) is out-of-plane: noted, not checked in 2D.
+- Material of the original: Ti-6Al-4V, yield 131 ksi (about 903 MPa) at 75 Â°F. Minimum wall 0.050 in (1.27 mm). Use these as the reference values on the card; the metal entry in the library (section 5.1) must match or cite its own datasheet.
 - SF 1.5 (standard aerospace ultimate factor, FAR 25.303, to cite). Deflection limit: to set from the challenge if given, else span / 200.
 - Printer: any.
-- **Slice simplification, stated on the card and in the write-up:** this is a 25 mm thick 2D slice that carries the full challenge load. The real bracket is wider at the base (width to confirm from the STEP file), so stresses here are several times those in the real part. The original Ti-6Al-4V bracket weighed about 1.8 kg; the challenge winner was about 80% lighter. Results are **not comparable to the 3D challenge results**, and no mass comparison with the original or the winner is made. The card carries one line: "2D slice of a known benchmark (original ≈ 1.8 kg Ti-6Al-4V, winner ≈ 80% lighter); not comparable to the 3D challenge results."
+- **Slice simplification, stated on the card and in the write-up:** this is a 25 mm thick 2D slice that carries the full challenge load. The real bracket is wider at the base (width to confirm from the STEP file), so stresses here are several times those in the real part. The original Ti-6Al-4V bracket weighed about 1.8 kg; the challenge winner was about 80% lighter. Results are **not comparable to the 3D challenge results**, and no mass comparison with the original or the winner is made. The card carries one line: "2D slice of a known benchmark (original â‰ˆ 1.8 kg Ti-6Al-4V, winner â‰ˆ 80% lighter); not comparable to the 3D challenge results."
 - Expected use: to show the printer filter, the fail-with-numbers logic, and the metal comparison. **Do not pre-assert which materials pass.** Run it and report what happens. (Quick estimate: PA6-CF at SF 1.5 needs about 21 mm of the 65 mm section in pure tension to carry 35 kN, so a plastic may pass some load cases; that is fine, and plastic failure here would be partly an artifact of the slice.)
 
 ---
@@ -602,14 +602,14 @@ The values below are approved. Sources marked "to cite" must still be confirmed 
    - One side-by-side sequence of the FDM, SLS, and metal designs growing, from the three cold re-runs.
    - **Every frame comes from real computed data.** No faked or interpolated shapes beyond showing the saved snapshots in order.
    - Output: 1080p MP4, 30 fps.
-2. **3D SIMP for one part:** voxel grid about 60 × 30 × 10, drone arm only, PA6-CF only, marching cubes STL. No 3D material comparison. Shown as "the method extends to 3D".
+2. **3D SIMP for one part:** voxel grid about 60 Ã— 30 Ã— 10, drone arm only, PA6-CF only, marching cubes STL. No 3D material comparison. Shown as "the method extends to 3D".
 3. **three.js live 3D rendering** in the app (instead of Plotly).
 
 ---
 
 ## 16. Build order (priority, not timed)
 
-Steps are numbered S1–S17 so they do not collide with the review item numbers (A/B/C/D). Each step is done when its acceptance check passes.
+Steps are numbered S1â€“S17 so they do not collide with the review item numbers (A/B/C/D). Each step is done when its acceptance check passes.
 
 | # | Item | Done when |
 |---|---|---|
@@ -630,7 +630,7 @@ Steps are numbered S1–S17 so they do not collide with the review item numbers 
 | S14 | Precompute the 3 demo parts at the cap chosen in S9 | Cached results load instantly |
 | S15 | Cinematic renders (stretch 1) | MP4s for the video |
 | S16 | 3D SIMP (stretch 2), three.js (stretch 3) | Only if time remains |
-| S17 | README final: install, run, validate, reproduce (both rerun modes), limits, relation to existing tools, all citations | — |
+| S17 | README final: install, run, validate, reproduce (both rerun modes), limits, relation to existing tools, all citations | â€” |
 
 ---
 
@@ -640,26 +640,26 @@ Steps are numbered S1–S17 so they do not collide with the review item numbers 
 
 | Time | Shot | What is on screen | Judging criteria |
 |---|---|---|---|
-| 0:00–0:30 | Hook | A solid block part next to a bone-like Morphic part. Line: nature removes material that does not carry load (Wolff's law). Morphic does this for printed parts, with real materials. | Innovativeness |
-| 0:30–1:15 | Describe + check | Type the RC arm (or drone arm) description. The check screen shows supports, loads, and yellow defaults. Fix one value live. | Innovativeness, scalability (plain English input) |
-| 1:15–2:00 | Shape grows | Cinematic PyVista render of the winning design growing from nothing (cold re-run), translucent to solid, utilization colors, orbit. Caption on the bone remodeling link. | Innovativeness |
-| 2:00–2:30 | Material grid | Funnel, Pareto chart (one point per material), cards. Show that FDM, SLS, and metal give different shapes, and that within a process the fill level changes with material. Side-by-side growth render. Badges, sources expander, explanation. | Materials relevance |
-| 2:30–3:05 | Validation | Validation tab: cantilever error under 3% at the stated mesh, mesh plot, MBB benchmark matching the published result, hole stress check showing the error with and without nodal recovery. | Research impact, rigor |
-| 3:05–3:35 | Breadth | Quick cuts: RC arm, drone arm, aerospace bracket (greyed cards with reasons, metals compared, the slice note). STL opens in PrusaSlicer; the slicer's estimated weight is compared with Morphic's mass (same density set in the slicer). Run bundle and `morphic rerun`. | Scalability, research impact |
-| 3:35–4:00 | Limits + next | Static, 2D, no fatigue, no physical test, commercial tools compare materials too but closed and unsourced. Next: 3D, fatigue, physical tests, broader bio-inspired design. Open-source, reproducible. | Honesty, research impact |
+| 0:00â€“0:30 | Hook | A solid block part next to a bone-like Morphic part. Line: nature removes material that does not carry load (Wolff's law). Morphic does this for printed parts, with real materials. | Innovativeness |
+| 0:30â€“1:15 | Describe + check | Type the RC arm (or drone arm) description. The check screen shows supports, loads, and yellow defaults. Fix one value live. | Innovativeness, scalability (plain English input) |
+| 1:15â€“2:00 | Shape grows | Cinematic PyVista render of the winning design growing from nothing (cold re-run), translucent to solid, utilization colors, orbit. Caption on the bone remodeling link. | Innovativeness |
+| 2:00â€“2:30 | Material grid | Funnel, Pareto chart (one point per material), cards. Show that FDM, SLS, and metal give different shapes, and that within a process the fill level changes with material. Side-by-side growth render. Badges, sources expander, explanation. | Materials relevance |
+| 2:30â€“3:05 | Validation | Validation tab: cantilever error under 3% at the stated mesh, mesh plot, MBB benchmark matching the published result, hole stress check showing the error with and without nodal recovery. | Research impact, rigor |
+| 3:05â€“3:35 | Breadth | Quick cuts: RC arm, drone arm, aerospace bracket (greyed cards with reasons, metals compared, the slice note). STL opens in PrusaSlicer; the slicer's estimated weight is compared with Morphic's mass (same density set in the slicer). Run bundle and `morphic rerun`. | Scalability, research impact |
+| 3:35â€“4:00 | Limits + next | Static, 2D, no fatigue, no physical test, commercial tools compare materials too but closed and unsourced. Next: 3D, fatigue, physical tests, broader bio-inspired design. Open-source, reproducible. | Honesty, research impact |
 
 ### 17.2 Write-up outline (1 page)
 
-1. **Problem** (2–3 sentences): lightweight printed parts need both shape and material choices; the choice depends on the limits, the material, and the process, and that coupling is usually hidden or unsourced.
-2. **What Morphic does** (lead paragraph): plain English → checked problem → cited material data → optimized shape per material and process → verified explanation → reproducible bundle. Open source.
+1. **Problem** (2â€“3 sentences): lightweight printed parts need both shape and material choices; the choice depends on the limits, the material, and the process, and that coupling is usually hidden or unsourced.
+2. **What Morphic does** (lead paragraph): plain English â†’ checked problem â†’ cited material data â†’ optimized shape per material and process â†’ verified explanation â†’ reproducible bundle. Open source.
 3. **Method:** SIMP topology optimization; lowest passing fill level among stiffness-optimized shapes under SF and deflection limits (say exactly this); per-process catalogs with min-wall filters; catalog scaling plus bisection; smoothed re-check so the numbers match the STL. The physical intuition: the update rule adds material where strain energy is high and removes it where it is low, the same principle as bone remodeling (Huiskes et al. 2000).
 4. **Key result:** a figure of the material/process grid for one part, with mass and weight saved vs. the strut baseline.
 5. **Validation:** cantilever error, mesh convergence, MBB match, hole stress check (with and without nodal recovery), scaling-law test. Numbers in one small table, with the mesh stated.
 6. **Breadth:** three parts, three industries, one line each with the winning material and weight saved. The bracket line carries the slice note.
 7. **Limits:** static only, 2D plane stress, no fatigue or impact, no physical test, von Mises with one strength for plastics, PA6-CF in-layer anisotropy, mesh-dependent corner stress (nodal recovery used; the remaining edge error is measured and reported at a stated mesh), printed flat only.
-8. **Relation to existing tools** (1–2 sentences): Fusion 360 generative design and nTopology also compare materials and processes. Morphic is open, cited, checked, and reproducible, and its catalog method adds a material at near-zero cost.
+8. **Relation to existing tools** (1â€“2 sentences): Fusion 360 generative design and nTopology also compare materials and processes. Morphic is open, cited, checked, and reproducible, and its catalog method adds a material at near-zero cost.
 9. **Impact and next steps:** reproducible run bundles, open source (MIT), 3D, fatigue, physical tests, broader bio-inspired design.
-10. **Citations:** datasheets, Andreassen et al. 2011, Bendsøe & Sigmund 2003, Wolff / Huiskes et al. 2000, Pilkey (Peterson's), GE bracket challenge, FAR 25.303.
+10. **Citations:** datasheets, Andreassen et al. 2011, BendsÃ¸e & Sigmund 2003, Wolff / Huiskes et al. 2000, Pilkey (Peterson's), GE bracket challenge, FAR 25.303.
 
 ### 17.3 Judge Q&A prep
 
@@ -672,7 +672,7 @@ Steps are numbered S1–S17 so they do not collide with the review item numbers 
 | Printed parts are weaker than datasheets. | We use printed-specimen values, print flat so in-plane stress runs along the layers, and show every value with its source. Z strength is in the library; it governs interlayer shear under out-of-plane loads, and we check that with a conservative stand-in. If the part were printed standing up, the numbers would not apply, and we say so. |
 | PA6-CF is anisotropic. | Yes, even within a layer. The datasheet value is along the bead direction. We state the assumption that perimeters follow the member direction, and list it as a limit. |
 | Isn't the stress at corners unreliable? | Yes, so loads are spread over pads, the ring and one ring width around each pad are excluded (a distance in mm, not in elements), the raw peak is shown next to it, and the mesh size is printed on the card. Stresses are recovered to the nodes by Gauss-point extrapolation and averaging, so edge values are not under-read the way element-center values are; the hole check shows the error with and without recovery at a known peak. Numbers come from the smoothed shape that is actually exported. |
-| What about the bolt holes? | The FE spreads the pin load evenly around the hole, so hole-wall stress is not physical and is excluded. Each pad with a hole gets a bearing hand check, F / (d × t) against the full strength: load pads use the applied force, support pads use the FE reaction force. This is on the safe side because bearing allowables are often higher. Pin shear and tear-out are not checked, and we say so. |
+| What about the bolt holes? | The FE spreads the pin load evenly around the hole, so hole-wall stress is not physical and is excluded. Each pad with a hole gets a bearing hand check, F / (d Ã— t) against the full strength: load pads use the applied force, support pads use the FE reaction force. This is on the safe side because bearing allowables are often higher. Pin shear and tear-out are not checked, and we say so. |
 | Is the weight saving inflated? | The headline compares with a constant-width strut design sized to the same limits by the same solver, not with a solid block. Both numbers are shown. |
 | Why does titanium look cheap? | The card shows material cost only, labeled as such, and it never ranks. Ranking is by mass. Print cost for metal is far higher and is out of scope. |
 | Could the LLM invent numbers? | It only explains. Every number it writes is checked against computed results; otherwise a template is used. Parsing is always checked by the user on a drawing. |
@@ -686,9 +686,9 @@ Steps are numbered S1–S17 so they do not collide with the review item numbers 
 
 | Time (Eastern) | Milestone |
 |---|---|
-| by 3:00 PM | Video recorded and edited (≤ 4:00) |
+| by 3:00 PM | Video recorded and edited (â‰¤ 4:00) |
 | by 6:00 PM | Write-up final; public post done |
-| 6:00–8:00 PM | Buffer |
+| 6:00â€“8:00 PM | Buffer |
 | 8:00 PM | Deadline |
 
 ---
